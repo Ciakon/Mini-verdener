@@ -1,3 +1,5 @@
+package src;
+
 import itumulator.executable.Program;
 import itumulator.world.World;
 
