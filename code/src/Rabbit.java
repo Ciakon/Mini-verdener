@@ -12,32 +12,28 @@ import java.util.Set;
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
-    boolean isAlive;
+    // boolean isAlive;
     boolean hasEaten;
     int age;
     String imageKey;
     int visionRange;
     boolean canBreed;
+    boolean dailyEventTriggered;
 
     public Rabbit() {
-        this.isAlive = true;
+        // this.isAlive = true;
         this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
         this.visionRange = 3;
         this.canBreed = false;
+        this.dailyEventTriggered = false;
     }
 
     public void act(World world) {
-        if (world.isNight() && !this.hasEaten) {
-            this.isAlive = false;
-        }
-        if (!this.isAlive) {
-            world.remove(this);
-        }
-        if (age == 6) {
-            makeOld();
-        }
+        dailyReset(world);
+        nightCheck(world);
+        // CheckIsAlive(world); //must come afer nightCheck()
         movementAI(world);
     }
 
@@ -45,16 +41,92 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         return new DisplayInformation(Color.blue, this.imageKey);
     }
 
-    public void makeOld() {
-        this.imageKey = "rabbit-large";
-        this.visionRange = 2;
-        this.canBreed = true;
+    /**
+     * changes isAlive rabbit if they have not eaten
+     *
+     * @param world
+     */
+    public void nightCheck(World world) {
+        if (world.isNight() && this.dailyEventTriggered) {
+            if (!this.hasEaten) {
+                // this.isAlive = false;
+                world.remove(this);
+            }
+            this.dailyEventTriggered = false;
+        }
+    }
+
+    // /**
+    //  * deletes rabbit if not alive
+    //  *
+    //  * @param world world which the rabbit is in
+    //  */
+    // public void CheckIsAlive(World world) {
+    //     if (!this.isAlive) {
+    //         world.remove(this);
+    //     }
+    // }
+    /**
+     * Makes rabbit older. Rabbits that are 6 years get attribute changes
+     *
+     */
+    public void grow() {
+        this.age++;
+        if (this.age == 6) {
+            this.imageKey = "rabbit-large";
+            this.visionRange = 2;
+            this.canBreed = true;
+        }
+    }
+
+    /**
+     *
+     * @param world world which the rabbit is in
+     * @param grass grass which the rabbit eats
+     */
+    public void eat(World world, Grass grass) {
+        if (world.getLocation(this) == world.getLocation(grass)) {
+            //grass.eat();
+            this.hasEaten = true;
+        }
+    }
+
+    /**
+     * once per day resets hasEaten to false and sets dailyEventTriggered to
+     * true
+     *
+     * @param world world which the rabbit is in
+     */
+    public void dailyReset(World world) {
+        if (world.isDay() && !this.dailyEventTriggered) {
+            grow();
+            this.hasEaten = false;
+            this.dailyEventTriggered = true;
+        }
+    }
+
+    /**
+     * Moves rabbit in direction of grass if seen otherwise in a random
+     * direction
+     *
+     * @param world world which the rabbit is in
+     */
+    public void movementAI(World world) {
+        ArrayList<Location> nearbyGrass = findGrass(world);
+        if (!nearbyGrass.isEmpty() && !this.hasEaten) {
+            Location desiredGrass = nearestGrass(world, nearbyGrass);
+            moveTowards(world, desiredGrass);
+        } else {
+            Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
+            Location nextLocation = randomLocation(freeLocations);
+            world.move(this, nextLocation);
+        }
     }
 
     /**
      * Finds nearby grass, that is not accoupied by other rabbits
      *
-     * @param worldworld which the rabbit is in
+     * @param world world which the rabbit is in
      * @return Arraylist of all grass locations seen nearby
      */
     public ArrayList<Location> findGrass(World world) {
@@ -62,7 +134,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange); //Set of surrounding tiles within visionRange
         for (Location location : surroundings) {
             if (!world.isTileEmpty(location)) {
-                if (world.getTile(location) instanceof Grass) { //will not be seen if rabbit is currently on tile
+                if (world.getTile(location) instanceof Grass) { //will not be seen if any rabbit is currently on tile
                     nearbyGrass.add(location);
                 }
             }
@@ -134,23 +206,5 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         Random random = new Random();
         int randomIndex = random.nextInt(LocationlList.size());
         return LocationlList.get(randomIndex);
-    }
-
-    /**
-     * Moves rabbit in direction of grass if seen otherwise in a random
-     * direction
-     *
-     * @param world
-     */
-    public void movementAI(World world) {
-        ArrayList<Location> nearbyGrass = findGrass(world);
-        if (!nearbyGrass.isEmpty()) {
-            Location desiredGrass = nearestGrass(world, nearbyGrass);
-            moveTowards(world, desiredGrass);
-        } else {
-            Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
-            Location nextLocation = randomLocation(freeLocations);
-            world.move(this, nextLocation);
-        }
     }
 }
