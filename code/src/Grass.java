@@ -24,14 +24,16 @@ public class Grass implements Actor, DynamicDisplayInformationProvider, NonBlock
 
     private void grow(World world) {
         Random random = new Random();
-        if (random.nextInt(100) < 50) {
+        if (random.nextInt(100) < 100) {
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(world.getLocation(this));
             if (!emptyTiles.isEmpty()) {
-                Location newLocation = emptyTiles.iterator().next();
-                if (world.containsNonBlocking(newLocation) == false) {
+                for (Location newLocation : emptyTiles) {
+                 if (!world.containsNonBlocking(newLocation)) {
                     Grass newGrass = new Grass();
                     world.add(newGrass);
                     world.setTile(newLocation, newGrass);
+                    break;
+                 }
                 }
             }
         }
