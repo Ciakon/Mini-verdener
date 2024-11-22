@@ -39,14 +39,14 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * changes isAlive rabbit if they have not eaten
+     * removes rabbit if they have not eaten
      *
      * @param world
      */
     public void nightCheck(World world) {
         if (world.isNight() && this.dailyEventTriggered) {
             if (!this.hasEaten) {
-                world.remove(this);
+                world.delete(this);
             }
             this.dailyEventTriggered = false;
         }
