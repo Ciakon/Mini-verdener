@@ -18,10 +18,10 @@ class Main{
         
     }
     
-    public static void runSimulation(String test) throws FileNotFoundException {
+    public static void runSimulation(String filename) throws FileNotFoundException {
         Random RNG = new Random();
 
-        File file = new File("data/" + test + ".txt");
+        File file = new File("data/" + filename + ".txt");
         Scanner scanner = new Scanner(file);
 
         int N = Integer.parseInt(scanner.nextLine());
