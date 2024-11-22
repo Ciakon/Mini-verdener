@@ -12,7 +12,6 @@ import java.util.Set;
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
-    // boolean isAlive;
     boolean hasEaten;
     int age;
     String imageKey;
@@ -21,7 +20,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     boolean dailyEventTriggered;
 
     public Rabbit() {
-        // this.isAlive = true;
         this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
@@ -33,7 +31,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void act(World world) {
         dailyReset(world);
         nightCheck(world);
-        // CheckIsAlive(world); //must come afer nightCheck()
         movementAI(world);
     }
 
@@ -42,30 +39,19 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * changes isAlive rabbit if they have not eaten
+     * removes rabbit if they have not eaten
      *
      * @param world
      */
     public void nightCheck(World world) {
         if (world.isNight() && this.dailyEventTriggered) {
             if (!this.hasEaten) {
-                // this.isAlive = false;
-                world.remove(this);
+                world.delete(this);
             }
             this.dailyEventTriggered = false;
         }
     }
 
-    // /**
-    //  * deletes rabbit if not alive
-    //  *
-    //  * @param world world which the rabbit is in
-    //  */
-    // public void CheckIsAlive(World world) {
-    //     if (!this.isAlive) {
-    //         world.remove(this);
-    //     }
-    // }
     /**
      * Makes rabbit older. Rabbits that are 6 years get attribute changes
      *
