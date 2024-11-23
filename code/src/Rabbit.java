@@ -43,6 +43,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             world.delete(this);
             return;
         }
+        DayTimeMovementAI(world);
     }
 
     public DisplayInformation getInformation() {
