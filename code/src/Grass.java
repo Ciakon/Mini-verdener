@@ -22,6 +22,11 @@ public class Grass implements Actor, DynamicDisplayInformationProvider, NonBlock
         grow(world);
     }
 
+    /**
+     * grass adds grass randomly by 10 procent from surounding tiles.
+     *
+     * @param world world which the grass is in
+     */
     private void grow(World world) {
         Random random = new Random();
         if (random.nextInt(100) < 10) {

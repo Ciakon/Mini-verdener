@@ -43,8 +43,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             world.delete(this);
             return;
         }
-
-        DayTimeMovementAI(world);
     }
 
     public DisplayInformation getInformation() {
@@ -149,7 +147,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public ArrayList<Location> findGrass(World world) {
         ArrayList<Location> nearbyGrass = new ArrayList<>();
-        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange); //Set of surrounding tiles within visionRange
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         for (Location location : surroundings) {
             if (!world.isTileEmpty(location)) {
                 if (world.getTile(location) instanceof Grass) { //will not be seen if any blocking object is currently on the tile
@@ -167,7 +165,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param Arraylist Arraylist of all grass locations seen nearby
      */
     public Location nearestGrass(World world, ArrayList<Location> grass) {
-        Location closest = grass.get(0);
+        Location closest = grass.getFirst();
         int highestValue;
         if (closest.getX() > closest.getY()) {
             highestValue = closest.getX();
@@ -185,6 +183,30 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
         }
         return closest;
+    }
+
+    /**
+     * Finds the nearest rabbit hole within the rabbit's vision range.
+     *
+     * @param world the world in which the rabbit is located
+     * @return the nearest RabbitHole object, or null if none are found
+     */
+    public RabbitHole findNearestRabbitHole(World world) {
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+        RabbitHole closestHole = null;
+        int closestDistance = Integer.MAX_VALUE;
+
+        for (Location location : surroundings) {
+            if (world.getTile(location) instanceof RabbitHole) {
+                RabbitHole hole = (RabbitHole) world.getTile(location);
+                int distance = calculateDistance(world.getLocation(this), location);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestHole = hole;
+                }
+            }
+        }
+        return closestHole;
     }
 
     /**
@@ -212,6 +234,32 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
+     * Moves the rabbit toward the nearest rabbit hole using moveTowards() if
+     * one exists. If no rabbit hole is nearby, the rabbit digs a new hole.
+     *
+     * @param world the world in which the rabbit is located
+     */
+    public void moveToOrDigHole(World world) {
+        RabbitHole nearestHole = findNearestRabbitHole(world);
+        if (nearestHole != null) {
+            moveTowards(world, world.getLocation(nearestHole));
+        } else {
+            digHole(world);
+        }
+    }
+
+    /**
+     * Calculates the Manhattan distance between two locations.
+     *
+     * @param loc1 the first location
+     * @param loc2 the second location
+     * @return the Manhattan distance between loc1 and loc2
+     */
+    public int calculateDistance(Location loc1, Location loc2) {
+        return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
+    }
+
+    /**
      * chooses random location out of set of locations
      *
      * @param locationSet a Set<> of Location
@@ -226,12 +274,18 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         return LocationlList.get(randomIndex);
     }
 
+    /**
+     * Digs a new rabbit hole at the rabbits location in the world. This method
+     * sets the rabbit's `rabbitHole` attribute to the new hole.
+     *
+     * @param world the world in which the rabbit digs a hole
+     */
     public void digHole(World world) {
         if (rabbitHole != null) {
             throw new RuntimeException("Rabbits should only dig a hole when they don't have one");
         }
 
-        Location location = findRandomValidLocation(world);
+        Location location = world.getLocation(this);
         rabbitHole = new RabbitHole(world, location);
         rabbitHole.addRabbit(this);
     }
