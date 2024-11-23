@@ -16,7 +16,9 @@ class Main{
             System.out.println(e.getMessage());
         }
     }
-    
+
+
+    //Todo remove "program.run" and make "CreateSimulation function instead, so it can be used for testing". Also move to "functions" file.
     public static void runSimulation(String filename) throws FileNotFoundException {
         Random RNG = new Random();
 
