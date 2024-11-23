@@ -1,3 +1,4 @@
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -24,13 +25,10 @@ public class Test1 {
             e.printStackTrace();
         }
 
-       
-
         // check if grass spawns
-
         int true_grass_count = 3;
         World world = program.getWorld();
-    
+
         int grass_count = 0;
         Map<Object, Location> entities = world.getEntities();
         for (Object entity : entities.keySet()) {
@@ -56,7 +54,7 @@ public class Test1 {
         // check if rabbit spawns
         int true_rabbit_count = 1;
         World world = program.getWorld();
-    
+
         int rabbit_count = 0;
         Map<Object, Location> entities = world.getEntities();
         for (Object entity : entities.keySet()) {
@@ -68,4 +66,3 @@ public class Test1 {
         assertEquals(true_rabbit_count, rabbit_count);
     }
 }
-

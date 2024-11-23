@@ -358,4 +358,21 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         rabbitHole.addRabbit(this);
     }
 
+    // TODO move to "functions" file. and fix infinite loop glitch.
+    // TODO duplicate function from main file.
+    public static Location findRandomValidLocation(World world) {
+        Random RNG = new Random();
+        int N = world.getSize();
+
+        while (true) {
+            int x = RNG.nextInt(0, N);
+            int y = RNG.nextInt(0, N);
+            Location location = new Location(x, y);
+
+            if (world.getTile(location) == null) {
+                return location;
+            }
+        }
+    }
+
 }
