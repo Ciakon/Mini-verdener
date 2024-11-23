@@ -11,7 +11,7 @@ import itumulator.world.World;
 class Main{
     public static void main(String[] args) {
         try {
-            runSimulation("tf1-1");
+            runSimulation("t1-2cde");
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
