@@ -34,6 +34,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         this.dailyEventTriggered = false;
     }
 
+    @Override
     public void act(World world) {
         this.eatIfOnGrass(world);
         this.dailyReset(world);
@@ -46,6 +47,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         DayTimeMovementAI(world);
     }
 
+    @Override
     public DisplayInformation getInformation() {
         return new DisplayInformation(Color.blue, this.imageKey);
     }
