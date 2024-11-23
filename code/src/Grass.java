@@ -16,9 +16,6 @@ public class Grass implements Actor, DynamicDisplayInformationProvider, NonBlock
 
 
     public void act(World world) {
-
-        System.out.println(world.contains(this));
-
         grow(world);
     }
 
