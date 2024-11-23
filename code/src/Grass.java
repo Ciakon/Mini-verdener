@@ -9,10 +9,10 @@ import itumulator.world.World;
 import itumulator.world.NonBlocking;
 
 public class Grass implements Actor, DynamicDisplayInformationProvider, NonBlocking{
-    public Grass() {
-
+    public Grass(World world, Location location) {
+        world.add(this);
+        world.setTile(location, this);
     }
-
 
 
     public void act(World world) {
@@ -29,10 +29,7 @@ public class Grass implements Actor, DynamicDisplayInformationProvider, NonBlock
             if (!emptyTiles.isEmpty()) {
                 for (Location newLocation : emptyTiles) {
                  if (!world.containsNonBlocking(newLocation)) {
-                    Grass newGrass = new Grass();
-                    world.add(newGrass);
-                    world.setTile(newLocation, newGrass);
-                    break;
+                    new Grass(world, newLocation);
                  }
                 }
             }

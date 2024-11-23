@@ -11,11 +11,10 @@ import itumulator.world.World;
 class Main{
     public static void main(String[] args) {
         try {
-            runSimulation("t1-1c");
+            runSimulation("tf1-1");
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }
-        
     }
     
     public static void runSimulation(String filename) throws FileNotFoundException {
@@ -46,7 +45,7 @@ class Main{
             }
 
             for (int i = 0; i < amount; i++) {
-                spawnActor(createActor(type), world);
+                createActor(world, type);
             }
 
             System.out.println("Spawned: " + amount + " " + type);
@@ -56,19 +55,23 @@ class Main{
         program.show();
     }
 
-    public static Actor createActor(String string) {
-        switch (string) {
+    public static Actor createActor(World world, String actor_name) {
+        Location location = findRandomValidLocation(world);
+
+        switch (actor_name) {
             case "grass":
-                return new Grass();
+                return new Grass(world, location);
             case "rabbit":
-                return new Rabbit();
+                return new Rabbit(world, location);
+            case "burrow":
+                return new RabbitHole(world, location);
             default:
-                throw new IllegalArgumentException(string + " is not a valid actor");
+                throw new IllegalArgumentException(actor_name + " is not a valid actor");
         }
     }
 
-    // todo fix infinite loop
-    public static void spawnActor(Actor actor, World world) {
+    // TODO move to "functions" file. and fix infinite loop glitch.
+    public static Location findRandomValidLocation(World world) {
         Random RNG = new Random();
         int N = world.getSize();
 
@@ -78,10 +81,9 @@ class Main{
             Location location = new Location(x, y);
 
             if (world.getTile(location) == null) {
-                world.add(actor);
-                world.setTile(location, actor);
-                break;
+                return location;
             }
         }
     }
+
 }

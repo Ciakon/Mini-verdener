@@ -18,8 +18,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     int visionRange;
     boolean canBreed;
     boolean dailyEventTriggered;
+    RabbitHole rabbitHole;
 
-    public Rabbit() {
+    public Rabbit(World world, Location location) {
+        world.add(this);
+        world.setTile(location, this);
+
         this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
@@ -193,4 +197,32 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         int randomIndex = random.nextInt(LocationlList.size());
         return LocationlList.get(randomIndex);
     }
+
+    public void digHole(World world) {
+        if (rabbitHole != null) {
+            throw new RuntimeException("Rabbits should only dig a hole when they don't have one");
+        }
+
+        Location location = findRandomValidLocation(world);
+        rabbitHole = new RabbitHole(world, location);
+        rabbitHole.addRabbit(this);
+    }
+
+    // TODO move to "functions" file. and fix infinite loop glitch.
+    // TODO duplicate function from main file.
+    public static Location findRandomValidLocation(World world) {
+        Random RNG = new Random();
+        int N = world.getSize();
+
+        while (true) {
+            int x = RNG.nextInt(0, N);
+            int y = RNG.nextInt(0, N);
+            Location location = new Location(x, y);
+
+            if (world.getTile(location) == null) {
+                return location;
+            }
+        }
+    }
+
 }
