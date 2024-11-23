@@ -165,7 +165,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param Arraylist Arraylist of all grass locations seen nearby
      */
     public Location nearestGrass(World world, ArrayList<Location> grass) {
-        Location closest = grass.getFirst();
+        Location closest = grass.get(0);
         int highestValue;
         if (closest.getX() > closest.getY()) {
             highestValue = closest.getX();
