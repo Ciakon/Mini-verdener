@@ -44,6 +44,14 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             world.delete(this);
             return;
         }
+        if (world.isNight()) {
+            if (rabbitHole == null) {
+                moveToOrDigHole(world);
+            } else {
+                moveTowards(world, world.getLocation(rabbitHole));
+            }
+            return;
+        }
         DayTimeMovementAI(world);
     }
 
