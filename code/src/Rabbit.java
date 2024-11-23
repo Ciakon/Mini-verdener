@@ -12,21 +12,25 @@ import java.util.Set;
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
-    boolean hasEaten;
+    // boolean hasEaten;
     int age;
     String imageKey;
     int visionRange;
     boolean canBreed;
+    boolean hasBreed;
     boolean dailyEventTriggered;
     RabbitHole rabbitHole;
+    int energy;
+    int maxEnergy;
 
     boolean isAlive = true;
 
     public Rabbit(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
-
-        this.hasEaten = false;
+        this.maxEnergy = 120;
+        this.energy = 0;
+        // this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
         this.visionRange = 3;
@@ -39,10 +43,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         this.eatIfOnGrass(world);
         this.dailyReset(world);
         this.nightCheck(world);
-
         if (isAlive == false) {
             world.delete(this);
             return;
+        }
+        if (world.isNight() && this.canBreed && !this.hasBreed && energy > 30) {
+            findBreedingPartner(world);
         }
         if (world.isNight()) {
             if (rabbitHole == null) {
@@ -67,11 +73,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public void nightCheck(World world) {
         if (world.isNight() && this.dailyEventTriggered) {
-            if (!this.hasEaten) {
+            this.energy -= 50;
+            if (this.energy < 0) {
                 isAlive = false;
             }
-            this.dailyEventTriggered = false;
         }
+        this.dailyEventTriggered = false;
     }
 
     /**
@@ -84,6 +91,42 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             this.imageKey = "rabbit-large";
             this.visionRange = 2;
             this.canBreed = true;
+            this.maxEnergy = 100;
+        }
+    }
+
+    /**
+     * breeds with other rabbit
+     *
+     * @param world world which the rabbit is in
+     * @param rabbit rabbit to breed with
+     */
+    public void breed(World world, Rabbit rabbit) {
+        this.hasBreed = true;
+        rabbit.hasBreed = true;
+        Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(rabbit));
+        Location rabbitSpawnPoint = randomLocation(freeLocations);
+        Rabbit child = new Rabbit(world, world.getLocation(rabbitSpawnPoint));
+        child.rabbitHole = this.rabbitHole;
+        this.energy -= 30;
+        rabbit.energy -= 30;
+    }
+
+    /**
+     * finds suitable rabbits to breed
+     *
+     * @param world world which the rabbit is in
+     */
+    public void findBreedingPartner(World world) {
+        if (world.getLocation(this) == world.getLocation(this.rabbitHole)) {
+            ArrayList rabbitList = this.rabbitHole.getAllRabbits();
+            for (Object object : rabbitList) {
+                if (object instanceof Rabbit rabbit) {
+                    if (rabbit != this && rabbit.canBreed && !rabbit.hasBreed && world.getLocation(rabbit) == world.getLocation(rabbit.rabbitHole) && energy > 30) {
+                        this.breed(world, rabbit);
+                    }
+                }
+            }
         }
     }
 
@@ -97,8 +140,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         Location closetgrass = this.closetGrass(world);
         if (closetgrass == world.getLocation(this)) {
             if (world.getNonBlocking(closetgrass) instanceof Grass grass) {
+                this.energy += grass.getNutritionalValue();
+                if (this.energy > maxEnergy) {
+                    this.energy = maxEnergy;
+                }
                 world.delete(grass);
-                this.hasEaten = true;
+                // this.hasEaten = true;
             }
         }
 
@@ -113,11 +160,17 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void dailyReset(World world) {
         if (world.isDay() && !this.dailyEventTriggered) {
             grow();
-            this.hasEaten = false;
+            // this.hasEaten = false;
+            this.energy = 0;
             this.dailyEventTriggered = true;
         }
     }
 
+    /**
+     *
+     * @param world
+     * @return returns the closet grass to the Rabbit
+     */
     public Location closetGrass(World world) {
         ArrayList<Location> nearbyGrass = findGrass(world);
         Location closetGrass = null;
@@ -137,15 +190,19 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         if (world.isDay()) {
 
             ArrayList<Location> nearbyGrass = findGrass(world);
-            if (!nearbyGrass.isEmpty() && !this.hasEaten) {
+            if (!nearbyGrass.isEmpty()) {
 
                 Location desiredGrass = nearestGrass(world, nearbyGrass);
                 moveTowards(world, desiredGrass);
+                this.energy -= 2;
             } else {
 
                 Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
                 Location nextLocation = randomLocation(freeLocations);
-                world.move(this, nextLocation);
+                if (freeLocations != null) {
+                    world.move(this, nextLocation);
+                    this.energy -= 2;
+                }
             }
         }
     }
@@ -273,7 +330,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     /**
      * chooses random location out of set of locations
      *
-     * @param locationSet a Set<> of Location
+     * @param locationSet a Set<> of Location. returns null if Set is empty
      */
     public Location randomLocation(Set<Location> LocationSet) {
         if (LocationSet.isEmpty()) {
