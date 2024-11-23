@@ -20,6 +20,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     boolean dailyEventTriggered;
     RabbitHole rabbitHole;
 
+    boolean isAlive = true;
+
     public Rabbit(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
@@ -35,6 +37,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void act(World world) {
         dailyReset(world);
         nightCheck(world);
+
+        if (isAlive == false) {
+            world.delete(this);
+            return;
+        }   
+
         movementAI(world);
     }
 
@@ -50,7 +58,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void nightCheck(World world) {
         if (world.isNight() && this.dailyEventTriggered) {
             if (!this.hasEaten) {
-                world.delete(this);
+                isAlive = false;
             }
             this.dailyEventTriggered = false;
         }
