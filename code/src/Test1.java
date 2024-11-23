@@ -41,5 +41,31 @@ public class Test1 {
 
         assertEquals(true_grass_count, grass_count);
     }
+
+    @Test
+    public void t1_2a() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-2a");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // check if rabbit spawns
+        int true_rabbit_count = 1;
+        World world = program.getWorld();
+    
+        int rabbit_count = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                rabbit_count++;
+            }
+        }
+
+        assertEquals(true_rabbit_count, rabbit_count);
+    }
 }
 
