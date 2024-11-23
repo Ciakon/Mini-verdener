@@ -35,23 +35,14 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     public void act(World world) {
-        dailyReset(world);
-        nightCheck(world);
+        this.eatIfOnGrass(world);
+        this.dailyReset(world);
+        this.nightCheck(world);
 
         if (isAlive == false) {
             world.delete(this);
             return;
         }
-
-        if (world.isNight()) {
-            if (rabbitHole == null) {
-                moveToOrDigHole(world);
-            } else {
-                moveTowards(world, world.getLocation(rabbitHole));
-            }
-            return;
-        }
-        movementAI(world);
     }
 
     public DisplayInformation getInformation() {
@@ -86,15 +77,20 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
+     * if Rabbit is standing on grass, eat it
      *
      * @param world world which the rabbit is in
-     * @param grass grass which the rabbit eats
+     *
      */
-    public void eat(World world, Grass grass) {
-        if (world.getLocation(this) == world.getLocation(grass)) {
-            //grass.eat();
-            this.hasEaten = true;
+    public void eatIfOnGrass(World world) {
+        Location closetgrass = this.closetGrass(world);
+        if (closetgrass == world.getLocation(this)) {
+            if (world.getNonBlocking(closetgrass) instanceof Grass grass) {
+                world.delete(grass);
+                this.hasEaten = true;
+            }
         }
+
     }
 
     /**
@@ -111,21 +107,35 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
+    public Location closetGrass(World world) {
+        ArrayList<Location> nearbyGrass = findGrass(world);
+        Location closetGrass = null;
+        if (!nearbyGrass.isEmpty()) {
+            closetGrass = nearestGrass(world, nearbyGrass);
+        }
+        return closetGrass;
+    }
+
     /**
      * Moves rabbit in direction of grass if seen otherwise in a random
      * direction
      *
      * @param world world which the rabbit is in
      */
-    public void movementAI(World world) {
-        ArrayList<Location> nearbyGrass = findGrass(world);
-        if (!nearbyGrass.isEmpty() && !this.hasEaten) {
-            Location desiredGrass = nearestGrass(world, nearbyGrass);
-            moveTowards(world, desiredGrass);
-        } else {
-            Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
-            Location nextLocation = randomLocation(freeLocations);
-            world.move(this, nextLocation);
+    public void DayTimeMovementAI(World world) {
+        if (world.isDay()) {
+
+            ArrayList<Location> nearbyGrass = findGrass(world);
+            if (!nearbyGrass.isEmpty() && !this.hasEaten) {
+
+                Location desiredGrass = nearestGrass(world, nearbyGrass);
+                moveTowards(world, desiredGrass);
+            } else {
+
+                Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
+                Location nextLocation = randomLocation(freeLocations);
+                world.move(this, nextLocation);
+            }
         }
     }
 
@@ -140,7 +150,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         for (Location location : surroundings) {
             if (!world.isTileEmpty(location)) {
-                if (world.getTile(location) instanceof Grass) {
+                if (world.getTile(location) instanceof Grass) { //will not be seen if any blocking object is currently on the tile
                     nearbyGrass.add(location);
                 }
             }
@@ -155,7 +165,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param Arraylist Arraylist of all grass locations seen nearby
      */
     public Location nearestGrass(World world, ArrayList<Location> grass) {
-        Location closest = grass.getFirst();
+        Location closest = grass.get(0);
         int highestValue;
         if (closest.getX() > closest.getY()) {
             highestValue = closest.getX();
@@ -174,7 +184,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
         return closest;
     }
-
 
     /**
      * Finds the nearest rabbit hole within the rabbit's vision range.
@@ -200,10 +209,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         return closestHole;
     }
 
-
-
     /**
-     * Moves 1 tile towards a given location
+     * Moves Rabbit 1 tile towards a given location
      *
      * @param world world which the rabbit is in
      * @param desiredlocation location to move towards
@@ -227,8 +234,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Moves the rabbit toward the nearest rabbit hole using moveTowards() if one exists.
-     * If no rabbit hole is nearby, the rabbit digs a new hole.
+     * Moves the rabbit toward the nearest rabbit hole using moveTowards() if
+     * one exists. If no rabbit hole is nearby, the rabbit digs a new hole.
      *
      * @param world the world in which the rabbit is located
      */
@@ -248,7 +255,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param loc2 the second location
      * @return the Manhattan distance between loc1 and loc2
      */
-
     public int calculateDistance(Location loc1, Location loc2) {
         return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
     }
@@ -269,12 +275,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Digs a new rabbit hole at the rabbits location in the world.
-     * This method sets the rabbit's `rabbitHole` attribute to the new hole.
+     * Digs a new rabbit hole at the rabbits location in the world. This method
+     * sets the rabbit's `rabbitHole` attribute to the new hole.
      *
      * @param world the world in which the rabbit digs a hole
      */
-
     public void digHole(World world) {
         if (rabbitHole != null) {
             throw new RuntimeException("Rabbits should only dig a hole when they don't have one");
@@ -284,7 +289,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         rabbitHole = new RabbitHole(world, location);
         rabbitHole.addRabbit(this);
     }
-
 
     // TODO move to "functions" file. and fix infinite loop glitch.
     // TODO duplicate function from main file.
