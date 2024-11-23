@@ -42,3 +42,4 @@ public class Test1 {
         assertEquals(true_grass_count, grass_count);
     }
 }
+
