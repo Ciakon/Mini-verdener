@@ -137,10 +137,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public ArrayList<Location> findGrass(World world) {
         ArrayList<Location> nearbyGrass = new ArrayList<>();
-        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange); //Set of surrounding tiles within visionRange
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         for (Location location : surroundings) {
             if (!world.isTileEmpty(location)) {
-                if (world.getTile(location) instanceof Grass) { //will not be seen if any rabbit is currently on tile
+                if (world.getTile(location) instanceof Grass) {
                     nearbyGrass.add(location);
                 }
             }
