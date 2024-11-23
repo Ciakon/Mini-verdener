@@ -4,7 +4,7 @@ import itumulator.executable.Program;
 class Main{
     public static void main(String[] args) {
         try {
-            Program program = Functions.createSimulation("t1-2cde");
+            Program program = Functions.createSimulation("t1-1a");
             program.show();
             program.run();
         } catch (FileNotFoundException e) {
