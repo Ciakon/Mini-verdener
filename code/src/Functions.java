@@ -9,11 +9,12 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Functions {    
-    
     /** 
-     * @param filename
-     * @return Program
-     * @throws FileNotFoundException
+     * Creates the simulation from a text file.
+     * 
+     * @param filename The filename of where the simulation parameters are stored.
+     * @return Program The simulation program.
+     * @throws FileNotFoundException Happens when the file can't be found.
      */
     public static Program createSimulation(String filename) throws FileNotFoundException {
         Random RNG = new Random();
@@ -52,6 +53,14 @@ public class Functions {
         return program;
     }
 
+    
+    /** 
+     * Creates actors in the world.
+     * 
+     * @param world The world where the actors spawn.
+     * @param actor_name The name of the actor in the text file.
+     * @return Actor The actor object. 
+     */
     public static Actor createActor(World world, String actor_name) {
         Location location = findRandomValidLocation(world);
 
@@ -67,6 +76,13 @@ public class Functions {
         }
     }
 
+    
+    /** 
+     * Finds a random location in the world, that is completely empty (no non-blocking object)
+     * 
+     * @param world The simulation world
+     * @return Location The random valid location.
+     */
     // todo infinte loop glitch, L
     public static Location findRandomValidLocation(World world) {
         Random RNG = new Random();
