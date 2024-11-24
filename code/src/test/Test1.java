@@ -44,6 +44,11 @@ public class Test1 {
         assertEquals(expected_grass_count, grass_count);
     }
 
+    /**
+     * Tests if grass can spread.
+     * This test ensures that after simulation steps, the number of grass entities increases as grass spreads.
+     */
+
     @Test
     public void t1_1b() {
         Program program = null;
@@ -83,6 +88,10 @@ public class Test1 {
         assertTrue(finalGrassCount > grass_count);
     }
 
+    /**
+     * Tests if rabbit can stand on grass.
+     * This test verifies that when a rabbit is placed on grass, the grass's location and state remain unchanged.
+     */
 
     @Test
     public void t1_1c() {
@@ -373,6 +382,11 @@ public class Test1 {
         assertEquals(expected_hole_count, hole_count);
     }
 
+
+    /**
+     * Tests if rabbits can stand on rabbi tholes.
+     * This test verifies that when a rabbit is placed on its hole.
+     */
 
     @Test
     public void t1_3b() {
