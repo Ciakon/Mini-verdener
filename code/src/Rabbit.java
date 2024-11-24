@@ -32,6 +32,19 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
     public boolean isImmortal = false; // make rabbits immortal for some tests.
 
+    public Rabbit(World world) {
+        world.add(this);
+        this.maxEnergy = 200;
+        this.energy = 1;
+        // this.hasEaten = false;
+        this.age = 0;
+        this.imageKey = "rabbit-small";
+        this.visionRange = 3;
+        this.canBreed = false;
+        this.dailyEventTriggered = false;
+        this.previousPosition = world.getCurrentLocation();
+    }
+
     public Rabbit(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
