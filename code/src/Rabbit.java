@@ -34,7 +34,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         // this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
-        this.visionRange = 4;
+        this.visionRange = 3;
         this.canBreed = false;
         this.dailyEventTriggered = false;
     }
@@ -52,14 +52,15 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             findBreedingPartner(world);
         }
         if (world.isNight()) {
-            if (rabbitHole == null) {
-                moveToOrDigHole(world);
-            } else {
-                moveTowards(world, world.getLocation(rabbitHole));
-                if (world.getLocation(this).equals(world.getLocation(rabbitHole))) {
-                    isSleeping = true;
-                }
-            }
+            moveToOrDigHole(world);
+            // if (rabbitHole == null) {
+                
+            // } else {
+            //     moveTowards(world, world.getLocation(rabbitHole));
+            //     if (world.getLocation(this).equals(world.getLocation(rabbitHole))) {
+            //         isSleeping = true;
+            //     }
+            // }
             return;
         }
         DayTimeMovementAI(world);
@@ -331,11 +332,24 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param world the world in which the rabbit is located
      */
     public void moveToOrDigHole(World world) {
+        if (rabbitHole != null) {
+            moveTowards(world, world.getLocation(rabbitHole));
+            if (world.getLocation(this).equals(world.getLocation(rabbitHole))) {
+                isSleeping = true;
+            }
+            return;
+        }
+
         RabbitHole nearestHole = findNearestRabbitHole(world);
         if (nearestHole != null) {
             moveTowards(world, world.getLocation(nearestHole));
+            if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
+                rabbitHole = nearestHole;
+                isSleeping = true;
+            }
         } else {
             digHole(world);
+            isSleeping = true;
         }
     }
 
