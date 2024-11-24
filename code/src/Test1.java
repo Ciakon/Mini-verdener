@@ -71,7 +71,7 @@ public class Test1 {
     }
 
     //@Test
-    public static void k1_2b() {
+    public static void t1_2b() {
         Program program = null;
 
         // load input file.
@@ -105,7 +105,7 @@ public class Test1 {
     }
 
     //@Test
-    public static void k1_2c() {
+    public static void t1_2c() {
         Program program = null;
 
         // load input file.
@@ -140,6 +140,15 @@ public class Test1 {
     // TODO this test may break if digging holes requires energy in the future.
     @Test
     public void t1_2fg() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-2fg");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         World world = program.getWorld();
 
         ArrayList<Rabbit> rabbits = new ArrayList<>();
