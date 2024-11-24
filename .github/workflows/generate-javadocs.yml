@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '23'  # Replace with your Java version (e.g., 11, 17)
+          distribution: 'temurin'
 
       # Step 3: Generate Javadocs
       - name: Generate Javadocs
