@@ -147,7 +147,7 @@ public class Test1 {
             e.printStackTrace();
         }
         World world = program.getWorld();
-        Location myRabbitHoleLocation=Functions.findRandomValidLocation(world);
+        Location myRabbitHoleLocation = Functions.findRandomValidLocation(world);
         RabbitHole myRabbitHole = new RabbitHole(world, myRabbitHoleLocation);
         program.show();
         Map<Object, Location> entities = world.getEntities();
@@ -157,12 +157,13 @@ public class Test1 {
                 ((Rabbit)entity).isImmortal = true;
                 ((Rabbit)entity).age =6;
                 initial_rabbit_count++;
-                ((Rabbit) entity).rabbitHole = myRabbitHole;
+                ((Rabbit)entity).rabbitHole = myRabbitHole;
+                myRabbitHole.addRabbit((Rabbit) entity);
                 ((Rabbit) entity).energy +=200;
             }
         }
 
-        for (int i = 0; i < 90; i++) {
+        for (int i = 0; i < 110; i++) {
             program.simulate();
             entities.clear();
             entities = world.getEntities();
@@ -170,6 +171,7 @@ public class Test1 {
             for (Object entity : entities.keySet()) {
                 if (entity instanceof Rabbit) {
                     ((Rabbit) entity).isImmortal = true;
+                    ((Rabbit) entity).energy +=200;
                 }
             }
 

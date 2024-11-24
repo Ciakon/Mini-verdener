@@ -80,8 +80,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
             return;
         }
-
-        this.eatIfOnGrass(world);
+        if(world.isDay()){
+            this.eatIfOnGrass(world);
+        }
 
         if (world.isNight()) {
             moveToOrDigHole(world);
@@ -157,14 +158,16 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param rabbit rabbit to breed with
      */
     public void breed(World world, Rabbit rabbit) {
-        this.hasBreed = true;
-        rabbit.hasBreed = true;
+
         Rabbit child = new Rabbit(world);
+        System.out.println(this.rabbitHole);
         child.rabbitHole = this.rabbitHole;
         child.energy = 60;
         rabbitHole.addRabbit(child);
-        this.energy -= 30;
-        rabbit.energy -= 30;
+        this.energy -= (int) (energyLoss*0.1);
+        rabbit.energy -= (int) (energyLoss*0.1);
+        rabbit.hasBreed = true;
+        this.hasBreed = true;
     }
 
     /**
@@ -176,11 +179,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
         System.out.println(rabbitList);
         for (Rabbit rabbit : rabbitList) {
-
-
             if (rabbit != this && rabbit.canBreed && !rabbit.hasBreed && rabbit.isInsideRabbithole && rabbit.energy > 30) {
                 System.out.println("sponge cakes");
                 this.breed(world, rabbit);
+                break;
             }
         }
     }
