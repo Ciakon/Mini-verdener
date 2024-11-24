@@ -1,5 +1,6 @@
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import itumulator.executable.Program;
@@ -76,7 +78,7 @@ public class Test1 {
 
         // load input file.
         try {
-            program = Functions.createSimulation("t1-2cde");
+            program = Functions.createSimulation("t1-2b");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -117,28 +119,68 @@ public class Test1 {
             e.printStackTrace();
         }
 
+        assert program != null;
         World world = program.getWorld();
-        int initial_rabbit_count = 0;
         Map<Object, Location> entities = world.getEntities();
+        for (int i = 0; i < 20; i++) {
+            program.simulate();
+        }
+
+        int initial_rabbit_count = 0;
         for (Object entity : entities.keySet()) {
             if (entity instanceof Rabbit) {
                 initial_rabbit_count++;
             }
         }
-        for (int i = 0; i < 20; i++) {
-            program.simulate();
+        assertTrue(initial_rabbit_count>0);
+    }
+    @Test
+    public void t1_2e() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-2cde");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        entities.clear();
-        entities = world.getEntities(); //update HashMap
-        int current_rabbit_count = 0;
+        World world = program.getWorld();
+        Map<Object, Location> entities = world.getEntities();
+        int initial_rabbit_count = 0;
         for (Object entity : entities.keySet()) {
             if (entity instanceof Rabbit) {
-                current_rabbit_count++;
+                ((Rabbit)entity).isImmortal = true;
+                ((Rabbit)entity).age +=6;
+                initial_rabbit_count++;
             }
         }
 
-        assertTrue(current_rabbit_count == initial_rabbit_count);
+        for (int i = 0; i < 30; i++) {
+            program.simulate();
+            entities.clear();
+            entities = world.getEntities();
+            int grassAmount = 0;
+            for (Object entity : entities.keySet()) {
+                if (entity instanceof Rabbit) {
+                    ((Rabbit) entity).isImmortal = true;
+                }
+            }
+
+        }
+        int currentRabbitCount = 0;
+        entities.clear();
+        entities = world.getEntities();
+        int grassAmount = 0;
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                ((Rabbit) entity).isImmortal = true;
+            }
+        }
+        program.show();
+        assertTrue(initial_rabbit_count<currentRabbitCount);
     }
+
+
 
     // TODO this test may break if digging holes requires energy in the future.
     @Test

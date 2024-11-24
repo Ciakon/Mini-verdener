@@ -34,7 +34,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public Rabbit(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
-        this.maxEnergy = 150;
+        this.maxEnergy = 200;
         this.energy = 1;
         // this.hasEaten = false;
         this.age = 0;
@@ -138,10 +138,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void breed(World world, Rabbit rabbit) {
         this.hasBreed = true;
         rabbit.hasBreed = true;
-        Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(rabbit));
+        Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(previousPosition));
         Location rabbitSpawnPoint = randomLocation(freeLocations);
         Rabbit child = new Rabbit(world, world.getLocation(rabbitSpawnPoint));
         child.rabbitHole = this.rabbitHole;
+        child.energy = 60;
         rabbitHole.addRabbit(child);
         this.energy -= 30;
         rabbit.energy -= 30;
@@ -180,7 +181,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                     this.energy = maxEnergy;
                 }
                 world.delete(grass);
-                // this.hasEaten = true;
             }
         }
 
