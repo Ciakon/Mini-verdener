@@ -30,7 +30,7 @@ public class Test1 {
         }
 
         // check if grass spawns
-        int true_grass_count = 3;
+        int expected_grass_count = 3;
         World world = program.getWorld();
 
         int grass_count = 0;
@@ -41,7 +41,7 @@ public class Test1 {
             }
         }
 
-        assertEquals(true_grass_count, grass_count);
+        assertEquals(expected_grass_count, grass_count);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class Test1 {
         }
 
         // check if rabbit spawns
-        int true_rabbit_count = 1;
+        int expected_rabbit_count = 1;
         World world = program.getWorld();
 
         int rabbit_count = 0;
@@ -67,7 +67,7 @@ public class Test1 {
             }
         }
 
-        assertEquals(true_rabbit_count, rabbit_count);
+        assertEquals(expected_rabbit_count, rabbit_count);
     }
 
     // TODO this test may break if digging holes requires energy in the future.
@@ -114,7 +114,13 @@ public class Test1 {
             // Check if rabbits go towards their holes at night
             if (world.isNight()) {
                 for (Rabbit rabbit : rabbits) {
-                    if (rabbit.isInsideRabbithole) continue;
+
+                    // check if they be sleeping when in hole
+                    // TODO may break if sleeping becomes chance based.
+                    if (rabbit.isInsideRabbithole) {
+                        assertTrue(rabbit.isSleeping);
+                        continue;
+                    }
                     if (rabbit.rabbitHole == null) continue;
 
                     Location rabbitLocation = world.getLocation(rabbit);
@@ -138,6 +144,33 @@ public class Test1 {
         }
         
 
+    }
+
+    @Test
+    public void t1_3a() {
+        // Rabbits digging holes has already been tested in t1_2fg, so it will not be tested here.
+
+        Program program = null;
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-3a");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // check if hole spawns
+        int expected_hole_count = 1;
+        World world = program.getWorld();
+
+        int hole_count = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof RabbitHole) {
+                hole_count++;
+            }
+        }
+
+        assertEquals(expected_hole_count, hole_count);
     }
 
     // TODO move to functions file instead of duplicating.
