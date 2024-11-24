@@ -1,0 +1,33 @@
+name: Generate Javadocs
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your primary branch (e.g., main, master)
+
+jobs:
+  generate-javadoc:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Java
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '23'  # Replace with your Java version (e.g., 11, 17)
+
+      # Step 3: Generate Javadocs
+      - name: Generate Javadocs
+        run: |
+          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src ./code/src/*.java -classpath ./code/lib/junit-platform-console-standalone-1.11.3.jar
+
+      # Step 4: Publish Javadocs to GitHub Pages (optional)
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
