@@ -245,8 +245,8 @@ public class Test1 {
                         continue;
                     }
 
-                    int distance = calculateDistance(rabbitLocation, holeLocation);
-                    int previousDistance = calculateDistance(rabbit.previousPosition, holeLocation);
+                    int distance = Functions.calculateDistance(rabbitLocation, holeLocation);
+                    int previousDistance = Functions.calculateDistance(rabbit.previousPosition, holeLocation);
 
                     // check if the rabbit moved closer to the hole.
                     if (rabbitLocation.equals(rabbit.previousPosition) == false) {
@@ -288,18 +288,7 @@ public class Test1 {
 
         assertEquals(expected_hole_count, hole_count);
     }
-
-    // TODO move to functions file instead of duplicating.
-    /**
-     * Calculates the Manhattan distance between two locations.
-     *
-     * @param loc1 the first location
-     * @param loc2 the second location
-     * @return the Manhattan distance between loc1 and loc2
-     */
-    public int calculateDistance(Location loc1, Location loc2) {
-        return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
-    }
+    
 
     /**
      * Tests if rabbits can dig new exits in their tunnel.

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
@@ -291,7 +292,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public Location nearestObject(World world, ArrayList<Location> object) {
         Location closest = object.get(0);
         for (Location location : object) {
-            if (calculateDistance(world.getLocation(this), location) < calculateDistance(world.getLocation(this), closest)) {
+            if (Functions.calculateDistance(world.getLocation(this), location) <Functions.calculateDistance(world.getLocation(this), closest)) {
                 closest = location;
             }
         }
@@ -312,7 +313,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         for (Location location : surroundings) {
             if (world.getTile(location) instanceof RabbitHole) {
                 RabbitHole hole = (RabbitHole) world.getTile(location);
-                int distance = calculateDistance(world.getLocation(this), location);
+                int distance = Functions.calculateDistance(world.getLocation(this), location);
                 if (distance < closestDistance) {
                     closestDistance = distance;
                     closestHole = hole;
@@ -372,17 +373,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             digHole(world);
             enterHole(world);
         }
-    }
-
-    /**
-     * Calculates the Manhattan distance between two locations.
-     *
-     * @param loc1 the first location
-     * @param loc2 the second location
-     * @return the Manhattan distance between loc1 and loc2
-     */
-    public int calculateDistance(Location loc1, Location loc2) {
-        return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
     }
 
     /**
