@@ -22,21 +22,24 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     RabbitHole rabbitHole;
     int energy;
     int maxEnergy;
+    int energyLoss = 50; 
 
     boolean isAlive = true;
     boolean isSleeping = false;
-    Location previousPosition; // used when inside a rabbithole.
-    boolean isInsideRabbithole = false;
+    public Location previousPosition; // used when inside a rabbithole.
+    public boolean isInsideRabbithole = false;
+
+    public boolean isImmortal = false; // make rabbits immortal for some tests.
 
     public Rabbit(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
         this.maxEnergy = 150;
-        this.energy = 0;
+        this.energy = 1;
         // this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
-        this.visionRange = 10;
+        this.visionRange = 3;
         this.canBreed = false;
         this.dailyEventTriggered = false;
         this.previousPosition = world.getCurrentLocation();
@@ -104,8 +107,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public void nightCheck(World world) {
         if (world.isNight() && this.dailyEventTriggered) {
-            this.energy -= 50;
-            if (this.energy < 0) {
+            this.energy -= energyLoss;
+            if (this.energy <= 0 && isImmortal == false) {
                 isAlive = false;
             }
             this.dailyEventTriggered = false;
@@ -170,7 +173,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public void eatIfOnGrass(World world) {
         Location closetgrass = this.closetGrass(world);
-        System.out.println("closets grass:" + closetgrass);
         if (closetgrass == world.getLocation(this)) {
             if (world.getNonBlocking(closetgrass) instanceof Grass grass) {
                 this.energy += grass.getNutritionalValue();
@@ -178,7 +180,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                     this.energy = maxEnergy;
                 }
                 world.delete(grass);
-                System.out.println("eating grass");
                 // this.hasEaten = true;
             }
         }
@@ -216,7 +217,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
                 Location desiredGrass = nearestObject(world, nearbyGrass);
                 moveTowards(world, desiredGrass);
-                System.out.println("moving towards grass");
                 this.energy -= 2;
             } else {
 
@@ -225,7 +225,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                 if (freeLocations != null) {
                     world.move(this, nextLocation);
                     this.energy -= 2;
-                    System.out.println("moving randomly");
                 }
             }
         }
@@ -425,6 +424,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
     // TODO move to "functions" file. and fix infinite loop glitch.
     // TODO duplicate function from main file.
     public static Location findRandomValidLocation(World world) {
@@ -441,7 +444,5 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
         }
     }
-
-    
 
 }
