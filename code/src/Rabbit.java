@@ -22,7 +22,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     RabbitHole rabbitHole;
     int energy;
     int maxEnergy;
-    int energyLoss = 50; 
+    int energyLoss = 30;
     double digNewExitChance = 0.2;
 
     boolean isAlive = true;
@@ -141,6 +141,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             this.visionRange = 2;
             this.canBreed = true;
             this.maxEnergy = 100;
+            this.energyLoss = 50;
         }
     }
 
@@ -153,9 +154,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void breed(World world, Rabbit rabbit) {
         this.hasBreed = true;
         rabbit.hasBreed = true;
-        Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(previousPosition));
-        Location rabbitSpawnPoint = randomLocation(freeLocations);
-        Rabbit child = new Rabbit(world, world.getLocation(rabbitSpawnPoint));
+        Rabbit child = new Rabbit(world);
         child.rabbitHole = this.rabbitHole;
         child.energy = 60;
         rabbitHole.addRabbit(child);
@@ -232,14 +231,14 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
                 Location desiredGrass = nearestObject(world, nearbyGrass);
                 moveTowards(world, desiredGrass);
-                this.energy -= 2;
+                this.energy -= (int) (energyLoss*0.1);
             } else {
 
                 Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
                 Location nextLocation = randomLocation(freeLocations);
                 if (freeLocations != null) {
                     world.move(this, nextLocation);
-                    this.energy -= 2;
+                    this.energy -= (int) (energyLoss*0.1);
                 }
             }
         }
