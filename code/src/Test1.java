@@ -65,4 +65,72 @@ public class Test1 {
 
         assertEquals(true_rabbit_count, rabbit_count);
     }
+
+    //@Test
+    public static void k1_2b() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-2fg");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        World world = program.getWorld();
+        int initial_rabbit_count = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                initial_rabbit_count++;
+            }
+        }
+        for (int i = 0; i < 10; i++) { //simulate till night
+            program.simulate();
+        }
+        entities.clear();
+        entities = world.getEntities(); //update HashMap
+        int current_rabbit_count = 0;
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                current_rabbit_count++;
+            }
+        }
+        System.err.println(initial_rabbit_count);
+        System.err.println(current_rabbit_count);
+        System.out.println(current_rabbit_count < initial_rabbit_count);
+    }
+
+    //@Test
+    public static void k1_2c() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-c1");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        World world = program.getWorld();
+        int initial_rabbit_count = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                initial_rabbit_count++;
+            }
+        }
+        for (int i = 0; i < 20; i++) {
+            program.simulate();
+        }
+        entities.clear();
+        entities = world.getEntities(); //update HashMap
+        int current_rabbit_count = 0;
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                current_rabbit_count++;
+            }
+        }
+
+        System.out.println(current_rabbit_count == initial_rabbit_count);
+    }
+
 }
