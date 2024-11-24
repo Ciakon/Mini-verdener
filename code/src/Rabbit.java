@@ -128,6 +128,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
             this.dailyEventTriggered = false;
 
+            if (rabbitHole != null)
+                System.out.println(this.rabbitHole.getAllRabbits());
+
         }
     }
 
@@ -368,6 +371,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             moveTowards(world, world.getLocation(nearestHole));
             if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
                 rabbitHole = nearestHole;
+                nearestHole.addRabbit(this);
             }
         } else {
             digHole(world);
