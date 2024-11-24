@@ -188,29 +188,54 @@ public class Test1 {
 
     @Test
     public void t1_2c() {
+        int young_rabbit_energy = 0;
+        int old_rabbit_energy = 0;
         Program program = null;
+        for(int i =0;i<2;i++) {
+            // load input file.
+            try {
+                program = Functions.createSimulation("t1-2cde");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
 
-        // load input file.
-        try {
-            program = Functions.createSimulation("t1-2cde");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        assert program != null;
-        World world = program.getWorld();
-        Map<Object, Location> entities = world.getEntities();
-        for (int i = 0; i < 20; i++) {
-            program.simulate();
-        }
-
-        int initial_rabbit_count = 0;
-        for (Object entity : entities.keySet()) {
-            if (entity instanceof Rabbit) {
-                initial_rabbit_count++;
+            assert program != null;
+            World world = program.getWorld();
+            Map<Object, Location> entities = world.getEntities();
+            for (int j = 0; j < 20; j++) {
+                program.simulate();
+                for (Object entity : entities.keySet()) {
+                    if (entity instanceof Rabbit) {
+                        ((Rabbit) entity).isImmortal = true;
+                        young_rabbit_energy += ((Rabbit) entity).energy;
+                    }
+                }
             }
         }
-        assertTrue(initial_rabbit_count>0);
+        for(int i =0;i<2;i++) {
+            try {
+                program = Functions.createSimulation("t1-2cde");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            World world = program.getWorld();
+            Map<Object, Location> entities = world.getEntities();
+            for (Object entity : entities.keySet()) {
+                if (entity instanceof Rabbit) {
+                    ((Rabbit) entity).age += 6;
+
+                }
+            }
+            for (int j = 0; j < 20; j++) {
+                program.simulate();
+                for (Object entity : entities.keySet()) {
+                    if (entity instanceof Rabbit) {
+                        old_rabbit_energy += ((Rabbit) entity).energy;
+                    }
+                }
+            }
+        }
+        assertTrue(old_rabbit_energy<young_rabbit_energy);
     }
     @Test
     public void t1_2e() {
