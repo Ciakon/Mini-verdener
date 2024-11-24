@@ -442,7 +442,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         else {
         // choose a random connected hole in the tunnel. That is now the new and only entrance (dementia moment).
             int hole_nr = random.nextInt(exits.size());
-            rabbitHole = exits.get(hole_nr);
+            RabbitHole new_exit = exits.get(hole_nr);
+            rabbitHole = new_exit;
         }
     
         Location holeLocation = world.getLocation(rabbitHole);

@@ -26,7 +26,7 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
         world.add(this);
         world.setTile(location, this);
 
-        this.rabbits = new ArrayList<>();
+        this.rabbits = connectedHoles.get(0).getAllRabbits();
 
         this.connectedHoles = connectedHoles;
         this.connectedHoles.add(this);
