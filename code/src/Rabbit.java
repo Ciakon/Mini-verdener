@@ -68,8 +68,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             world.delete(this);
             return;
         }
-        if (world.isNight() && this.canBreed && !this.hasBreed && energy > 30) {
-            findBreedingPartner(world);
+        if (world.isNight() && this.canBreed && !this.hasBreed && energy > 30 &&this.isInsideRabbithole) {
+            this.findBreedingPartner(world);
+            System.out.println("pancakes");
         }
 
         if (isInsideRabbithole) {
@@ -122,7 +123,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void nightCheck(World world) {
         if (world.isNight() && this.dailyEventTriggered) {
             this.energy -= energyLoss;
-            if (this.energy <= 0 && isImmortal == false) {
+            if (this.energy <= 0 && !isImmortal) {
                 isAlive = false;
             }
             this.dailyEventTriggered = false;
@@ -136,11 +137,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public void grow() {
         this.age++;
-        if (this.age == 6) {
+        if (this.age >= 6 && !canBreed) {
             this.imageKey = "rabbit-large";
             this.visionRange = 2;
             this.canBreed = true;
-            this.maxEnergy = 100;
+            this.maxEnergy = 150;
             this.energyLoss = 50;
         }
     }
@@ -168,14 +169,14 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param world world which the rabbit is in
      */
     public void findBreedingPartner(World world) {
-        if (world.getLocation(this) == world.getLocation(this.rabbitHole)) {
-            ArrayList rabbitList = this.rabbitHole.getAllRabbits();
-            for (Object object : rabbitList) {
-                if (object instanceof Rabbit rabbit) {
-                    if (rabbit != this && rabbit.canBreed && !rabbit.hasBreed && world.getLocation(rabbit) == world.getLocation(rabbit.rabbitHole) && energy > 30) {
-                        this.breed(world, rabbit);
-                    }
-                }
+        ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
+        System.out.println(rabbitList);
+        for (Rabbit rabbit : rabbitList) {
+
+
+            if (rabbit != this && rabbit.canBreed && !rabbit.hasBreed && rabbit.isInsideRabbithole && rabbit.energy > 30) {
+                System.out.println("sponge cakes");
+                this.breed(world, rabbit);
             }
         }
     }
@@ -210,7 +211,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         if (world.isDay() && !this.dailyEventTriggered) {
             grow();
             // this.hasEaten = false;
-            this.energy = 0; // TODO don't reset all energy
+            this.energy -= energyLoss; // TODO don't reset all energy
             this.dailyEventTriggered = true;
 
             isSleeping = false;
