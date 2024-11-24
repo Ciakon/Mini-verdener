@@ -24,7 +24,7 @@ jobs:
       # Step 3: Generate Javadocs
       - name: Generate Javadocs
         run: |
-          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src ./code/src/*.java -classpath ./code/lib/junit-platform-console-standalone-1.11.3.jar
+          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src ./code/src/*.java
 
       # Step 4: Publish Javadocs to GitHub Pages (optional)
       - name: Deploy to GitHub Pages
