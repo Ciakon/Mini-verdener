@@ -5,6 +5,12 @@ import itumulator.executable.Program;
 
 class Main {
 
+    
+    /** 
+     * Runs simulation.
+     * 
+     * @param args L, does nothing
+     */
     public static void main(String[] args) {
         try {
             Program program = Functions.createSimulation("gaming");
