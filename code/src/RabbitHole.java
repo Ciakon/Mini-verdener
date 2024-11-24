@@ -83,6 +83,6 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
     }
 
     public DisplayInformation getInformation() {
-        return new DisplayInformation(Color.green, "hole");
+        return new DisplayInformation(Color.black, "hole");
     }
 }

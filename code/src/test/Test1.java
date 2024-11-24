@@ -1,19 +1,16 @@
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Test1 {
 
@@ -46,6 +43,85 @@ public class Test1 {
 
         assertEquals(expected_grass_count, grass_count);
     }
+
+    @Test
+    public void t1_1b() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-1b");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // check if grass spawns
+        World world = program.getWorld();
+
+        int grass_count = 1;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Grass) {
+                grass_count++;
+            }
+        }
+
+        // Simulate so it can grow
+        for (int i = 0; i < 100; i++) {
+            program.simulate();
+        }
+
+        // count the grass growing
+        int finalGrassCount = 0;
+        entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Grass) {
+                finalGrassCount++;
+            }
+        }
+
+        assertTrue(finalGrassCount > grass_count);
+    }
+
+
+    @Test
+    public void t1_1c() {
+        Program program = null;
+        try {
+            program = Functions.createSimulation("t1-1c");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        World world = program.getWorld();
+
+        // Find grass and rabbit
+        Grass grass = null;
+        Rabbit rabbit = null;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Grass && grass == null) {
+                grass = (Grass) entity;
+            }
+            if (entity instanceof Rabbit && rabbit == null) {
+                rabbit = (Rabbit) entity;
+            }
+        }
+
+        //check if grass and rabbit is there then put the rabbit on the grass
+        assertNotNull(grass);
+        assertNotNull(rabbit);
+
+        Location initialGrassLocation = world.getLocation(grass);
+
+        world.move(rabbit,world.getLocation(grass));
+
+        assertEquals(initialGrassLocation, world.getLocation(grass));
+        assertEquals(initialGrassLocation, world.getLocation(rabbit));
+
+    }
+
+
 
     /**
      * Tests if rabbits properly spawn from input file.
@@ -294,8 +370,45 @@ public class Test1 {
 
         assertEquals(expected_hole_count, hole_count);
     }
-    
 
+
+    @Test
+    public void t1_3b() {
+        Program program = null;
+        try {
+            program = Functions.createSimulation("t1-3b");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        World world = program.getWorld();
+
+        // Find grass and rabbit
+        RabbitHole hole = null;
+        Rabbit rabbit = null;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof RabbitHole && hole == null) {
+                hole = (RabbitHole) entity;
+            }
+            if (entity instanceof Rabbit && rabbit == null) {
+                rabbit = (Rabbit) entity;
+            }
+        }
+
+        //check if grass and rabbit is there then put the rabbit on the grass
+        assertNotNull(hole);
+        assertNotNull(rabbit);
+
+        Location initialGrassLocation = world.getLocation(hole);
+        world.move(rabbit,world.getLocation(hole));
+
+        assertEquals(initialGrassLocation, world.getLocation(hole));
+        assertEquals(initialGrassLocation, world.getLocation(rabbit));
+
+    }
+
+    // TODO move to functions file instead of duplicating.
     /**
      * Tests if rabbits can dig new exits in their tunnel.
      */
