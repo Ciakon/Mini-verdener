@@ -21,14 +21,19 @@ jobs:
           java-version: '23'  # Replace with your Java version (e.g., 11, 17)
           distribution: 'temurin'
 
-      # Step 3: Generate Javadocs
+      # Step 3: Ensure the directory exists and list the content
+      - name: Check if directory exists
+        run: |
+          echo "Checking if the miniverdener_docs directory exists"
+          ls -la ./code
+
+      # Step 4: Generate Javadocs
       - name: Generate Javadocs
         run: |
+          echo "Running Javadoc command..."
           javadoc -d ./code/miniverdener_docs -sourcepath ./code/src ./code/src/*.java
 
-      # Step 4: Publish Javadocs to GitHub Pages (optional)
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./code/miniverdener_docs
+      # Debugging step: List generated Javadoc folder contents after generation
+      - name: List generated Javadoc folder contents
+        run: |
+          echo "Listing contents of the generate
