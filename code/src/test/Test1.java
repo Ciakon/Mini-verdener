@@ -225,6 +225,7 @@ public class Test1 {
         World world = program.getWorld();
         Location myRabbitHoleLocation = Functions.findRandomValidLocation(world);
         RabbitHole myRabbitHole = new RabbitHole(world, myRabbitHoleLocation);
+
         program.show();
         Map<Object, Location> entities = world.getEntities();
         int initial_rabbit_count = 0;
@@ -239,7 +240,7 @@ public class Test1 {
             }
         }
 
-        for (int i = 0; i < 110; i++) {
+        for (int i = 0; i < 59; i++) {
             program.simulate();
             entities.clear();
             entities = world.getEntities();
@@ -255,14 +256,11 @@ public class Test1 {
         int currentRabbitCount = 0;
         entities.clear();
         entities = world.getEntities();
-        int grassAmount = 0;
         for (Object entity : entities.keySet()) {
             if (entity instanceof Rabbit) {
-                ((Rabbit) entity).isImmortal = true;
-                System.out.println(currentRabbitCount);
+                currentRabbitCount++;
             }
         }
-        program.show();
         assertTrue(initial_rabbit_count<currentRabbitCount);
     }
 

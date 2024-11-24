@@ -71,7 +71,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
         if (world.isNight() && this.canBreed && !this.hasBreed && energy > 30 &&this.isInsideRabbithole) {
             this.findBreedingPartner(world);
-            System.out.println("pancakes");
         }
 
         if (isInsideRabbithole) {
@@ -130,9 +129,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
             this.dailyEventTriggered = false;
 
-            if (rabbitHole != null)
-                System.out.println(this.rabbitHole.getAllRabbits());
-
         }
     }
 
@@ -160,8 +156,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public void breed(World world, Rabbit rabbit) {
 
         Rabbit child = new Rabbit(world);
-        System.out.println(this.rabbitHole);
         child.rabbitHole = this.rabbitHole;
+        child.isInsideRabbithole = true;
+        child.isSleeping = true;
         child.energy = 60;
         rabbitHole.addRabbit(child);
         this.energy -= (int) (energyLoss*0.1);
@@ -177,10 +174,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public void findBreedingPartner(World world) {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
-        System.out.println(rabbitList);
         for (Rabbit rabbit : rabbitList) {
             if (rabbit != this && rabbit.canBreed && !rabbit.hasBreed && rabbit.isInsideRabbithole && rabbit.energy > 30) {
-                System.out.println("sponge cakes");
                 this.breed(world, rabbit);
                 break;
             }
@@ -361,6 +356,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param world the world in which the rabbit is located
      */
     public void moveToOrDigHole(World world) {
+        
         if (rabbitHole != null) {
             moveTowards(world, world.getLocation(rabbitHole));
             if (previousPosition.equals(world.getLocation(rabbitHole))) {
@@ -378,7 +374,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             }
         } else {
             digHole(world);
-            enterHole(world);
         }
     }
 
@@ -409,8 +404,15 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
 
         Location location = world.getLocation(this);
+
+        if (world.getNonBlocking(location) != null) {
+            return;
+        }
+
         rabbitHole = new RabbitHole(world, location);
         rabbitHole.addRabbit(this);
+
+        enterHole(world);
     }
 
     public void enterHole(World world) {
@@ -418,9 +420,11 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             throw new RuntimeException("Rabbits should only enter their own hole when standing on it");
         }
         isInsideRabbithole = true;
+
+        isSleeping = true;
         world.remove(this); // gaming time
 
-        isSleeping = true; // TODO chance based so they can dig around tunnels?
+         // TODO chance based so they can dig around tunnels?
     }
 
     public void exitHole(World world) {

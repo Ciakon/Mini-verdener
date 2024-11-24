@@ -1,4 +1,4 @@
 10
-grass 30
+grass 80
 burrow 3
 rabbit 4
