@@ -9,6 +9,12 @@ import itumulator.world.Location;
 import itumulator.world.World;
 
 public class Functions {    
+    
+    /** 
+     * @param filename
+     * @return Program
+     * @throws FileNotFoundException
+     */
     public static Program createSimulation(String filename) throws FileNotFoundException {
         Random RNG = new Random();
 
@@ -61,6 +67,7 @@ public class Functions {
         }
     }
 
+    // todo infinte loop glitch, L
     public static Location findRandomValidLocation(World world) {
         Random RNG = new Random();
         int N = world.getSize();

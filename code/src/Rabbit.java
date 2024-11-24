@@ -409,7 +409,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         isInsideRabbithole = true;
         world.remove(this); // gaming time
 
-        isSleeping = true; // TODO chance based so they can dig around tunnels.
+        isSleeping = true; // TODO chance based so they can dig around tunnels?
     }
 
     public void exitHole(World world) {
@@ -427,22 +427,4 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public int getEnergy() {
         return energy;
     }
-
-    // TODO move to "functions" file. and fix infinite loop glitch.
-    // TODO duplicate function from main file.
-    public static Location findRandomValidLocation(World world) {
-        Random RNG = new Random();
-        int N = world.getSize();
-
-        while (true) {
-            int x = RNG.nextInt(0, N);
-            int y = RNG.nextInt(0, N);
-            Location location = new Location(x, y);
-
-            if (world.getTile(location) == null) {
-                return location;
-            }
-        }
-    }
-
 }
