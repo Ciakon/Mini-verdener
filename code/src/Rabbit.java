@@ -296,7 +296,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             movementInY--;
         }
         Location movement = new Location(movementInX, movementInY);
-        world.move(this, movement);
+        if (world.isTileEmpty(movement)) {
+            world.move(this, movement);
+        }
     }
 
     /**
