@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import itumulator.executable.Program;
@@ -18,7 +17,9 @@ import itumulator.world.World;
 
 public class Test1 {
 
-    
+    /**
+     * Tests if grass properly spawns from input file.
+     */
 
     @Test
     public void t1_1a() {
@@ -45,6 +46,10 @@ public class Test1 {
 
         assertEquals(expected_grass_count, grass_count);
     }
+
+    /**
+     * Tests if rabbits properly spawn from input file.
+     */
 
     @Test
     public void t1_2a() {
@@ -103,9 +108,6 @@ public class Test1 {
         }
 
         assertTrue(current_rabbit_count < initial_rabbit_count);
-        // System.err.println(initial_rabbit_count);
-        // System.err.println(current_rabbit_count);
-        // System.out.println();
     }
 
     @Test
@@ -182,7 +184,10 @@ public class Test1 {
 
 
 
-    // TODO this test may break if digging holes requires energy in the future.
+    // TODO this test may break if digging holes requires energy in the future. might also break if rabbits don't always sleep.
+    /**
+     *  Tests if the rabbits can dig holes. Also tests if the rabbits move towards their holes at night.
+     */
     @Test
     public void t1_2fg() {
         Program program = null;
@@ -227,7 +232,6 @@ public class Test1 {
                 for (Rabbit rabbit : rabbits) {
 
                     // check if they be sleeping when in hole
-                    // TODO may break if sleeping becomes chance based.
                     if (rabbit.isInsideRabbithole) {
                         assertTrue(rabbit.isSleeping);
                         continue;
@@ -297,6 +301,10 @@ public class Test1 {
     public int calculateDistance(Location loc1, Location loc2) {
         return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
     }
+
+    /**
+     * Tests if rabbits can dig new exits in their tunnel.
+     */
 
     @Test
     public void tf1_1() {
