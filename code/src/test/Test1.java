@@ -250,7 +250,6 @@ public class Test1 {
 
                     // check if the rabbit moved closer to the hole.
                     if (rabbitLocation.equals(rabbit.previousPosition) == false) {
-                        System.out.println("gaming");
                         assertTrue(distance < previousDistance);
                     }
 
