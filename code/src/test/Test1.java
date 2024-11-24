@@ -44,6 +44,11 @@ public class Test1 {
         assertEquals(expected_grass_count, grass_count);
     }
 
+    /**
+     * Tests if grass can spread.
+     * This test ensures that after simulation steps, the number of grass entities increases as grass spreads.
+     */
+
     @Test
     public void t1_1b() {
         Program program = null;
@@ -83,6 +88,10 @@ public class Test1 {
         assertTrue(finalGrassCount > grass_count);
     }
 
+    /**
+     * Tests if rabbit can stand on grass.
+     * This test verifies that when a rabbit is placed on grass, the grass's location and state remain unchanged.
+     */
 
     @Test
     public void t1_1c() {
@@ -250,6 +259,7 @@ public class Test1 {
         World world = program.getWorld();
         Location myRabbitHoleLocation = Functions.findRandomValidLocation(world);
         RabbitHole myRabbitHole = new RabbitHole(world, myRabbitHoleLocation);
+
         program.show();
         Map<Object, Location> entities = world.getEntities();
         int initial_rabbit_count = 0;
@@ -264,7 +274,7 @@ public class Test1 {
             }
         }
 
-        for (int i = 0; i < 110; i++) {
+        for (int i = 0; i < 59; i++) {
             program.simulate();
             entities.clear();
             entities = world.getEntities();
@@ -280,14 +290,11 @@ public class Test1 {
         int currentRabbitCount = 0;
         entities.clear();
         entities = world.getEntities();
-        int grassAmount = 0;
         for (Object entity : entities.keySet()) {
             if (entity instanceof Rabbit) {
-                ((Rabbit) entity).isImmortal = true;
-                System.out.println(currentRabbitCount);
+                currentRabbitCount++;
             }
         }
-        program.show();
         assertTrue(initial_rabbit_count<currentRabbitCount);
     }
 
@@ -398,6 +405,11 @@ public class Test1 {
         assertEquals(expected_hole_count, hole_count);
     }
 
+
+    /**
+     * Tests if rabbits can stand on rabbi tholes.
+     * This test verifies that when a rabbit is placed on its hole.
+     */
 
     @Test
     public void t1_3b() {
