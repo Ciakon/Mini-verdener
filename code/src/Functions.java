@@ -98,4 +98,15 @@ public class Functions {
             }
         }
     }
+
+    /**
+     * Calculates the Manhattan distance between two locations.
+     *
+     * @param loc1 the first location
+     * @param loc2 the second location
+     * @return the Manhattan distance between loc1 and loc2
+     */
+    public static int calculateDistance(Location loc1, Location loc2) {
+        return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
+    }
 }

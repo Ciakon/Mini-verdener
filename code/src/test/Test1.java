@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import itumulator.executable.Program;
@@ -18,7 +17,9 @@ import itumulator.world.World;
 
 public class Test1 {
 
-    
+    /**
+     * Tests if grass properly spawns from input file.
+     */
 
     @Test
     public void t1_1a() {
@@ -45,6 +46,10 @@ public class Test1 {
 
         assertEquals(expected_grass_count, grass_count);
     }
+
+    /**
+     * Tests if rabbits properly spawn from input file.
+     */
 
     @Test
     public void t1_2a() {
@@ -103,9 +108,6 @@ public class Test1 {
         }
 
         assertTrue(current_rabbit_count < initial_rabbit_count);
-        // System.err.println(initial_rabbit_count);
-        // System.err.println(current_rabbit_count);
-        // System.out.println();
     }
 
     @Test
@@ -188,7 +190,10 @@ public class Test1 {
 
 
 
-    // TODO this test may break if digging holes requires energy in the future.
+    // TODO this test may break if digging holes requires energy in the future. might also break if rabbits don't always sleep.
+    /**
+     *  Tests if the rabbits can dig holes. Also tests if the rabbits move towards their holes at night.
+     */
     @Test
     public void t1_2fg() {
         Program program = null;
@@ -233,7 +238,6 @@ public class Test1 {
                 for (Rabbit rabbit : rabbits) {
 
                     // check if they be sleeping when in hole
-                    // TODO may break if sleeping becomes chance based.
                     if (rabbit.isInsideRabbithole) {
                         assertTrue(rabbit.isSleeping);
                         continue;
@@ -247,12 +251,11 @@ public class Test1 {
                         continue;
                     }
 
-                    int distance = calculateDistance(rabbitLocation, holeLocation);
-                    int previousDistance = calculateDistance(rabbit.previousPosition, holeLocation);
+                    int distance = Functions.calculateDistance(rabbitLocation, holeLocation);
+                    int previousDistance = Functions.calculateDistance(rabbit.previousPosition, holeLocation);
 
                     // check if the rabbit moved closer to the hole.
                     if (rabbitLocation.equals(rabbit.previousPosition) == false) {
-                        System.out.println("gaming");
                         assertTrue(distance < previousDistance);
                     }
 
@@ -291,18 +294,11 @@ public class Test1 {
 
         assertEquals(expected_hole_count, hole_count);
     }
+    
 
-    // TODO move to functions file instead of duplicating.
     /**
-     * Calculates the Manhattan distance between two locations.
-     *
-     * @param loc1 the first location
-     * @param loc2 the second location
-     * @return the Manhattan distance between loc1 and loc2
+     * Tests if rabbits can dig new exits in their tunnel.
      */
-    public int calculateDistance(Location loc1, Location loc2) {
-        return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
-    }
 
     @Test
     public void tf1_1() {
