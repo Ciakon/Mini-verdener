@@ -10,33 +10,72 @@ import java.util.ArrayList;
 
 public class RabbitHole implements Actor, DynamicDisplayInformationProvider, NonBlocking {
 
-    private ArrayList<Rabbit> rabbits;
+    ArrayList<Rabbit> rabbits;
+    ArrayList<RabbitHole> connectedHoles; // includes itself.
 
     public RabbitHole(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
 
         this.rabbits = new ArrayList<>();
+        this.connectedHoles = new ArrayList<>();
+        this.connectedHoles.add(this);
+    }
+
+    public RabbitHole(World world, Location location, ArrayList<RabbitHole> connectedHoles) {
+        world.add(this);
+        world.setTile(location, this);
+
+        this.rabbits = new ArrayList<>();
+
+        this.connectedHoles = connectedHoles;
+        this.connectedHoles.add(this);
     }
 
     /**
-     * Hassan er gay
+     * Adds a rabbit to the rabbithole.
      * 
-     * @param rabbit 
+     * @param rabbit The rabbit object.
      */
     public void addRabbit(Rabbit rabbit) {
         rabbits.add(rabbit);
     }
 
     /**
-     * @param rabbit
+     * Removes a rabbit from the rabbithole.
+     * 
+     * @param rabbit The rabbit object.
      */
     public void removeRabbit(Rabbit rabbit) {
         rabbits.remove(rabbit);
     }
 
-    public ArrayList getAllRabbits() {
+    /**
+     * Connect another hole to the current rabbithole and alle connected rabbit holes.
+     * @param new_hole The hole to connect.
+     */
+
+    public void addHole(RabbitHole new_hole) {
+        this.connectedHoles.add(new_hole);
+    }
+
+    /**
+     * Gets all rabbits connected to the rabbithole
+     * 
+     * @return list of rabbits.
+     */
+
+    public ArrayList<Rabbit> getAllRabbits() {
         return this.rabbits;
+    }
+
+    /**
+     * Gets all connected holes
+     * @return connected holes.
+     */
+
+    public ArrayList<RabbitHole> getAllConnectedHoles() {
+        return this.connectedHoles;
     }
 
     public void act(World world) {

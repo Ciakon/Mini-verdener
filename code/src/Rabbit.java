@@ -23,6 +23,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     int energy;
     int maxEnergy;
     int energyLoss = 50; 
+    double digNewExitChance = 0.2;
 
     boolean isAlive = true;
     boolean isSleeping = false;
@@ -112,6 +113,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                 isAlive = false;
             }
             this.dailyEventTriggered = false;
+
         }
     }
 
@@ -413,10 +415,23 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     public void exitHole(World world) {
+        Random random = new Random();
+        ArrayList<RabbitHole> exits = rabbitHole.getAllConnectedHoles();
+
         if (isInsideRabbithole == false) {
             throw new RuntimeException("nah");
         }
-        
+        else if (random.nextDouble() < digNewExitChance) {
+            Location l = Functions.findRandomValidLocation(world);
+            RabbitHole new_exit = new RabbitHole(world, l, exits);
+            rabbitHole = new_exit;
+        }
+        else {
+        // choose a random connected hole in the tunnel. That is now the new and only entrance (dementia moment).
+            int hole_nr = random.nextInt(exits.size());
+            rabbitHole = exits.get(hole_nr);
+        }
+    
         Location holeLocation = world.getLocation(rabbitHole);
         if (world.isTileEmpty(holeLocation)) {
             isInsideRabbithole = false;
