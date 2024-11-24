@@ -70,13 +70,13 @@ public class Test1 {
         assertEquals(expected_rabbit_count, rabbit_count);
     }
 
-    //@Test
-    public static void t1_2b() {
+    @Test
+    public void t1_2b() {
         Program program = null;
 
         // load input file.
         try {
-            program = Functions.createSimulation("t1-2fg");
+            program = Functions.createSimulation("t1-2cde");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -99,21 +99,24 @@ public class Test1 {
                 current_rabbit_count++;
             }
         }
-        System.err.println(initial_rabbit_count);
-        System.err.println(current_rabbit_count);
-        System.out.println(current_rabbit_count < initial_rabbit_count);
+
+        assertTrue(current_rabbit_count < initial_rabbit_count);
+        // System.err.println(initial_rabbit_count);
+        // System.err.println(current_rabbit_count);
+        // System.out.println();
     }
 
-    //@Test
-    public static void t1_2c() {
+    @Test
+    public void t1_2c() {
         Program program = null;
 
         // load input file.
         try {
-            program = Functions.createSimulation("t1-c1");
+            program = Functions.createSimulation("t1-2cde");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
         World world = program.getWorld();
         int initial_rabbit_count = 0;
         Map<Object, Location> entities = world.getEntities();
@@ -134,7 +137,7 @@ public class Test1 {
             }
         }
 
-        System.out.println(current_rabbit_count == initial_rabbit_count);
+        assertTrue(current_rabbit_count == initial_rabbit_count);
     }
 
     // TODO this test may break if digging holes requires energy in the future.
