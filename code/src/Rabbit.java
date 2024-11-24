@@ -26,8 +26,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
     boolean isAlive = true;
     boolean isSleeping = false;
-    Location previousPosition; // used when inside a rabbithole.
-    boolean isInsideRabbithole = false;
+    public Location previousPosition; // used when inside a rabbithole.
+    public boolean isInsideRabbithole = false;
 
     public boolean isImmortal = false; // make rabbits immortal for some tests.
 
@@ -39,7 +39,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         // this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
-        this.visionRange = 10;
+        this.visionRange = 3;
         this.canBreed = false;
         this.dailyEventTriggered = false;
         this.previousPosition = world.getCurrentLocation();

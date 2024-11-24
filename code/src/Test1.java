@@ -1,11 +1,14 @@
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -67,6 +70,7 @@ public class Test1 {
         assertEquals(true_rabbit_count, rabbit_count);
     }
 
+    // TODO this test may break if digging holes requires energy in the future.
     @Test
     public void t1_2fg() {
         Program program = null;
@@ -79,48 +83,72 @@ public class Test1 {
         }
 
         World world = program.getWorld();
-        int rabbithole_count = 0;
 
         ArrayList<Rabbit> rabbits = new ArrayList<>();
         ArrayList<RabbitHole> rabbitholes = new ArrayList<>();        
 
-        // simulate 100 steps
+        // simulate 30 steps
         for (int i = 0; i < 100; i++) {
 
+            // here we find all rabbits and rabbitholes.
             Map<Object, Location> entities = world.getEntities();
             for (Object entity : entities.keySet()) {
                 if (entity instanceof Rabbit) {
                     rabbits.add((Rabbit) entity);
-                    ((Rabbit) entity).isImmortal = true;
+                    ((Rabbit) entity).isImmortal = true; // since rabbits die without food, we simply remove their mortality.
                 }
                 if (entity instanceof RabbitHole) {
                     rabbitholes.add((RabbitHole) entity);
                 }
             }
 
-            // since rabbits die without food, we simply remove their mortality.
-            for (Rabbit rabbit : rabbits) {
-                System.out.println("Energy " + rabbit.getEnergy());
+            // for the firt day, there should be no rabbitholes
+            if (i < 10) { 
+                assertEquals(0, rabbitholes.size());
             }
+            // after that, there should be at least one rabbithole.
+            else {
+                assertTrue(rabbitholes.size() > 0);
+            }            
 
+            // Check if rabbits go towards their holes at night
+            if (world.isNight()) {
+                for (Rabbit rabbit : rabbits) {
+                    if (rabbit.isInsideRabbithole) continue;
+                    if (rabbit.rabbitHole == null) continue;
+
+                    Location rabbitLocation = world.getLocation(rabbit);
+                    Location holeLocation = world.getLocation(rabbit.rabbitHole);
+
+                    if (rabbitLocation.equals(holeLocation)) continue;
+
+                    int distance = calculateDistance(rabbitLocation, holeLocation);
+                    int previousDistance = calculateDistance(rabbit.previousPosition, holeLocation);
+
+                    // check if the rabbit moved closer to the hole.
+                    if (rabbitLocation.equals(rabbit.previousPosition) == false) {
+                        System.out.println("gaming");
+                        assertTrue(distance < previousDistance);
+                    }
+                    
+                }
+            }
             
-            // System.out.println(world.getEntities().keySet().size());
-
-
-            // if (world.isNight()) {
-            //     rabbithole_count = 0;
-            //         if (entity instanceof RabbitHole) {
-            //             rabbithole_count++;
-
-            // }
-
-
-
-            
-
             program.simulate();
         }
         
 
+    }
+
+    // TODO move to functions file instead of duplicating.
+    /**
+     * Calculates the Manhattan distance between two locations.
+     *
+     * @param loc1 the first location
+     * @param loc2 the second location
+     * @return the Manhattan distance between loc1 and loc2
+     */
+    public int calculateDistance(Location loc1, Location loc2) {
+        return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
     }
 }
