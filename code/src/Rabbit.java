@@ -28,12 +28,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public Rabbit(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
-        this.maxEnergy = 120;
+        this.maxEnergy = 150;
         this.energy = 0;
         // this.hasEaten = false;
         this.age = 0;
         this.imageKey = "rabbit-small";
-        this.visionRange = 3;
+        this.visionRange = 4;
         this.canBreed = false;
         this.dailyEventTriggered = false;
     }
@@ -77,8 +77,8 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             if (this.energy < 0) {
                 isAlive = false;
             }
+            this.dailyEventTriggered = false;
         }
-        this.dailyEventTriggered = false;
     }
 
     /**
@@ -138,6 +138,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      */
     public void eatIfOnGrass(World world) {
         Location closetgrass = this.closetGrass(world);
+        System.out.println("closets grass:" + closetgrass);
         if (closetgrass == world.getLocation(this)) {
             if (world.getNonBlocking(closetgrass) instanceof Grass grass) {
                 this.energy += grass.getNutritionalValue();
@@ -145,6 +146,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                     this.energy = maxEnergy;
                 }
                 world.delete(grass);
+                System.out.println("eating grass");
                 // this.hasEaten = true;
             }
         }
@@ -167,20 +169,6 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     *
-     * @param world
-     * @return returns the closet grass to the Rabbit
-     */
-    public Location closetGrass(World world) {
-        ArrayList<Location> nearbyGrass = findGrass(world);
-        Location closetGrass = null;
-        if (!nearbyGrass.isEmpty()) {
-            closetGrass = nearestGrass(world, nearbyGrass);
-        }
-        return closetGrass;
-    }
-
-    /**
      * Moves rabbit in direction of grass if seen otherwise in a random
      * direction
      *
@@ -192,8 +180,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
             ArrayList<Location> nearbyGrass = findGrass(world);
             if (!nearbyGrass.isEmpty()) {
 
-                Location desiredGrass = nearestGrass(world, nearbyGrass);
+                Location desiredGrass = nearestObject(world, nearbyGrass);
                 moveTowards(world, desiredGrass);
+                System.out.println("moving towards grass");
                 this.energy -= 2;
             } else {
 
@@ -202,9 +191,24 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                 if (freeLocations != null) {
                     world.move(this, nextLocation);
                     this.energy -= 2;
+                    System.out.println("moving randomly");
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param world
+     * @return returns the closet grass to the Rabbit
+     */
+    public Location closetGrass(World world) {
+        ArrayList<Location> nearbyGrass = findGrass(world);
+        Location closetGrass = null;
+        if (!nearbyGrass.isEmpty()) {
+            closetGrass = nearestObject(world, nearbyGrass);
+        }
+        return closetGrass;
     }
 
     /**
@@ -216,9 +220,13 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     public ArrayList<Location> findGrass(World world) {
         ArrayList<Location> nearbyGrass = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+        Location here = world.getLocation(this);
+        if (world.containsNonBlocking(here) && world.getNonBlocking(here) instanceof Grass) {
+            nearbyGrass.add(world.getLocation(this));
+        }
         for (Location location : surroundings) {
-            if (!world.isTileEmpty(location)) {
-                if (world.getTile(location) instanceof Grass) { //will not be seen if any blocking object is currently on the tile
+            if (world.containsNonBlocking(location) && world.isTileEmpty(location)) {
+                if (world.getNonBlocking(location) instanceof Grass) {
                     nearbyGrass.add(location);
                 }
             }
@@ -227,27 +235,17 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Finds nearest grass that is unoccupied
+     * Finds nearest item in given ArrayList
      *
      * @param world world which the rabbit is in
-     * @param Arraylist Arraylist of all grass locations seen nearby
+     * @param Arraylist Arraylist of all object locations seen nearby
+     * @return returns location of the closest object
      */
-    public Location nearestGrass(World world, ArrayList<Location> grass) {
-        Location closest = grass.get(0);
-        int highestValue;
-        if (closest.getX() > closest.getY()) {
-            highestValue = closest.getX();
-        } else {
-            highestValue = closest.getY();
-        }
-        for (Location location : grass) {
-            if (location.getX() < highestValue && location.getY() < highestValue) {
+    public Location nearestObject(World world, ArrayList<Location> object) {
+        Location closest = object.get(0);
+        for (Location location : object) {
+            if (calculateDistance(world.getLocation(this), location) < calculateDistance(world.getLocation(this), closest)) {
                 closest = location;
-                if (location.getX() > location.getY()) {
-                    highestValue = location.getX();
-                } else {
-                    highestValue = location.getY();
-                }
             }
         }
         return closest;

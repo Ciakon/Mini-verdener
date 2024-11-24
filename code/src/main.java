@@ -1,10 +1,13 @@
+
 import java.io.FileNotFoundException;
 
 import itumulator.executable.Program;
-class Main{
+
+class Main {
+
     public static void main(String[] args) {
         try {
-            Program program = Functions.createSimulation("t1-1a");
+            Program program = Functions.createSimulation("t1-2cde");
             program.show();
             program.run();
         } catch (FileNotFoundException e) {
