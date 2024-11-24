@@ -24,6 +24,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     int maxEnergy;
 
     boolean isAlive = true;
+    boolean isSleeping = false;
 
     public Rabbit(World world, Location location) {
         world.add(this);
@@ -55,6 +56,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                 moveToOrDigHole(world);
             } else {
                 moveTowards(world, world.getLocation(rabbitHole));
+                if (world.getLocation(this).equals(world.getLocation(rabbitHole))) {
+                    isSleeping = true;
+                }
             }
             return;
         }
@@ -63,6 +67,24 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
     @Override
     public DisplayInformation getInformation() {
+        // TODO vi skal nok ramme en variabel til "rabbit-large" i stedet for image key"
+        if (isSleeping) {
+            if (imageKey == "rabbit-small") {
+                imageKey = "rabbit-small-sleeping";
+            }
+            else if (imageKey == "rabbit-large") {
+                imageKey = "rabbit-sleeping";
+            }
+        }
+        else {
+            if (imageKey == "rabbit-small-sleeping") {
+                imageKey = "rabbit-small";
+            }
+            else if (imageKey == "rabbit-sleeping") {
+                imageKey = "rabbit-large";
+            }
+        }
+
         return new DisplayInformation(Color.blue, this.imageKey);
     }
 
@@ -163,8 +185,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         if (world.isDay() && !this.dailyEventTriggered) {
             grow();
             // this.hasEaten = false;
-            this.energy = 0;
+            this.energy = 0; // TODO don't reset all energy
             this.dailyEventTriggered = true;
+            isSleeping = false;
         }
     }
 
