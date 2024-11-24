@@ -20,7 +20,7 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
     }
 
     /**
-     * @param rabbit
+     * @param rabbit Hassan er gay
      */
     public void addRabbit(Rabbit rabbit) {
         rabbits.add(rabbit);
