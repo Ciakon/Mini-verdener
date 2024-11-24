@@ -7,7 +7,7 @@ class Main {
 
     public static void main(String[] args) {
         try {
-            Program program = Functions.createSimulation("t1-2fg");
+            Program program = Functions.createSimulation("gaming");
             program.show();
             program.run();
         } catch (FileNotFoundException e) {

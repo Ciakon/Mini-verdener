@@ -59,7 +59,7 @@ public class Functions {
      * 
      * @param world The world where the actors spawn.
      * @param actor_name The name of the actor in the text file.
-     * @return Actor The actor object. 
+     * @return The actor object. 
      */
     public static Actor createActor(World world, String actor_name) {
         Location location = findRandomValidLocation(world);
