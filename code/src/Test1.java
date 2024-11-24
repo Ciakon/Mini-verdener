@@ -70,9 +70,8 @@ public class Test1 {
         assertEquals(expected_rabbit_count, rabbit_count);
     }
 
-    // TODO this test may break if digging holes requires energy in the future.
-    @Test
-    public void t1_2fg() {
+    //@Test
+    public static void k1_2b() {
         Program program = null;
 
         // load input file.
@@ -81,11 +80,70 @@ public class Test1 {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        World world = program.getWorld();
+        int initial_rabbit_count = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                initial_rabbit_count++;
+            }
+        }
+        for (int i = 0; i < 10; i++) { //simulate till night
+            program.simulate();
+        }
+        entities.clear();
+        entities = world.getEntities(); //update HashMap
+        int current_rabbit_count = 0;
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                current_rabbit_count++;
+            }
+        }
+        System.err.println(initial_rabbit_count);
+        System.err.println(current_rabbit_count);
+        System.out.println(current_rabbit_count < initial_rabbit_count);
+    }
 
+    //@Test
+    public static void k1_2c() {
+        Program program = null;
+
+        // load input file.
+        try {
+            program = Functions.createSimulation("t1-c1");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        World world = program.getWorld();
+        int initial_rabbit_count = 0;
+        Map<Object, Location> entities = world.getEntities();
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                initial_rabbit_count++;
+            }
+        }
+        for (int i = 0; i < 20; i++) {
+            program.simulate();
+        }
+        entities.clear();
+        entities = world.getEntities(); //update HashMap
+        int current_rabbit_count = 0;
+        for (Object entity : entities.keySet()) {
+            if (entity instanceof Rabbit) {
+                current_rabbit_count++;
+            }
+        }
+
+        System.out.println(current_rabbit_count == initial_rabbit_count);
+    }
+
+    // TODO this test may break if digging holes requires energy in the future.
+    @Test
+    public void t1_2fg() {
         World world = program.getWorld();
 
         ArrayList<Rabbit> rabbits = new ArrayList<>();
-        ArrayList<RabbitHole> rabbitholes = new ArrayList<>();        
+        ArrayList<RabbitHole> rabbitholes = new ArrayList<>();
 
         // simulate 30 steps
         for (int i = 0; i < 100; i++) {
@@ -103,13 +161,12 @@ public class Test1 {
             }
 
             // for the firt day, there should be no rabbitholes
-            if (i < 10) { 
+            if (i < 10) {
                 assertEquals(0, rabbitholes.size());
-            }
-            // after that, there should be at least one rabbithole.
+            } // after that, there should be at least one rabbithole.
             else {
                 assertTrue(rabbitholes.size() > 0);
-            }            
+            }
 
             // Check if rabbits go towards their holes at night
             if (world.isNight()) {
@@ -126,7 +183,9 @@ public class Test1 {
                     Location rabbitLocation = world.getLocation(rabbit);
                     Location holeLocation = world.getLocation(rabbit.rabbitHole);
 
-                    if (rabbitLocation.equals(holeLocation)) continue;
+                    if (rabbitLocation.equals(holeLocation)) {
+                        continue;
+                    }
 
                     int distance = calculateDistance(rabbitLocation, holeLocation);
                     int previousDistance = calculateDistance(rabbit.previousPosition, holeLocation);
@@ -136,10 +195,10 @@ public class Test1 {
                         System.out.println("gaming");
                         assertTrue(distance < previousDistance);
                     }
-                    
+
                 }
             }
-            
+
             program.simulate();
         }
         
