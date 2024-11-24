@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
@@ -154,7 +155,7 @@ public class Test1 {
         ArrayList<Rabbit> rabbits = new ArrayList<>();
         ArrayList<RabbitHole> rabbitholes = new ArrayList<>();
 
-        // simulate 30 steps
+        // simulate 100 steps
         for (int i = 0; i < 100; i++) {
 
             // here we find all rabbits and rabbitholes.
@@ -251,5 +252,65 @@ public class Test1 {
      */
     public int calculateDistance(Location loc1, Location loc2) {
         return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
+    }
+
+    @Test
+    public void tf1_1() {
+        Program program = null;
+        // load input file.
+        try {
+            program = Functions.createSimulation("tf1-1");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        World world = program.getWorld();
+
+        ArrayList<Rabbit> rabbits = new ArrayList<>();
+        ArrayList<RabbitHole> rabbitholes = new ArrayList<>();
+
+        Map<Rabbit, RabbitHole> holeOwners = new HashMap<>();
+
+
+        int newExitsCount = 0;
+        // simulate 100 steps
+        for (int i = 0; i < 100; i++) {
+
+            // here we find all rabbits and rabbitholes.
+            Map<Object, Location> entities = world.getEntities();
+            for (Object entity : entities.keySet()) {
+                if (entity instanceof Rabbit) {
+                    rabbits.add((Rabbit) entity);
+                    ((Rabbit) entity).isImmortal = true; // since rabbits die without food, we simply remove their mortality.
+                }
+                if (entity instanceof RabbitHole) {
+                    rabbitholes.add((RabbitHole) entity);
+                }
+            }
+
+            // map each rabbit to their hole right before day.
+            if (world.getCurrentTime() == 19) {
+                for (Rabbit rabbit : rabbits) {
+                    holeOwners.put(rabbit, rabbit.rabbitHole);
+                }
+            }
+            
+            // when they exit at day, check if they exited at a new hole.
+            if (world.getCurrentTime() == 0) {
+                for (Rabbit rabbit : rabbits) {
+                    if (rabbit.rabbitHole == null) continue;
+
+                    if (rabbit.rabbitHole.equals(holeOwners.get(rabbit)) == false) {
+                        newExitsCount++;
+                        assertTrue(rabbit.rabbitHole.connectedHoles.contains(holeOwners.get(rabbit)));
+                    }
+                }
+            }
+
+            program.simulate();
+        }
+
+        // There is high probability that at least one rabbit dug a new hole at night.
+        assertTrue(newExitsCount > 0);
     }
 }

@@ -113,6 +113,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
                 isAlive = false;
             }
             this.dailyEventTriggered = false;
+
         }
     }
 
