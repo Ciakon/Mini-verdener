@@ -200,7 +200,7 @@ public class Test1 {
         int young_rabbit_energy = 0;
         int old_rabbit_energy = 0;
         Program program = null;
-        for(int i =0;i<2;i++) {
+        for(int i =0;i<20;i++) {
             // load input file.
             try {
                 program = Functions.createSimulation("t1-2cde");
@@ -221,7 +221,7 @@ public class Test1 {
                 }
             }
         }
-        for(int i =0;i<2;i++) {
+        for(int i =0;i<20;i++) {
             try {
                 program = Functions.createSimulation("t1-2cde");
             } catch (FileNotFoundException e) {
@@ -260,7 +260,6 @@ public class Test1 {
         Location myRabbitHoleLocation = Functions.findRandomValidLocation(world);
         RabbitHole myRabbitHole = new RabbitHole(world, myRabbitHoleLocation);
 
-        program.show();
         Map<Object, Location> entities = world.getEntities();
         int initial_rabbit_count = 0;
         for (Object entity : entities.keySet()) {

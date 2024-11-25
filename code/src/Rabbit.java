@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Function;
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 
@@ -212,7 +211,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         if (world.isDay() && !this.dailyEventTriggered) {
             grow();
             // this.hasEaten = false;
-            this.energy -= energyLoss; // TODO don't reset all energy
+            this.energy -= energyLoss;
             this.dailyEventTriggered = true;
 
             isSleeping = false;
