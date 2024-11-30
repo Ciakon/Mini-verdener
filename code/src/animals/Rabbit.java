@@ -17,11 +17,11 @@ import java.util.Set;
 import animals.nests.RabbitHole;
 
 
-public class Rabbit extends Animal { 
-    this.visionRange = 3;
-    this.maxEnergy = 200;
-    this.energy = 100;
-    this.energyLoss = 1;
+public class Rabbit extends Animal {
+    int visionRange = 3;
+    int maxEnergy = 200;
+    int energy = 100;
+    int energyLoss = 1;
 
     double digNewExitChance = 0.2;
     boolean isInsideRabbithole;
@@ -36,28 +36,12 @@ public class Rabbit extends Animal {
     int nutritionalValueAdult = 50;
     int nutritionalValueBaby = 20;
 
-    /**
-     * Used when spawning a rabbit outside the rabbitholes
-     * 
-     * @param world
-     * @param isAdult
-     * @param location
-     */
-
     public Rabbit(World world, boolean isAdult, Location location) {
         super(world, false);
 
         this.isInsideRabbithole = false;
         world.setTile(location, this);
     }
-
-    /**
-     * Used when spawning a rabbit inside a rabbithole
-     * 
-     * @param world
-     * @param isAdult
-     * @param rabbitHole
-     */
 
     public Rabbit(World world, boolean isAdult, RabbitHole rabbitHole) {
         super(world, false);
