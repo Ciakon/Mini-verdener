@@ -6,6 +6,7 @@ import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 import plants.Grass;
+import utils.Functions;
 
 import java.awt.Color;
 import java.util.ArrayList;
