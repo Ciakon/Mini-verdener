@@ -96,7 +96,6 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
                 imageKey = imageKeyBaby;
             }
         }
-
         return new DisplayInformation(color, imageKey);
     }
 

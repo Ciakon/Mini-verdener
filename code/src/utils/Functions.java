@@ -75,7 +75,7 @@ public class Functions {
             case "grass":
                 return new Grass(world, location);
             case "rabbit":
-                return new Rabbit(world, location);
+                return new Rabbit(world, false, location);
             case "burrow":
                 return new RabbitHole(world, location);
             default:

@@ -18,29 +18,37 @@ import animals.nests.RabbitHole;
 
 
 public class Rabbit extends Animal {
-    int visionRange = 3;
-    int maxEnergy = 200;
-    int energy = 100;
-    int energyLoss = 1;
-
     double digNewExitChance = 0.2;
     boolean isInsideRabbithole;
     RabbitHole rabbitHole;
 
-    String imageKeyBaby = "rabbit-small";
-    String imageKeyAdult = "rabbit-large";
-    String imageKeySleepingBaby = "rabbit-small-sleeping";
-    String imageKeySleepingAdult = "rabbit-sleeping";
     Color color = Color.gray;
 
-    int nutritionalValueAdult = 50;
-    int nutritionalValueBaby = 20;
+    /**
+     * British method jumpscare
+     */
+    void rabbitInit() {
+        imageKeyBaby = "rabbit-small";
+        imageKeyAdult = "rabbit-large";
+        imageKeySleepingBaby = "rabbit-small-sleeping";
+        imageKeySleepingAdult = "rabbit-sleeping";
+
+        visionRange = 3;
+        maxEnergy = 201;
+        energy = 100;
+        energyLoss = 1;
+
+        nutritionalValueAdult = 50;
+        nutritionalValueBaby = 20;
+        }
 
     public Rabbit(World world, boolean isAdult, Location location) {
         super(world, false);
 
         this.isInsideRabbithole = false;
         world.setTile(location, this);
+
+        rabbitInit();
     }
 
     public Rabbit(World world, boolean isAdult, RabbitHole rabbitHole) {
@@ -50,6 +58,8 @@ public class Rabbit extends Animal {
         this.rabbitHole = rabbitHole;
         this.isSleeping = true;
         rabbitHole.addRabbit(this);
+
+        rabbitInit();
     }
 
     void generalAI() {
