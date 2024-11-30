@@ -1,3 +1,4 @@
+package plants;
 
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;

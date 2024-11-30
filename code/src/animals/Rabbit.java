@@ -1,13 +1,21 @@
+package animals;
+
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.Grass;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+
+import animals.nests.RabbitHole;
+
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
 

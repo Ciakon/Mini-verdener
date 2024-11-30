@@ -1,12 +1,19 @@
+package utils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
+import animals.Rabbit;
+import animals.nests.RabbitHole;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.Grass;
+
+
 
 public class Functions {    
     /** 
