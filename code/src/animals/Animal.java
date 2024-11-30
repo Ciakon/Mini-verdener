@@ -126,7 +126,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
-    abstract Animal breed(Animal partner);
+    abstract void breed(Animal partner);
     // here is an example of breeding
 
     // Animal breed(Animal partner) {
@@ -137,7 +137,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     //     return child;
     // }
 
-    public void findBreedingPartner(World world) {
+    public void findBreedingPartner() {
 
     }
 

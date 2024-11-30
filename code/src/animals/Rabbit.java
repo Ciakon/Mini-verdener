@@ -14,190 +14,143 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-
 import animals.nests.RabbitHole;
-import utils.Functions;
 
 
-public class Rabbit implements Actor, DynamicDisplayInformationProvider {
+public class Rabbit extends Animal { 
+    this.visionRange = 3;
+    this.maxEnergy = 200;
+    this.energy = 100;
+    this.energyLoss = 1;
 
-    // boolean hasEaten;
-    int age;
-    String imageKey;
-    int visionRange;
-    boolean canBreed;
-    boolean hasBreed;
-    boolean dailyEventTriggered;
-    RabbitHole rabbitHole;
-    int energy;
-    int maxEnergy;
-    int energyLoss = 30;
     double digNewExitChance = 0.2;
+    boolean isInsideRabbithole;
+    RabbitHole rabbitHole;
 
-    boolean isAlive = true;
-    boolean isSleeping = false;
-    public Location previousPosition; // used when inside a rabbithole.
-    public boolean isInsideRabbithole = false;
+    String imageKeyBaby = "rabbit-small";
+    String imageKeyAdult = "rabbit-large";
+    String imageKeySleepingBaby = "rabbit-small-sleeping";
+    String imageKeySleepingAdult = "rabbit-sleeping";
+    Color color = Color.gray;
 
-    public boolean isImmortal = false; // make rabbits immortal for some tests.
+    int nutritionalValueAdult = 50;
+    int nutritionalValueBaby = 20;
 
-    public Rabbit(World world) {
-        world.add(this);
-        this.maxEnergy = 200;
-        this.energy = 1;
-        // this.hasEaten = false;
-        this.age = 0;
-        this.imageKey = "rabbit-small";
-        this.visionRange = 3;
-        this.canBreed = false;
-        this.dailyEventTriggered = false;
-        this.previousPosition = world.getCurrentLocation();
-    }
+    /**
+     * Used when spawning a rabbit outside the rabbitholes
+     * 
+     * @param world
+     * @param isAdult
+     * @param location
+     */
 
-    public Rabbit(World world, Location location) {
-        world.add(this);
+    public Rabbit(World world, boolean isAdult, Location location) {
+        super(world, false);
+
+        this.isInsideRabbithole = false;
         world.setTile(location, this);
-        this.maxEnergy = 200;
-        this.energy = 1;
-        // this.hasEaten = false;
-        this.age = 0;
-        this.imageKey = "rabbit-small";
-        this.visionRange = 3;
-        this.canBreed = false;
-        this.dailyEventTriggered = false;
-        this.previousPosition = world.getCurrentLocation();
     }
 
-    @Override
-    public void act(World world) {
-        this.dailyReset(world);
-        this.nightCheck(world);
-        
-        if (isAlive == false) {
-            world.delete(this);
-            return;
-        }
-        if (world.isNight() && this.canBreed && !this.hasBreed && energy > 30 &&this.isInsideRabbithole) {
-            this.findBreedingPartner(world);
-        }
+    /**
+     * Used when spawning a rabbit inside a rabbithole
+     * 
+     * @param world
+     * @param isAdult
+     * @param rabbitHole
+     */
 
-        if (isInsideRabbithole) {
-            if (world.isDay()) {
-                exitHole(world);
-            }
-            return;
-        }
-        if(world.isDay()){
-            this.eatIfOnGrass(world);
-        }
+    public Rabbit(World world, boolean isAdult, RabbitHole rabbitHole) {
+        super(world, false);
 
-        if (world.isNight()) {
-            moveToOrDigHole(world);
-            previousPosition = world.getCurrentLocation();
-            return;
-        }
-
-        DayTimeMovementAI(world);
-        previousPosition = world.getCurrentLocation();
+        this.isInsideRabbithole = true;
+        this.rabbitHole = rabbitHole;
+        this.isSleeping = true;
+        rabbitHole.addRabbit(this);
     }
 
-    @Override
-    public DisplayInformation getInformation() {
-        // TODO vi skal nok ramme en variabel til "rabbit-large" i stedet for image key"
-        if (isSleeping) {
-            if (imageKey == "rabbit-small") {
-                imageKey = "rabbit-small-sleeping";
-            }
-            else if (imageKey == "rabbit-large") {
-                imageKey = "rabbit-sleeping";
-            }
+    void generalAI() {
+        if (world.isDay()) {
+            isSleeping = false;
         }
         else {
-            if (imageKey == "rabbit-small-sleeping") {
-                imageKey = "rabbit-small";
-            }
-            else if (imageKey == "rabbit-sleeping") {
-                imageKey = "rabbit-large";
-            }
+            isSleeping = true;
         }
 
-        return new DisplayInformation(Color.blue, this.imageKey);
-    }
+        if (world.isNight() && this.breedable && !this.hasBred && energy > 30 && this.isInsideRabbithole) {
+            this.findBreedingPartner();
+        }
 
-    /**
-     * removes rabbit if they have not eaten
-     *
-     * @param world
-     */
-    public void nightCheck(World world) {
-        if (world.isNight() && this.dailyEventTriggered) {
-            this.energy -= energyLoss;
-            if (this.energy <= 0 && !isImmortal) {
-                isAlive = false;
-            }
-            this.dailyEventTriggered = false;
-
+        if (isInsideRabbithole == false) {
+            previousPosition = world.getCurrentLocation();
         }
     }
 
+    @Override
+    void dayTimeAI() {
+        this.eatIfOnGrass();
+        DayTimeMovementAI();
+
+        if (isInsideRabbithole) {
+            exitHole(world);
+        }   
+    }
+
+    @Override
+    void nightTimeAI() {
+        moveToOrDigHole();
+    }
+
     /**
-     * Makes rabbit older. Rabbits that are 6 years get attribute changes
+     * Makes Rabbit older. Adult rabbits get nerfed.
      *
      */
+    @Override
     public void grow() {
-        this.age++;
-        if (this.age >= 6 && !canBreed) {
-            this.imageKey = "rabbit-large";
-            this.visionRange = 2;
-            this.canBreed = true;
-            this.maxEnergy = 150;
-            this.energyLoss = 50;
+        super.grow();
+        if (age == adultAge) {
+            this.maxEnergy *= 1.5;
+            this.energyLoss *= 1.5;
         }
     }
 
     /**
-     * breeds with other rabbit
-     *
-     * @param world world which the rabbit is in
-     * @param rabbit rabbit to breed with
+     * breeds with other Rabbit_new
+     * 
+     * @param partner Rabbit to breed with
      */
-    public void breed(World world, Rabbit rabbit) {
+    @Override
+    void breed(Animal partner) {
+        if (partner instanceof Rabbit == false) {
+            throw new RuntimeException("bro?");
+        }
 
-        Rabbit child = new Rabbit(world);
-        child.rabbitHole = this.rabbitHole;
-        child.isInsideRabbithole = true;
-        child.isSleeping = true;
-        child.energy = 60;
-        rabbitHole.addRabbit(child);
-        this.energy -= (int) (energyLoss*0.1);
-        rabbit.energy -= (int) (energyLoss*0.1);
-        rabbit.hasBreed = true;
-        this.hasBreed = true;
+        new Rabbit(world, false, this.rabbitHole);
+        energy -= energyLoss * 2;
+        hasBred = true;
     }
 
     /**
      * finds suitable rabbits to breed
      *
-     * @param world world which the rabbit is in
      */
-    public void findBreedingPartner(World world) {
+    @Override
+    public void findBreedingPartner() {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
-        for (Rabbit rabbit : rabbitList) {
-            if (rabbit != this && rabbit.canBreed && !rabbit.hasBreed && rabbit.isInsideRabbithole && rabbit.energy > 30) {
-                this.breed(world, rabbit);
+        for (Rabbit Rabbit_new : rabbitList) {
+            if (Rabbit_new != this && Rabbit_new.breedable && !Rabbit_new.hasBred && Rabbit_new.isInsideRabbithole && Rabbit_new.energy > 30) {
+                this.breed(Rabbit_new);
                 break;
             }
         }
     }
 
     /**
-     * if Rabbit is standing on grass, eat it
+     * if Rabbit_new is standing on grass, eat it
      *
-     * @param world world which the rabbit is in
      *
      */
-    public void eatIfOnGrass(World world) {
-        Location closetgrass = this.closetGrass(world);
+    public void eatIfOnGrass() {
+        Location closetgrass = this.closetGrass();
         if (closetgrass == world.getLocation(this)) {
             if (world.getNonBlocking(closetgrass) instanceof Grass grass) {
                 this.energy += grass.getNutritionalValue();
@@ -211,45 +164,25 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * once per day resets hasEaten to false and sets dailyEventTriggered to
-     * true
-     *
-     * @param world world which the rabbit is in
-     */
-    public void dailyReset(World world) {
-        if (world.isDay() && !this.dailyEventTriggered) {
-            grow();
-            // this.hasEaten = false;
-            this.energy -= energyLoss;
-            this.dailyEventTriggered = true;
-
-            isSleeping = false;
-        }
-    }
-
-    /**
-     * Moves rabbit in direction of grass if seen otherwise in a random
+     * Moves Rabbit_new in direction of grass if seen otherwise in a random
      * direction
      *
-     * @param world world which the rabbit is in
      */
-    public void DayTimeMovementAI(World world) {
-        if (world.isDay()) {
+    public void DayTimeMovementAI() {
+        ArrayList<Location> nearbyGrass = findGrass(world);
+        if (!nearbyGrass.isEmpty()) {
 
-            ArrayList<Location> nearbyGrass = findGrass(world);
-            if (!nearbyGrass.isEmpty()) {
+            Location desiredGrass = nearestObject(world, nearbyGrass);
+            moveTowards(world, desiredGrass);
+            this.energy -= (int) (energyLoss*0.1);
+        } 
+        else {
 
-                Location desiredGrass = nearestObject(world, nearbyGrass);
-                moveTowards(world, desiredGrass);
+            Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
+            Location nextLocation = randomLocation(freeLocations);
+            if (freeLocations != null) {
+                world.move(this, nextLocation);
                 this.energy -= (int) (energyLoss*0.1);
-            } else {
-
-                Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
-                Location nextLocation = randomLocation(freeLocations);
-                if (freeLocations != null) {
-                    world.move(this, nextLocation);
-                    this.energy -= (int) (energyLoss*0.1);
-                }
             }
         }
     }
@@ -259,7 +192,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
      * @param world
      * @return returns the closet grass to the Rabbit
      */
-    public Location closetGrass(World world) {
+    public Location closetGrass() {
         ArrayList<Location> nearbyGrass = findGrass(world);
         Location closetGrass = null;
         if (!nearbyGrass.isEmpty()) {
@@ -271,7 +204,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     /**
      * Finds nearby grass, that is not accoupied by other rabbits
      *
-     * @param world world which the rabbit is in
+     * @param world world which the Rabbit_new is in
      * @return Arraylist of all grass locations seen nearby
      */
     public ArrayList<Location> findGrass(World world) {
@@ -294,7 +227,7 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     /**
      * Finds nearest item in given ArrayList
      *
-     * @param world world which the rabbit is in
+     * @param world world which the Rabbit_new is in
      * @param Arraylist Arraylist of all object locations seen nearby
      * @return returns location of the closest object
      */
@@ -309,9 +242,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Finds the nearest rabbit hole within the rabbit's vision range.
+     * Finds the nearest Rabbit_new hole within the Rabbit_new's vision range.
      *
-     * @param world the world in which the rabbit is located
+     * @param world the world in which the Rabbit_new is located
      * @return the nearest RabbitHole object, or null if none are found
      */
     public RabbitHole findNearestRabbitHole(World world) {
@@ -333,9 +266,9 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Moves Rabbit 1 tile towards a given location
+     * Moves Rabbit_new 1 tile towards a given location
      *
-     * @param world world which the rabbit is in
+     * @param world world which the Rabbit_new is in
      * @param desiredlocation location to move towards
      */
     public void moveTowards(World world, Location desiredLocation) {
@@ -358,12 +291,12 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
         }
     }
     /**
-     * Moves the rabbit toward the nearest rabbit hole using moveTowards() if
-     * one exists. If no rabbit hole is nearby, the rabbit digs a new hole.
+     * Moves the Rabbit_new toward the nearest Rabbit_new hole using moveTowards() if
+     * one exists. If no Rabbit_new hole is nearby, the Rabbit_new digs a new hole.
      *
-     * @param world the world in which the rabbit is located
+     * @param world the world in which the Rabbit_new is located
      */
-    public void moveToOrDigHole(World world) {
+    public void moveToOrDigHole() {
         
         if (rabbitHole != null) {
             moveTowards(world, world.getLocation(rabbitHole));
@@ -401,10 +334,10 @@ public class Rabbit implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * Digs a new rabbit hole at the rabbits location in the world. This method
-     * sets the rabbit's `rabbitHole` attribute to the new hole.
+     * Digs a new Rabbit_new hole at the rabbits location in the world. This method
+     * sets the Rabbit_new's `rabbitHole` attribute to the new hole.
      *
-     * @param world the world in which the rabbit digs a hole
+     * @param world the world in which the Rabbit_new digs a hole
      */
     public void digHole(World world) {
         if (rabbitHole != null) {
