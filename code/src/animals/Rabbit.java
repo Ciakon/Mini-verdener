@@ -16,6 +16,7 @@ import java.util.Set;
 
 
 import animals.nests.RabbitHole;
+import utils.Functions;
 
 
 public class Rabbit implements Actor, DynamicDisplayInformationProvider {
