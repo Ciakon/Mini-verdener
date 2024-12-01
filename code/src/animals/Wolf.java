@@ -4,34 +4,25 @@ import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Set;
 import utils.Functions;
 
-public final class Wolf extends Animal {
-
-    int breedingEnergy = 15;
-
-    Color color = Color.gray;
-    int visionRange;
-    int maxEnergy;
-    int energy;
-    int energyLoss;
-
-    int adultAge;
-
-    int nutritionalValueAdult;
-    int nutritionalValueBaby;
-    WolfNest WolfNest;
+public class Wolf extends Animal {
+    WolfNest wolfNest;
+    ArrayList<Wolf> pack;
 
     /**
      * Another br'ish method jumpscare
      */
     void wolfInit() {
         imageKeyBaby = "wolf-small";
-        imageKeyAdult = "wolf-large";
+        imageKeyAdult = "wolf";
         imageKeySleepingBaby = "wolf-small-sleeping";
         imageKeySleepingAdult = "wolf-sleeping";
+        color = Color.gray;
 
+        breedingEnergy = 15;
         visionRange = 4;
         maxEnergy = 30;
         energy = 15;
@@ -54,7 +45,7 @@ public final class Wolf extends Animal {
         super(world, isAdult);
 
         this.isInsideNest = true;
-        this.WolfNest = WolfNest;
+        this.wolfNest = WolfNest;
         this.isSleeping = true;
         WolfNest.addAnimal(this);
         wolfInit();
@@ -82,7 +73,7 @@ public final class Wolf extends Animal {
 
     @Override
     void breed(Animal partner) {
-        new Wolf(world, false, this.WolfNest);
+        new Wolf(world, false, this.wolfNest);
         this.energy -= this.breedingEnergy;
         this.hasBred = true;
         partner.setHasBred(true);
@@ -119,10 +110,10 @@ public final class Wolf extends Animal {
      * @param world the world in which the animal is located
      */
     public void moveToOrDigHole() {
-        if (this.WolfNest != null) {
-            moveTowards(world.getLocation(WolfNest));
+        if (this.wolfNest != null) {
+            moveTowards(world.getLocation(wolfNest));
 
-            if (previousPosition.equals(world.getLocation(WolfNest)) && world.getLocation(this).equals(previousPosition)) {
+            if (previousPosition.equals(world.getLocation(wolfNest)) && world.getLocation(this).equals(previousPosition)) {
                 enterHole();
             }
             return;
@@ -133,7 +124,7 @@ public final class Wolf extends Animal {
         if (nearestHole != null) {
             moveTowards(world.getLocation(nearestHole));
             if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
-                WolfNest = nearestHole;
+                wolfNest = nearestHole;
                 nearestHole.addAnimal(this);
             }
         } else {
@@ -146,7 +137,7 @@ public final class Wolf extends Animal {
      * sets the wolf's `WolfNest` attribute to the new hole.
      */
     public void digHole() {
-        if (this.WolfNest != null) {
+        if (this.wolfNest != null) {
             throw new RuntimeException("animals should only dig a hole when they don't have one");
         }
 
@@ -156,14 +147,14 @@ public final class Wolf extends Animal {
             return;
         }
 
-        this.WolfNest = new WolfNest(this.world, location);
-        WolfNest.addAnimal(this);
+        this.wolfNest = new WolfNest(this.world, location);
+        wolfNest.addAnimal(this);
 
         enterHole();
     }
 
     public void enterHole() {
-        if (world.getLocation(this).equals(world.getLocation(this.WolfNest)) == false) {
+        if (world.getLocation(this).equals(world.getLocation(this.wolfNest)) == false) {
             throw new RuntimeException("animals should only enter their own hole when standing on it");
         }
         this.isInsideNest = true;
@@ -173,11 +164,16 @@ public final class Wolf extends Animal {
     }
 
     public void exitHole() {
-        Location holeLocation = world.getLocation(this.WolfNest);
+        Location holeLocation = world.getLocation(this.wolfNest);
         if (world.isTileEmpty(holeLocation)) {
             isInsideNest = false;
             world.setTile(holeLocation, this);
         }
+    }
+
+    public void addToPack(ArrayList<Wolf> pack) {
+        this.pack = pack;
+        pack.add(this);
     }
 
 }

@@ -55,6 +55,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * @param isAdult Whether to spawn the animal as an adult or baby.
      */
     public Animal(World world, boolean isAdult) {
+        this.preferedPrey = new ArrayList<>();
         this.world = world;
         world.add(this);
         if (isAdult) {
@@ -186,7 +187,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * @return Returns random empty surrounding location if there exists at
      * least 1
      */
-    Location randomFreeLocation() {
+    public Location randomFreeLocation() {
         Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
         if (freeLocations.isEmpty()) {
             return null;

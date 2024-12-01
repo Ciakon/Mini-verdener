@@ -7,8 +7,6 @@ import java.util.Set;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import utils.Functions;
-
 
 /**
  * "bear is kil" 

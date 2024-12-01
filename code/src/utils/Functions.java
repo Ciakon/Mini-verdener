@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import animals.AlphaWolf;
 import animals.Bear;
 import animals.Rabbit;
 import animals.Wolf;
@@ -56,6 +57,13 @@ public class Functions {
             else {
                 amount = Integer.parseInt(amountSTR);
             }
+
+            // spawn wolves in pack
+            if (args[0].equals("wolf") && amount > 1) {
+                createWolfPack(world, amount);
+                continue;
+            }
+
             for (int i = 0; i < amount; i++) {
                  // When given bear territory position
                 if (args.length == 3 && args[0].equals("bear")) {
@@ -106,6 +114,7 @@ public class Functions {
     }
 
     /**
+     * Spawns actor with a territory
      * 
      * @param world The world where the actors spawn.
      * @param actor_name  The name of the actor in the text file.
@@ -122,6 +131,35 @@ public class Functions {
             default:
                 throw new IllegalArgumentException(actor_name + " is not a valid actor");
         }
+    }
+
+    /**
+     * Spawns actors in a pack
+     * 
+     * @param world The world where the actors spawn.
+     * @param actor_name  The name of the actor in the text file.
+     * @param amount Amount of animals in the pack
+     * @return Returns the wolf pack list.
+     */
+
+     public static ArrayList<Wolf> createWolfPack(World world, int amount) {
+
+        // spawn alpha wolf
+        ArrayList<Wolf> pack = new ArrayList<>();
+
+        Location location = findRandomValidLocation(world);
+        AlphaWolf alpha = new AlphaWolf(world, true, location);
+        alpha.addToPack(pack);
+
+        // spawn the betas around it.
+        for (int i = 1; i < amount; i++) {
+            location = alpha.randomFreeLocation();
+            if (location == null) location = findRandomValidLocation(world);
+
+            Wolf wolf = new Wolf(world, true, location);
+            wolf.addToPack(pack);
+        }
+        return pack;
     }
 
     
