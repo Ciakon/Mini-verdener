@@ -28,7 +28,7 @@ public class Grass extends Plant implements Actor, DynamicDisplayInformationProv
 
     @Override
     public DisplayInformation getInformation() {
-        return new DisplayInformation(Color.green, "bush");
+        return new DisplayInformation(Color.green, "grass");
     }
 
     public int getNutritionalValue() {
