@@ -24,7 +24,7 @@ jobs:
       # Step 3: Generate Javadocs (allow failure)
       - name: Generate Javadocs
         run: |
-          find ./code/src -name "*.java" | grep -v '/Itumulator/' > filelist.txt
+          find ./code/src -name "*.java" | grep -v './code/Itumulator/' > filelist.txt
           javadoc -d docs @filelist.txt || true
           rm filelist.txt
 
