@@ -74,9 +74,6 @@ public class Rabbit extends Animal {
     }
 
     void generalAI() {
-        if (world.isDay()) {
-            isSleeping = false;
-        }
         if (isInsideRabbithole == false) {
             this.eatIfOnGrass();
             previousPosition = world.getLocation(this);
@@ -85,6 +82,7 @@ public class Rabbit extends Animal {
 
     @Override
     void dayTimeAI() {
+        isSleeping = false;
         if (isInsideRabbithole && world.getCurrentTime() < 7) {
             exitHole(); // Not guranteed, rabbits may be in the way.
         }
