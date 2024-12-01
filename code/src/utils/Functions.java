@@ -15,6 +15,7 @@ import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.BerryBush;
 import plants.Grass;
 
 
@@ -108,6 +109,8 @@ public class Functions {
                 return new Wolf(world, true, location);
             case "burrow":
                 return new RabbitHole(world, location);
+            case "berry":
+                return new BerryBush(world, location);
             default:
                 throw new IllegalArgumentException(actor_name + " is not a valid actor");
         }
@@ -123,7 +126,7 @@ public class Functions {
      */
 
     public static Actor createActor(World world, String actor_name, Location territory) {
-        Location location = findRandomValidLocation(world);
+        Location location = territory;
 
         switch (actor_name) {
             case "bear":

@@ -15,7 +15,7 @@ import utils.Functions;
 public class Bear extends Animal {
 
     Location territory;
-    int territorySize = 20;
+    int territorySize = 2;
     ArrayList<Bear> family;
 
     ArrayList<Animal> killList;
@@ -24,7 +24,7 @@ public class Bear extends Animal {
      * Another br'ish method jumpscare
      */
     void bearInit() {
-        visionRange = 5;
+        visionRange = 8;
         maxEnergy = 150;
         energy = 75;
         energyLoss = 2;
@@ -113,7 +113,6 @@ public class Bear extends Animal {
                 // Chill
             }
         } else {
-            System.out.println("isHunting");
             hunting();
         }
 

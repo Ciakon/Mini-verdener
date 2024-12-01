@@ -25,8 +25,8 @@ public class Wolf extends Animal {
 
         breedingEnergy = 15;
         visionRange = 4;
-        maxEnergy = 30;
-        energy = 15;
+        maxEnergy = 100;
+        energy = 50;
         energyLoss = 1;
 
         adultAge = 40;
@@ -54,8 +54,7 @@ public class Wolf extends Animal {
 
     @Override
     void generalAI() {
-
-        System.out.println(energy);
+        System.out.println(alpha);
 
         if (world.contains(alpha) == false) {
 
@@ -259,6 +258,10 @@ public class Wolf extends Animal {
 
         AlphaWolf alpha = new AlphaWolf(world, isAdult, l, wolfNest, energy, age);
         alpha.addToPack(this.pack);
+
+        for (Wolf wolf : pack) {
+            wolf.setAlpha(alpha);
+        }
 
         return alpha;
     }

@@ -28,14 +28,14 @@ public class Rabbit extends Animal {
         color = Color.blue;
 
         visionRange = 4;
-        maxEnergy = 30;
+        maxEnergy = 40;
         energy = 15;
         energyLoss = 1;
 
         adultAge = 40;
 
-        nutritionalValueAdult = 50;
-        nutritionalValueBaby = 20;
+        nutritionalValueAdult = 500;
+        nutritionalValueBaby = 200;
     }
 
     /**
@@ -82,6 +82,8 @@ public class Rabbit extends Animal {
 
     @Override
     void dayTimeAI() {
+
+        hasBred = false;
         isSleeping = false;
         if (isInsideRabbithole && world.getCurrentTime() < 7) {
             exitHole(); // Not guranteed, rabbits may be in the way.

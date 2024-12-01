@@ -22,7 +22,6 @@ public class Grass extends Plant implements Actor, DynamicDisplayInformationProv
 
     @Override
     public void act(World world) {
-        //System.out.println(world.contains(this));
         super.grow(world,5);
     }
 

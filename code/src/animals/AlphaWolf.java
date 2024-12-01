@@ -15,6 +15,7 @@ public class AlphaWolf extends Wolf {
         imageKeyAdult = "Alpha";
         imageKeySleepingBaby = "Alpha";
         imageKeySleepingAdult = "Alpha";
+        preferedPrey.add("Rabbit");
     }
 
     public AlphaWolf(World world, boolean isAdult, Location location) {
@@ -38,7 +39,6 @@ public class AlphaWolf extends Wolf {
 
     @Override
     void generalAI() {
-        System.out.println(energy);
     }
 
     @Override
@@ -65,8 +65,6 @@ public class AlphaWolf extends Wolf {
     void die() {
         createNewAlpha();
         super.die();
-
-        System.out.println("pack size: " + pack.size());
     }
 
     /**
