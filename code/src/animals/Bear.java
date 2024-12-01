@@ -105,13 +105,13 @@ public class Bear extends Animal {
         isSleeping = false;
 
         if (killList.isEmpty()) {
-            // if (findNearestBerryBush() != null) {
-            //     interactWithBerryBush();
-            // } else if (isInsideTerritory() == false) {
-            //     moveTowards(territory);
-            // } else {
-            //     // Chill
-            // }
+            if (findNearestBerryBush() != null) {
+                interactWithBerryBush();
+            } else if (isInsideTerritory() == false) {
+                moveTowards(territory);
+            } else {
+                // Chill
+            }
         } else {
             System.out.println("isHunting");
             hunting();
