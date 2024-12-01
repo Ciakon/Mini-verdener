@@ -41,6 +41,7 @@ public class Bear extends Animal {
         color = Color.black;
         preferedPrey.add("Rabbit");
         preferedPrey.add("Wolf");
+        killList = new ArrayList<>();
     }
 
     /**
@@ -126,14 +127,21 @@ public class Bear extends Animal {
     @Override
     void hunting() {
         // todo change target to killlist.
-        if (this.target != null && world.contains(target)) {
-            if (Functions.calculateDistance(world.getLocation(this), world.getLocation(target)) == 1) {
-                kill(target);
-            } else {
-                moveTowards(world.getLocation(target));
+        if (!killList.isEmpty()) {
+            System.out.println("plans to hunt");
+            ArrayList<Location> hitList = new ArrayList();
+            for (Animal animal : killList) {
+                if (world.isOnTile(animal)) {
+                    hitList.add(world.getLocation(animal));
+                }
             }
-        } else {
-            super.hunting();
+            Location nearestPrey = nearestObject(hitList);
+            if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
+                moveTowards(nearestPrey);
+            } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
+                killList.remove((Animal) world.getTile(nearestPrey));
+                this.energy += kill((Animal) world.getTile(nearestPrey));
+            }
         }
     }
 
@@ -157,7 +165,9 @@ public class Bear extends Animal {
                 if (family.contains(animal)) {
                     continue;
                 }
-                if (killList.contains(animal)) continue;
+                if (killList.contains(animal)) {
+                    continue;
+                }
                 killList.add(animal);
             }
         }
@@ -204,7 +214,6 @@ public class Bear extends Animal {
         }
 
         moveTowards(territory);
-        
 
     }
 
