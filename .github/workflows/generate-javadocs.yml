@@ -25,7 +25,7 @@ jobs:
       - name: Generate Javadocs
         run: |
           find ./code/src -name "*.java" | grep -v './code/Itumulator/' > filelist.txt
-          javadoc -d docs @filelist.txt || true
+          javadoc -d miniverdener_docs @filelist.txt || true
           rm filelist.txt
 
 
