@@ -41,6 +41,8 @@ public class Bear extends Animal {
         color = Color.black;
         preferedPrey.add("Rabbit");
         preferedPrey.add("Wolf");
+        killList = new ArrayList<>();
+        this.family.add(this);
     }
 
     /**
@@ -103,14 +105,16 @@ public class Bear extends Animal {
         isSleeping = false;
 
         if (killList.isEmpty()) {
-            if (isInsideTerritory() == false) {
+            if (findNearestBerryBush() != null) {
+                interactWithBerryBush();
+            } else if (isInsideTerritory() == false) {
                 moveTowards(territory);
             } else {
                 // Chill
             }
         } else {
+            System.out.println("isHunting");
             hunting();
-            System.out.println(killList.get(0) + " is kil");
         }
 
         if (world.getCurrentTime() >= 7) {
@@ -125,15 +129,59 @@ public class Bear extends Animal {
 
     @Override
     void hunting() {
-        // todo change target to killlist.
-        if (this.target != null && world.contains(target)) {
-            if (Functions.calculateDistance(world.getLocation(this), world.getLocation(target)) == 1) {
-                kill(target);
-            } else {
-                moveTowards(world.getLocation(target));
+        if (!killList.isEmpty()) {
+            killList.removeIf(animal -> !world.contains(animal));
+
+            ArrayList<Location> hitList = new ArrayList<>();
+            for (Animal animal : killList) {
+                if (world.isOnTile(animal)) {
+                    hitList.add(world.getLocation(animal));
+                }
             }
+
+            if (!hitList.isEmpty()) {
+                Location nearestPrey = nearestObject(hitList);
+
+                int distance = Functions.calculateDistance(world.getLocation(this), nearestPrey);
+                if (distance > 1) {
+                    moveTowards(nearestPrey);
+                } else if (distance == 1) {
+                    Animal prey = (Animal) world.getTile(nearestPrey);
+                    killList.remove(prey);
+                    this.energy += kill(prey);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void moveTowards(Location desiredLocation) {
+        Location currentLocation = world.getLocation(this);
+        int movementInX = currentLocation.getX();
+        int movementInY = currentLocation.getY();
+
+        // Determine movement direction
+        if (currentLocation.getX() < desiredLocation.getX()) {
+            movementInX++;
+        } else if (currentLocation.getX() > desiredLocation.getX()) {
+            movementInX--;
+        }
+
+        if (currentLocation.getY() < desiredLocation.getY()) {
+            movementInY++;
+        } else if (currentLocation.getY() > desiredLocation.getY()) {
+            movementInY--;
+        }
+
+        Location movement = new Location(movementInX, movementInY);
+
+        // Move if the target tile is empty
+        if (world.isTileEmpty(movement)) {
+            System.out.println("Moving to " + movement);
+            world.move(this, movement);
         } else {
-            super.hunting();
+            System.out.println("Cannot move to " + movement + " as it is occupied.");
+            System.out.println(world.isTileEmpty(movement));
         }
     }
 
@@ -157,38 +205,68 @@ public class Bear extends Animal {
                 if (family.contains(animal)) {
                     continue;
                 }
-                if (killList.contains(animal)) continue;
+                if (killList.contains(animal)) {
+                    continue;
+                }
                 killList.add(animal);
             }
         }
     }
 
     /**
-     * Finds and eats the nearest non-depleted BerryBush if no animals are in
-     * its territory.
+     * Finds the nearest non-depleted BerryBush within the bear's vision range.
      *
-     * @return True if a BerryBush was eaten; false otherwise.
+     * @return The nearest BerryBush, or null if none are found.
      */
-    boolean eatBerryBush() {
+    public BerryBush findNearestBerryBush() {
         Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
+
         for (Location location : territoryTiles) {
             if (world.getNonBlocking(location) instanceof BerryBush berryBush && !berryBush.isDepleted()) {
-                moveTowards(location);
-
-                if (world.getLocation(this).equals(location)) {
-                    int nutrition = berryBush.consumeBerries();
-                    this.energy += nutrition;
-
-                    if (this.energy > maxEnergy) {
-                        this.energy = maxEnergy;
-                    }
-
-                    return true;
-                }
+                return berryBush;
             }
         }
 
+        return null;
+    }
+
+    /**
+     * Consumes berries from a BerryBush if the bear is at the same location as
+     * the bush.
+     *
+     * @param berryBush The BerryBush to consume berries from.
+     * @return True if berries were consumed, false otherwise.
+     */
+    public boolean eatBerryBush(BerryBush berryBush) {
+        if (berryBush == null) {
+            return false;
+        }
+
+        if (world.getLocation(this).equals(world.getLocation(berryBush))) {
+            int nutrition = berryBush.consumeBerries();
+            this.energy += nutrition;
+
+            if (this.energy > maxEnergy) {
+                this.energy = maxEnergy;
+            }
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Handles the bear's interaction with a BerryBush: Finds the nearest
+     * BerryBush Moves toward it if not already there Eats it when at the same
+     * location
+     */
+    public void interactWithBerryBush() {
+        BerryBush nearestBush = findNearestBerryBush();
+        if (nearestBush != null) {
+            if (!eatBerryBush(nearestBush)) {
+                moveTowards(world.getLocation(nearestBush));
+            }
+        }
     }
 
     /**
@@ -204,7 +282,8 @@ public class Bear extends Animal {
         }
 
         moveTowards(territory);
-    
+        
+
     }
 
     /**

@@ -16,7 +16,7 @@ public class Rabbit extends Animal {
     boolean isInsideRabbithole;
     RabbitHole rabbitHole;
     int breedingEnergy = 15;
-    
+
     /**
      * British method jumpscare
      */
@@ -132,8 +132,10 @@ public class Rabbit extends Animal {
             throw new RuntimeException("bro?");
         }
         new Rabbit(world, false, this.rabbitHole);
-        energy -= energyLoss * 2;
-        hasBred = true;
+        this.energy -= energyLoss * 2;
+        this.hasBred = true;
+        partner.setHasBred(true);
+        partner.removeEnergy(energyLoss * 2);
     }
 
     /**
