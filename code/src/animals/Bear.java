@@ -2,6 +2,7 @@ package animals;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Set;
 
 import itumulator.world.Location;
@@ -15,7 +16,7 @@ import utils.Functions;
  */
 public class Bear extends Animal{
     Location territory;
-    int territorySize = 3;
+    int territorySize = 2;
     ArrayList<Bear> family;
     
     Animal target;
@@ -52,6 +53,7 @@ public class Bear extends Animal{
         super(world, isAdult);
         world.setTile(location, this);
         this.territory = location;
+        this.family = new ArrayList<>();
         bearInit();
     }
 
@@ -68,6 +70,7 @@ public class Bear extends Animal{
         super(world, isAdult);
         world.setTile(location, this);
         this.territory = territory;
+        this.family = new ArrayList<>();
         bearInit();
     }
 
@@ -91,12 +94,29 @@ public class Bear extends Animal{
 
     @Override
     void generalAI() {
+        checkForIllegalActivity();
         previousPosition = world.getLocation(this);
     }
 
     @Override
     void dayTimeAI() {
+        Random random = new Random();
         isSleeping = false;
+
+        if (target == null) {
+            if (isInsideTerritory() == false) {
+                moveTowards(territory);
+            }
+            else {
+                // Chill
+            }
+        }
+        else {
+            //TODO bear hunting
+            moveTowards(territory);
+            System.out.println(target + " is kil");
+        }
+
 
         if (world.getCurrentTime() >= 7) {
             sleeperTime();

@@ -1,4 +1,5 @@
 10
+bear 1
 grass 30
 burrow 2
 rabbit 4

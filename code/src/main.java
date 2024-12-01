@@ -13,7 +13,7 @@ class Main {
      */
     public static void main(String[] args) {
         try {
-            Program program = Functions.createSimulation("t2-4a");
+            Program program = Functions.createSimulation("gaming");
             program.show();
             program.run();
         } catch (FileNotFoundException e) {

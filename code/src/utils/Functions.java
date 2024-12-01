@@ -40,6 +40,7 @@ public class Functions {
 
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
+
             String[] args = line.split(" ");
 
             String type = args[0];
@@ -56,11 +57,10 @@ public class Functions {
                 amount = Integer.parseInt(amountSTR);
             }
             for (int i = 0; i < amount; i++) {
-
                  // When given bear territory position
-                if (args.length == 3 && args[0] == "bear") {
-                    args[2] = args[2].strip().replace("(", "").replace(")", "");
-                    String[] coordinates = args[2].split(",");
+                if (args.length == 3 && args[0].equals("bear")) {
+
+                    String[] coordinates = args[2].strip().replaceAll("[()]", "").split(",");
                     Location territory = new Location(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
 
                     createActor(world, type, territory);
