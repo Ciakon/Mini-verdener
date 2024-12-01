@@ -79,10 +79,6 @@ public class Rabbit extends Animal {
             isSleeping = false;
         }
 
-        if (world.isNight() && this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
-            this.findBreedingPartner();
-        }
-
         if (world.getCurrentTime() >= 7 && isInsideRabbithole == false) { // go back in the evening
             moveToOrDigHole();
         }
@@ -106,7 +102,9 @@ public class Rabbit extends Animal {
 
     @Override
     void nightTimeAI() {
-
+        if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
+            this.findBreedingPartner();
+        }
     }
 
     /**
@@ -133,7 +131,6 @@ public class Rabbit extends Animal {
         if (partner instanceof Rabbit == false) {
             throw new RuntimeException("bro?");
         }
-
         new Rabbit(world, false, this.rabbitHole);
         energy -= energyLoss * 2;
         hasBred = true;
