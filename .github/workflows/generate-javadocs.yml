@@ -24,7 +24,10 @@ jobs:
       # Step 3: Generate Javadocs (allow failure)
       - name: Generate Javadocs
         run: |
-          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src src/**/*.java || true
+          find src -name "*.java" | grep -v '/Itumulator/' > filelist.txt
+          javadoc -d docs @filelist.txt
+          rm filelist.txt
+
 
       # Step 4: Publish Javadocs to GitHub Pages
       - name: Deploy to GitHub Pages
