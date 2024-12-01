@@ -1,13 +1,19 @@
 package animals;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Set;
 
 import itumulator.world.Location;
 import itumulator.world.World;
+import utils.Functions;
 
 public class Bear extends Animal{
     Location territory;
     int territorySize = 3;
+    ArrayList<Bear> family;
+    
+    Animal target;
     /**
      * Another br'ish method jumpscare
      */
@@ -61,6 +67,21 @@ public class Bear extends Animal{
     @Override
     void breed(Animal partner) {
 
+    }
+
+    void checkForIllegalActivity() {
+        Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
+
+        for (Location location : territoryTiles) {
+            if (world.getTile(location) instanceof Animal) {
+                Animal animal = (Animal) world.getTile(location);
+
+                if (family.contains(animal)) {
+                    continue;
+                }
+                target = animal;
+            }
+        }
     }
 
 

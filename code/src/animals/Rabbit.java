@@ -17,8 +17,6 @@ public class Rabbit extends Animal {
     RabbitHole rabbitHole;
     int breedingEnergy = 15;
 
-    Color color = Color.gray;
-
     /**
      * British method jumpscare
      */
@@ -27,6 +25,7 @@ public class Rabbit extends Animal {
         imageKeyAdult = "rabbit-large";
         imageKeySleepingBaby = "rabbit-small-sleeping";
         imageKeySleepingAdult = "rabbit-sleeping";
+        color = Color.gray;
 
         visionRange = 4;
         maxEnergy = 30;
