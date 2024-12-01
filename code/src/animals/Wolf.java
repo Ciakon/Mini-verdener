@@ -11,6 +11,7 @@ import utils.Functions;
 public class Wolf extends Animal {
     WolfNest wolfNest;
     ArrayList<Wolf> pack;
+    AlphaWolf alpha;
 
     /**
      * Another br'ish method jumpscare
@@ -53,6 +54,13 @@ public class Wolf extends Animal {
 
     @Override
     void generalAI() {
+        if (world.contains(alpha) == false) {
+            //breed new alpha later
+        }
+        else {
+            moveTowards(world.getLocation(alpha));
+        }
+
         if (world.isDay()) {
             isSleeping = false;
         }
@@ -60,20 +68,31 @@ public class Wolf extends Animal {
 
     @Override
     void dayTimeAI() {
-        hunting();
+        // hunting();
     }
 
     @Override
     void nightTimeAI() {
-        if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideNest) {
-            this.findBreedingPartner();
-        }
-        this.moveToOrDigHole();
+        // if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideNest) {
+        //     this.findBreedingPartner();
+        // }
+        // this.moveToOrDigHole();
     }
 
     @Override
     void breed(Animal partner) {
-        new Wolf(world, false, this.wolfNest);
+
+        if (world.contains(alpha) || alpha == null) {
+            AlphaWolf alpha = new AlphaWolf(world, false, this.wolfNest);
+
+            for (Wolf wolf : pack) {
+                wolf.setAlpha(alpha);
+            }
+        }
+        else {
+            new Wolf(world, false, this.wolfNest);
+        }
+        
         this.energy -= this.breedingEnergy;
         this.hasBred = true;
         partner.setHasBred(true);
@@ -174,6 +193,10 @@ public class Wolf extends Animal {
     public void addToPack(ArrayList<Wolf> pack) {
         this.pack = pack;
         pack.add(this);
+    }
+
+    public void setAlpha(AlphaWolf alpha) {
+        this.alpha = alpha;
     }
 
 }

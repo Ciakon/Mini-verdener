@@ -36,7 +36,7 @@ public class Functions {
         int N = Integer.parseInt(scanner.nextLine());
         System.out.println("World size: " + N);
 
-        Program program = new Program(N, 700, 200);
+        Program program = new Program(N, 1800, 200);
         World world = program.getWorld();
 
         while (scanner.hasNext()) {
@@ -158,6 +158,7 @@ public class Functions {
 
             Wolf wolf = new Wolf(world, true, location);
             wolf.addToPack(pack);
+            wolf.setAlpha(alpha);
         }
         return pack;
     }

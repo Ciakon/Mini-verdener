@@ -2,6 +2,7 @@ package animals;
 
 import java.util.ArrayList;
 
+import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -14,6 +15,10 @@ public class AlphaWolf extends Wolf {
         imageKeyAdult = "Alpha";
         imageKeySleepingBaby = "Alpha";
         imageKeySleepingAdult = "Alpha";
+    }
+
+    public AlphaWolf(World world, boolean isAdult, WolfNest wolfNest) {
+        super(world, isAdult, wolfNest);
     }
 
     @Override
