@@ -24,7 +24,7 @@ jobs:
       # Step 3: Generate Javadocs (allow failure)
       - name: Generate Javadocs
         run: |
-          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src ./code/src/*.java || true
+          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src src/**/*.java || true
 
       # Step 4: Publish Javadocs to GitHub Pages
       - name: Deploy to GitHub Pages
