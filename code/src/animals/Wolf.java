@@ -54,8 +54,11 @@ public class Wolf extends Animal {
 
     @Override
     void generalAI() {
+
+        System.out.println(energy);
+
         if (world.contains(alpha) == false) {
-            //breed new alpha later
+
         }
         else {
             moveTowards(world.getLocation(alpha));
@@ -239,9 +242,28 @@ public class Wolf extends Animal {
         this.pack = pack;
         pack.add(this);
     }
+    
+
+    // todo bear stuff
+    @Override void die() {
+        super.die();
+        pack.remove(this);
+    }
 
     public void setAlpha(AlphaWolf alpha) {
         this.alpha = alpha;
     }
+
+    public AlphaWolf andrewTateMode() {
+        Location l = world.getLocation(this);
+
+        this.die();
+
+        AlphaWolf alpha = new AlphaWolf(world, isAdult, l, wolfNest, energy, age);
+        alpha.addToPack(this.pack);
+
+        return alpha;
+    }
+
 
 }
