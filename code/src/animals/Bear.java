@@ -91,17 +91,21 @@ public class Bear extends Animal{
 
     @Override
     void generalAI() {
-
+        previousPosition = world.getLocation(this);
     }
 
     @Override
     void dayTimeAI() {
+        isSleeping = false;
 
+        if (world.getCurrentTime() >= 7) {
+            sleeperTime();
+        }
     }
 
     @Override
     void nightTimeAI() {
-
+        sleeperTime();
     }
 
     @Override
@@ -128,6 +132,31 @@ public class Bear extends Animal{
                 target = animal;
             }
         }
+    }
+
+    /**
+     * Goes back to its territory and sleeps.
+     */
+
+    void sleeperTime() {
+        if (isSleeping) return;
+
+        moveTowards(territory);
+        if (isInsideTerritory()) {
+            isSleeping = true;
+        }
+
+    }
+
+    /**
+     * Check if the bear is inside its territory
+     * @return whether the bear is in the terrotory.
+     */
+    boolean isInsideTerritory() {
+        for (Location l : world.getSurroundingTiles(territory, territorySize)) {
+            if (l.equals(world.getLocation(this))) return true;
+        }
+        return false;
     }
 
 }
