@@ -82,9 +82,7 @@ public class Rabbit extends Animal {
             this.findBreedingPartner();
         }
 
-        if (world.getCurrentTime() >= 7 && isInsideRabbithole == false) { // go back in the evening
-            moveToOrDigHole();
-        }
+        
 
         if (isInsideRabbithole == false) {
             this.eatIfOnGrass();
@@ -98,13 +96,22 @@ public class Rabbit extends Animal {
             exitHole(); // Not guranteed, rabbits may be in the way.
         }
 
+        
         if (isInsideRabbithole == false) {
-            DayTimeMovementAI();
+            if (world.getCurrentTime() >= 7) { // go back in the evening
+                moveToOrDigHole();
+            }
+            else {
+                DayTimeMovementAI();
+            }
         }
     }
 
     @Override
     void nightTimeAI() {
+        if (isInsideRabbithole == false) {
+            moveToOrDigHole();
+        }
 
     }
 
