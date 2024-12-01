@@ -1,3 +1,5 @@
+package test;
+
 // test is cooked, L.
 
 // import java.io.FileNotFoundException;

@@ -1,8 +1,5 @@
 package animals;
 
-import itumulator.executable.DisplayInformation;
-import itumulator.executable.DynamicDisplayInformationProvider;
-import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
 import plants.Grass;
@@ -16,11 +13,11 @@ import java.util.Set;
 
 import animals.nests.RabbitHole;
 
-
 public class Rabbit extends Animal {
     double digNewExitChance = 0.2;
     boolean isInsideRabbithole;
     RabbitHole rabbitHole;
+    int breedingEnergy = 15;
 
     Color color = Color.gray;
 
@@ -33,17 +30,26 @@ public class Rabbit extends Animal {
         imageKeySleepingBaby = "rabbit-small-sleeping";
         imageKeySleepingAdult = "rabbit-sleeping";
 
-        visionRange = 3;
-        maxEnergy = 201;
-        energy = 100;
+        visionRange = 4;
+        maxEnergy = 30;
+        energy = 15;
         energyLoss = 1;
+
+        adultAge = 40;
 
         nutritionalValueAdult = 50;
         nutritionalValueBaby = 20;
-        }
+    }
 
+    /**
+     * This constructor should be used whebn spawning a rabbit outside.
+     * 
+     * @param world The simulation world.
+     * @param isAdult Whether to spawn the rabbit as an adult or baby.
+     * @param location Where to spawn it.
+     */
     public Rabbit(World world, boolean isAdult, Location location) {
-        super(world, false);
+        super(world, isAdult);
 
         this.isInsideRabbithole = false;
         world.setTile(location, this);
@@ -51,8 +57,15 @@ public class Rabbit extends Animal {
         rabbitInit();
     }
 
+    /**
+     * This constructor should be used whebn spawning a rabbit inside a rabbithole.
+     * 
+     * @param world The simulation world.
+     * @param isAdult Whether to spawn the rabbit as an adult or baby.
+     * @param location Where to spawn it.
+     */
     public Rabbit(World world, boolean isAdult, RabbitHole rabbitHole) {
-        super(world, false);
+        super(world, isAdult);
 
         this.isInsideRabbithole = true;
         this.rabbitHole = rabbitHole;
@@ -66,32 +79,35 @@ public class Rabbit extends Animal {
         if (world.isDay()) {
             isSleeping = false;
         }
-        else {
-            isSleeping = true;
-        }
 
-        if (world.isNight() && this.breedable && !this.hasBred && energy > 30 && this.isInsideRabbithole) {
+        if (world.isNight() && this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
             this.findBreedingPartner();
         }
 
+        if (world.getCurrentTime() >= 7 && isInsideRabbithole == false) { // go back in the evening
+            moveToOrDigHole();
+        }
+
         if (isInsideRabbithole == false) {
-            previousPosition = world.getCurrentLocation();
+            this.eatIfOnGrass();
+            previousPosition = world.getLocation(this);
         }
     }
 
     @Override
     void dayTimeAI() {
-        this.eatIfOnGrass();
-        DayTimeMovementAI();
+        if (isInsideRabbithole && world.getCurrentTime() < 7) {
+            exitHole(); // Not guranteed, rabbits may be in the way.
+        }
 
-        if (isInsideRabbithole) {
-            exitHole(world);
-        }   
+        if (isInsideRabbithole == false) {
+            DayTimeMovementAI();
+        }
     }
 
     @Override
     void nightTimeAI() {
-        moveToOrDigHole();
+        
     }
 
     /**
@@ -102,18 +118,19 @@ public class Rabbit extends Animal {
     public void grow() {
         super.grow();
         if (age == adultAge) {
-            this.maxEnergy *= 1.5;
+            this.maxEnergy *= .75;
             this.energyLoss *= 1.5;
         }
     }
 
     /**
-     * breeds with other Rabbit_new
+     * breeds with other rabbit
      * 
      * @param partner Rabbit to breed with
      */
     @Override
     void breed(Animal partner) {
+
         if (partner instanceof Rabbit == false) {
             throw new RuntimeException("bro?");
         }
@@ -130,16 +147,16 @@ public class Rabbit extends Animal {
     @Override
     public void findBreedingPartner() {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
-        for (Rabbit Rabbit_new : rabbitList) {
-            if (Rabbit_new != this && Rabbit_new.breedable && !Rabbit_new.hasBred && Rabbit_new.isInsideRabbithole && Rabbit_new.energy > 30) {
-                this.breed(Rabbit_new);
+        for (Rabbit rabbit : rabbitList) {
+            if (rabbit != this && rabbit.breedable && !rabbit.hasBred && rabbit.isInsideRabbithole && rabbit.energy > breedingEnergy) {
+                this.breed(rabbit);
                 break;
             }
         }
     }
 
     /**
-     * if Rabbit_new is standing on grass, eat it
+     * if Rabbit is standing on grass, eat it
      *
      *
      */
@@ -158,7 +175,7 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Moves Rabbit_new in direction of grass if seen otherwise in a random
+     * Moves rabbit in direction of grass if seen otherwise in a random
      * direction
      *
      */
@@ -166,7 +183,7 @@ public class Rabbit extends Animal {
         ArrayList<Location> nearbyGrass = findGrass(world);
         if (!nearbyGrass.isEmpty()) {
 
-            Location desiredGrass = nearestObject(world, nearbyGrass);
+            Location desiredGrass = nearestObject(nearbyGrass);
             moveTowards(world, desiredGrass);
             this.energy -= (int) (energyLoss*0.1);
         } 
@@ -183,14 +200,14 @@ public class Rabbit extends Animal {
 
     /**
      *
-     * @param world
+     * @param world The simulation world.
      * @return returns the closet grass to the Rabbit
      */
     public Location closetGrass() {
         ArrayList<Location> nearbyGrass = findGrass(world);
         Location closetGrass = null;
         if (!nearbyGrass.isEmpty()) {
-            closetGrass = nearestObject(world, nearbyGrass);
+            closetGrass = nearestObject(nearbyGrass);
         }
         return closetGrass;
     }
@@ -198,7 +215,7 @@ public class Rabbit extends Animal {
     /**
      * Finds nearby grass, that is not accoupied by other rabbits
      *
-     * @param world world which the Rabbit_new is in
+     * @param world world which the rabbit is in
      * @return Arraylist of all grass locations seen nearby
      */
     public ArrayList<Location> findGrass(World world) {
@@ -218,27 +235,11 @@ public class Rabbit extends Animal {
         return nearbyGrass;
     }
 
-    /**
-     * Finds nearest item in given ArrayList
-     *
-     * @param world world which the Rabbit_new is in
-     * @param Arraylist Arraylist of all object locations seen nearby
-     * @return returns location of the closest object
-     */
-    public Location nearestObject(World world, ArrayList<Location> object) {
-        Location closest = object.get(0);
-        for (Location location : object) {
-            if (Functions.calculateDistance(world.getLocation(this), location) <Functions.calculateDistance(world.getLocation(this), closest)) {
-                closest = location;
-            }
-        }
-        return closest;
-    }
 
     /**
-     * Finds the nearest Rabbit_new hole within the Rabbit_new's vision range.
+     * Finds the nearest rabbit hole within the rabbit's vision range.
      *
-     * @param world the world in which the Rabbit_new is located
+     * @param world the world in which the rabbit is located
      * @return the nearest RabbitHole object, or null if none are found
      */
     public RabbitHole findNearestRabbitHole(World world) {
@@ -260,9 +261,9 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Moves Rabbit_new 1 tile towards a given location
+     * Moves rabbit 1 tile towards a given location
      *
-     * @param world world which the Rabbit_new is in
+     * @param world world which the rabbit is in
      * @param desiredlocation location to move towards
      */
     public void moveTowards(World world, Location desiredLocation) {
@@ -285,22 +286,25 @@ public class Rabbit extends Animal {
         }
     }
     /**
-     * Moves the Rabbit_new toward the nearest Rabbit_new hole using moveTowards() if
-     * one exists. If no Rabbit_new hole is nearby, the Rabbit_new digs a new hole.
+     * Moves the rabbit toward the nearest rabbit hole using moveTowards() if
+     * one exists. If no rabbit hole is nearby, the rabbit digs a new hole.
      *
-     * @param world the world in which the Rabbit_new is located
+     * @param world the world in which the rabbit is located
      */
     public void moveToOrDigHole() {
-        
         if (rabbitHole != null) {
             moveTowards(world, world.getLocation(rabbitHole));
-            if (previousPosition.equals(world.getLocation(rabbitHole))) {
-                enterHole(world);
+            
+            if (previousPosition.equals(world.getLocation(rabbitHole)) && world.getLocation(this).equals(previousPosition)) {
+                enterHole();
             }
             return;
         }
 
+        
+
         RabbitHole nearestHole = findNearestRabbitHole(world);
+
         if (nearestHole != null) {
             moveTowards(world, world.getLocation(nearestHole));
             if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
@@ -308,7 +312,7 @@ public class Rabbit extends Animal {
                 nearestHole.addRabbit(this);
             }
         } else {
-            digHole(world);
+            digHole();
         }
     }
 
@@ -328,12 +332,12 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Digs a new Rabbit_new hole at the rabbits location in the world. This method
-     * sets the Rabbit_new's `rabbitHole` attribute to the new hole.
+     * Digs a new rabbit hole at the rabbits location in the world. This method
+     * sets the rabbit's `rabbitHole` attribute to the new hole.
      *
-     * @param world the world in which the Rabbit_new digs a hole
+     * @param world the world in which the rabbit digs a hole
      */
-    public void digHole(World world) {
+    public void digHole() {
         if (rabbitHole != null) {
             throw new RuntimeException("Rabbits should only dig a hole when they don't have one");
         }
@@ -347,10 +351,10 @@ public class Rabbit extends Animal {
         rabbitHole = new RabbitHole(world, location);
         rabbitHole.addRabbit(this);
 
-        enterHole(world);
+        enterHole();
     }
 
-    public void enterHole(World world) {
+    public void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(rabbitHole)) == false) {
             throw new RuntimeException("Rabbits should only enter their own hole when standing on it");
         }
@@ -362,7 +366,7 @@ public class Rabbit extends Animal {
          // TODO chance based so they can dig around tunnels?
     }
 
-    public void exitHole(World world) {
+    public void exitHole() {
         Random random = new Random();
         ArrayList<RabbitHole> exits = rabbitHole.getAllConnectedHoles();
 
@@ -386,9 +390,5 @@ public class Rabbit extends Animal {
             isInsideRabbithole = false;
             world.setTile(holeLocation, this);
         }
-    }
-
-    public int getEnergy() {
-        return energy;
     }
 }

@@ -8,24 +8,29 @@ import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import utils.Functions;
 
+/**
+ * Crazy
+ */
 abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     int age;
-    int adultAge = 6;
+    int adultAge = 120;
 
     int visionRange = 3;
-    int maxEnergy = 200;
-    int energy = 100;
+    int maxEnergy = 40;
+    int energy = 20;
     int energyLoss = 1;
 
     int nutritionalValue;
-    int nutritionalValueAdult = 100;
-    int nutritionalValueBaby = 30;
+    int nutritionalValueAdult = 30;
+    int nutritionalValueBaby = 10;
 
     boolean isSleeping = false;
     boolean hasBred = false;
     boolean breedable;
     boolean isAdult;
+    boolean willDie;
 
     String imageKeyBaby;
     String imageKeyAdult;
@@ -35,7 +40,12 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     
     Location previousPosition;
     World world;
-
+    
+    /**
+     * 
+     * @param world The simulation world.
+     * @param isAdult Whether to spawn the animal as an adult or baby.
+     */
     public Animal(World world, boolean isAdult) {
         this.world = world;
         world.add(this);
@@ -64,11 +74,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         }
         generalAI(); // Remember this runs last.
 
-        if (world.getCurrentTime() == 0) {
-            grow();
-        }
-
-        previousPosition = world.getCurrentLocation();
+        grow();
 
         this.energy -= energyLoss;
         if (energy <= 0) {
@@ -99,23 +105,33 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         return new DisplayInformation(color, imageKey);
     }
 
+    /**
+     * L, bozo.
+     */
     void die() {
         world.delete(this);
     }
 
+    /**
+     * 
+     * @param prey The prey to kill
+     * @return The prey's nutrional value.
+     */
     int kill(Animal prey) {
         int NV = prey.nutritionalValue;
         prey.die();
         return NV;
     }
 
-    // Create the following AI methods in the animal
     abstract void generalAI();
 
     abstract void dayTimeAI();
 
     abstract void nightTimeAI();
 
+    /**
+     * Animal grows once a day. When it reaches a certain age, it becomes an adult.
+     */
     void grow() {
         age++;
         if (age == adultAge) {
@@ -137,7 +153,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     // }
 
     public void findBreedingPartner() {
-
+        //TODO cook.
     }
 
     /**
@@ -165,15 +181,20 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
-
-
-
-    int getEnergy() {
-        return this.energy;
+    /**
+     * Finds nearest item in given ArrayList
+     *
+     * @param world The simulation world.
+     * @param Arraylist Arraylist of multiple objects in the world.
+     * @return returns location of the closest object
+     */
+    public Location nearestObject(ArrayList<Location> object) {
+        Location closest = object.get(0);
+        for (Location location : object) {
+            if (Functions.calculateDistance(world.getLocation(this), location) <Functions.calculateDistance(world.getLocation(this), closest)) {
+                closest = location;
+            }
+        }
+        return closest;
     }
-
-
-
-
-
 }
