@@ -1,9 +1,11 @@
 package animals;
 
-import animals.nests.AnimalNest;
+import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
+import java.util.Set;
+import utils.Functions;
 
 public final class Wolf extends Animal {
 
@@ -19,6 +21,7 @@ public final class Wolf extends Animal {
 
     int nutritionalValueAdult;
     int nutritionalValueBaby;
+    WolfNest WolfNest;
 
     /**
      * Another br'ish method jumpscare
@@ -41,13 +44,13 @@ public final class Wolf extends Animal {
         wolfInit();
     }
 
-    public Wolf(World world, boolean isAdult, AnimalNest animalNest) {
+    public Wolf(World world, boolean isAdult, WolfNest WolfNest) {
         super(world, isAdult);
 
         this.isInsideNest = true;
-        this.animalNest = animalNest;
+        this.WolfNest = WolfNest;
         this.isSleeping = true;
-        animalNest.addAnimal(this);
+        WolfNest.addAnimal(this);
 
         wolfInit();
     }
@@ -72,11 +75,102 @@ public final class Wolf extends Animal {
 
     @Override
     void breed(Animal partner) {
-        new Wolf(world, false, this.animalNest);
+        new Wolf(world, false, this.WolfNest);
         this.energy -= this.breedingEnergy;
         this.hasBred = true;
         partner.setHasBred(true);
         partner.removeEnergy(this.breedingEnergy);
+    }
+
+    /**
+     * Finds the nearest nest within the animals's vision range.
+     *
+     *
+     * @return the nearest nest object, or null if none are found
+     */
+    public WolfNest findNearestNest() {
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+        WolfNest closestHole = null;
+        int closestDistance = Integer.MAX_VALUE;
+
+        for (Location location : surroundings) {
+            if (world.getTile(location) instanceof WolfNest hole) {
+                int distance = Functions.calculateDistance(world.getLocation(this), location);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestHole = hole;
+                }
+            }
+        }
+        return closestHole;
+    }
+
+    /**
+     * Moves the animal toward the nearest nest using moveTowards() if one
+     * exists. If no nest is nearby, the animal digs a new nest.
+     *
+     * @param world the world in which the animal is located
+     */
+    public void moveToOrDigHole() {
+        if (this.WolfNest != null) {
+            moveTowards(world.getLocation(WolfNest));
+
+            if (previousPosition.equals(world.getLocation(WolfNest)) && world.getLocation(this).equals(previousPosition)) {
+                enterHole();
+            }
+            return;
+        }
+
+        WolfNest nearestHole = findNearestNest();
+
+        if (nearestHole != null) {
+            moveTowards(world.getLocation(nearestHole));
+            if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
+                WolfNest = nearestHole;
+                nearestHole.addAnimal(this);
+            }
+        } else {
+            digHole();
+        }
+    }
+
+    /**
+     * Digs a new animal nest at the animals location in the world. This method
+     * sets the animals's `WolfNest` attribute to the new hole.
+     */
+    public void digHole() {
+        if (this.WolfNest != null) {
+            throw new RuntimeException("animals should only dig a hole when they don't have one");
+        }
+
+        Location location = world.getLocation(this);
+
+        if (world.getNonBlocking(location) != null) {
+            return;
+        }
+
+        this.WolfNest = new WolfNest(this.world, location);
+        WolfNest.addAnimal(this);
+
+        enterHole();
+    }
+
+    public void enterHole() {
+        if (world.getLocation(this).equals(world.getLocation(this.WolfNest)) == false) {
+            throw new RuntimeException("animals should only enter their own hole when standing on it");
+        }
+        this.isInsideNest = true;
+
+        isSleeping = true;
+        world.remove(this); // gaming time
+    }
+
+    public void exitHole() {
+        Location holeLocation = world.getLocation(this.WolfNest);
+        if (world.isTileEmpty(holeLocation)) {
+            isInsideNest = false;
+            world.setTile(holeLocation, this);
+        }
     }
 
 }
