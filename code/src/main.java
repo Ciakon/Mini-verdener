@@ -14,7 +14,7 @@ class Main {
      */
     public static void main(String[] args) {
         try {
-            Program program = Functions.createSimulation("gaming");
+            Program program = Functions.createSimulation("t2-4a");
             program.show();
             program.run();
         } catch (FileNotFoundException e) {
