@@ -14,7 +14,7 @@ import java.util.Set;
 import utils.Functions;
 
 /**
- * Crazy
+ * Hassan er gay
  */
 public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
