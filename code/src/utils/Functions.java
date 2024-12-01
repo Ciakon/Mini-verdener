@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+import animals.Bear;
 import animals.Rabbit;
+import animals.Wolf;
 import animals.nests.RabbitHole;
 import itumulator.executable.Program;
 import itumulator.simulator.Actor;
@@ -37,8 +39,11 @@ public class Functions {
         World world = program.getWorld();
 
         while (scanner.hasNext()) {
-            String type = scanner.next();
-            String amountSTR = scanner.next();
+            String line = scanner.nextLine();
+            String[] args = line.split(" ");
+
+            String type = args[0];
+            String amountSTR = args[1];
 
             int amount = 0;
             if (amountSTR.contains("-")) { //min-max
@@ -50,10 +55,22 @@ public class Functions {
             else {
                 amount = Integer.parseInt(amountSTR);
             }
-
             for (int i = 0; i < amount; i++) {
-                createActor(world, type);
+
+                 // When given bear territory position
+                if (args.length == 3 && args[0] == "bear") {
+                    args[2] = args[2].strip().replace("(", "").replace(")", "");
+                    String[] coordinates = args[2].split(",");
+                    Location territory = new Location(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
+
+                    createActor(world, type, territory);
+                }
+                else {
+                    createActor(world, type);
+                }
+
             }
+
 
             System.out.println("Spawned: " + amount + " " + type);
         }
@@ -76,9 +93,32 @@ public class Functions {
             case "grass":
                 return new Grass(world, location);
             case "rabbit":
-                return new Rabbit(world, false, location);
+                return new Rabbit(world, true, location);
+            case "bear":
+                return new Bear(world, true, location);
+            case "wolf":
+                return new Wolf(world, true, location);
             case "burrow":
                 return new RabbitHole(world, location);
+            default:
+                throw new IllegalArgumentException(actor_name + " is not a valid actor");
+        }
+    }
+
+    /**
+     * 
+     * @param world The world where the actors spawn.
+     * @param actor_name  The name of the actor in the text file.
+     * @param territory The actors territory.
+     * @return The actor object. 
+     */
+
+    public static Actor createActor(World world, String actor_name, Location territory) {
+        Location location = findRandomValidLocation(world);
+
+        switch (actor_name) {
+            case "bear":
+                return new Bear(world, true, location, territory);
             default:
                 throw new IllegalArgumentException(actor_name + " is not a valid actor");
         }
