@@ -18,7 +18,7 @@ public class Bear extends Animal {
     int territorySize = 2;
     ArrayList<Bear> family;
 
-    Animal target;
+    ArrayList<Animal> killList;
 
     /**
      * Another br'ish method jumpscare
@@ -102,7 +102,7 @@ public class Bear extends Animal {
         Random random = new Random();
         isSleeping = false;
 
-        if (target == null) {
+        if (killList.isEmpty()) {
             if (isInsideTerritory() == false) {
                 moveTowards(territory);
             } else {
@@ -110,7 +110,7 @@ public class Bear extends Animal {
             }
         } else {
             hunting();
-            System.out.println(target + " is kil");
+            System.out.println(killList.get(0) + " is kil");
         }
 
         if (world.getCurrentTime() >= 7) {
@@ -125,6 +125,7 @@ public class Bear extends Animal {
 
     @Override
     void hunting() {
+        // todo change target to killlist.
         if (this.target != null && world.contains(target)) {
             if (Functions.calculateDistance(world.getLocation(this), world.getLocation(target)) == 1) {
                 kill(target);
@@ -156,7 +157,7 @@ public class Bear extends Animal {
                 if (family.contains(animal)) {
                     continue;
                 }
-                target = animal;
+                killList.add(animal);
             }
         }
     }
