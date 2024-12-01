@@ -9,7 +9,10 @@ import itumulator.world.World;
 import utils.Functions;
 
 
-
+/**
+ * "bear is kil" 
+ * "no"
+ */
 public class Bear extends Animal{
     Location territory;
     int territorySize = 3;
