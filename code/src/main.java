@@ -6,10 +6,9 @@ import utils.Functions;
 
 class Main {
 
-    
-    /** 
+    /**
      * Runs simulation.
-     * 
+     *
      * @param args L, does nothing
      */
     public static void main(String[] args) {

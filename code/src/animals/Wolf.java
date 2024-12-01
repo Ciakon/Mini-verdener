@@ -27,6 +27,11 @@ public final class Wolf extends Animal {
      * Another br'ish method jumpscare
      */
     void wolfInit() {
+        imageKeyBaby = "wolf-small";
+        imageKeyAdult = "wolf-large";
+        imageKeySleepingBaby = "wolf-small-sleeping";
+        imageKeySleepingAdult = "wolf-sleeping";
+
         visionRange = 4;
         maxEnergy = 30;
         energy = 15;
@@ -36,6 +41,7 @@ public final class Wolf extends Animal {
 
         nutritionalValueAdult = 50;
         nutritionalValueBaby = 20;
+        preferedPrey.add("Rabbit");
     }
 
     public Wolf(World world, boolean isAdult, Location location) {
@@ -51,26 +57,27 @@ public final class Wolf extends Animal {
         this.WolfNest = WolfNest;
         this.isSleeping = true;
         WolfNest.addAnimal(this);
-
         wolfInit();
     }
 
     @Override
     void generalAI() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'generalAI'");
+        if (world.isDay()) {
+            isSleeping = false;
+        }
     }
 
     @Override
     void dayTimeAI() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dayTimeAI'");
+        hunting();
     }
 
     @Override
     void nightTimeAI() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'nightTimeAI'");
+        if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideNest) {
+            this.findBreedingPartner();
+        }
+        this.moveToOrDigHole();
     }
 
     @Override
@@ -83,7 +90,7 @@ public final class Wolf extends Animal {
     }
 
     /**
-     * Finds the nearest nest within the animals's vision range.
+     * Finds the nearest nest within the wolf's vision range.
      *
      *
      * @return the nearest nest object, or null if none are found
@@ -106,8 +113,8 @@ public final class Wolf extends Animal {
     }
 
     /**
-     * Moves the animal toward the nearest nest using moveTowards() if one
-     * exists. If no nest is nearby, the animal digs a new nest.
+     * Moves the wolf toward the nearest nest using moveTowards() if one exists.
+     * If no nest is nearby, the wolf digs a new nest.
      *
      * @param world the world in which the animal is located
      */
@@ -135,8 +142,8 @@ public final class Wolf extends Animal {
     }
 
     /**
-     * Digs a new animal nest at the animals location in the world. This method
-     * sets the animals's `WolfNest` attribute to the new hole.
+     * Digs a new AnimalNest at the wolfs location in the world. This method
+     * sets the wolf's `WolfNest` attribute to the new hole.
      */
     public void digHole() {
         if (this.WolfNest != null) {
