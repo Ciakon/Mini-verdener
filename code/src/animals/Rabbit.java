@@ -17,8 +17,6 @@ public class Rabbit extends Animal {
     RabbitHole rabbitHole;
     int breedingEnergy = 15;
 
-    Color color = Color.gray;
-
     /**
      * British method jumpscare
      */
@@ -27,6 +25,7 @@ public class Rabbit extends Animal {
         imageKeyAdult = "rabbit-large";
         imageKeySleepingBaby = "rabbit-small-sleeping";
         imageKeySleepingAdult = "rabbit-sleeping";
+        color = Color.gray;
 
         visionRange = 4;
         maxEnergy = 30;
@@ -78,11 +77,6 @@ public class Rabbit extends Animal {
         if (world.isDay()) {
             isSleeping = false;
         }
-
-        if (world.getCurrentTime() >= 7 && isInsideRabbithole == false) { // go back in the evening
-            moveToOrDigHole();
-        }
-
         if (isInsideRabbithole == false) {
             this.eatIfOnGrass();
             previousPosition = world.getLocation(this);
@@ -96,7 +90,11 @@ public class Rabbit extends Animal {
         }
 
         if (isInsideRabbithole == false) {
-            DayTimeMovementAI();
+            if (world.getCurrentTime() >= 7) { // go back in the evening
+                moveToOrDigHole();
+            } else {
+                DayTimeMovementAI();
+            }
         }
     }
 
@@ -105,6 +103,10 @@ public class Rabbit extends Animal {
         if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
             this.findBreedingPartner();
         }
+        if (isInsideRabbithole == false) {
+            moveToOrDigHole();
+        }
+
     }
 
     /**
