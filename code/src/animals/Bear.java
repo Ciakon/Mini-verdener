@@ -15,7 +15,7 @@ import utils.Functions;
 public class Bear extends Animal {
 
     Location territory;
-    int territorySize = 2;
+    int territorySize = 20;
     ArrayList<Bear> family;
 
     ArrayList<Animal> killList;
@@ -151,37 +151,6 @@ public class Bear extends Animal {
                     this.energy += kill(prey);
                 }
             }
-        }
-    }
-
-    @Override
-    public void moveTowards(Location desiredLocation) {
-        Location currentLocation = world.getLocation(this);
-        int movementInX = currentLocation.getX();
-        int movementInY = currentLocation.getY();
-
-        // Determine movement direction
-        if (currentLocation.getX() < desiredLocation.getX()) {
-            movementInX++;
-        } else if (currentLocation.getX() > desiredLocation.getX()) {
-            movementInX--;
-        }
-
-        if (currentLocation.getY() < desiredLocation.getY()) {
-            movementInY++;
-        } else if (currentLocation.getY() > desiredLocation.getY()) {
-            movementInY--;
-        }
-
-        Location movement = new Location(movementInX, movementInY);
-
-        // Move if the target tile is empty
-        if (world.isTileEmpty(movement)) {
-            System.out.println("Moving to " + movement);
-            world.move(this, movement);
-        } else {
-            System.out.println("Cannot move to " + movement + " as it is occupied.");
-            System.out.println(world.isTileEmpty(movement));
         }
     }
 
