@@ -157,6 +157,7 @@ public class Bear extends Animal {
                 if (family.contains(animal)) {
                     continue;
                 }
+                if (killList.contains(animal)) continue;
                 killList.add(animal);
             }
         }
