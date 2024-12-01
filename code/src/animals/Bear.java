@@ -1,26 +1,25 @@
 package animals;
 
+import itumulator.world.Location;
+import itumulator.world.World;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
-
-import itumulator.world.Location;
-import itumulator.world.World;
 import plants.BerryBush;
 import utils.Functions;
 
-
 /**
- * "bear is kil" 
- * "no"
+ * "bear is kil" "no"
  */
-public class Bear extends Animal{
+public class Bear extends Animal {
+
     Location territory;
     int territorySize = 2;
     ArrayList<Bear> family;
-    
+
     Animal target;
+
     /**
      * Another br'ish method jumpscare
      */
@@ -40,16 +39,17 @@ public class Bear extends Animal{
         imageKeySleepingBaby = "bear-small-sleeping";
         imageKeySleepingAdult = "bear-sleeping";
         color = Color.black;
+        preferedPrey.add("Rabbit");
+        preferedPrey.add("Wolf");
     }
 
     /**
      * This constructor is used when creating a bear normally.
-     * 
-     * @param world  The simulation world.
+     *
+     * @param world The simulation world.
      * @param isAdult Whether to spawn the bear as an adult or baby.
      * @param location Where to spawn it.
      */
-
     public Bear(World world, boolean isAdult, Location location) {
         super(world, isAdult);
         world.setTile(location, this);
@@ -60,13 +60,12 @@ public class Bear extends Animal{
 
     /**
      * This constructor is used when creating a bear with a given territory.
-     * 
-     * @param world  The simulation world.
+     *
+     * @param world The simulation world.
      * @param isAdult Whether to spawn the bear as an adult or baby.
      * @param location Where to spawn it.
      * @param territory Where to place its territory .
      */
-
     public Bear(World world, boolean isAdult, Location location, Location territory) {
         super(world, isAdult);
         world.setTile(location, this);
@@ -77,14 +76,13 @@ public class Bear extends Animal{
 
     /**
      * This constructor is used when bears breed.
-     * 
-     * @param world  The simulation world.
+     *
+     * @param world The simulation world.
      * @param isAdult Whether to spawn the bear as an adult or baby.
      * @param location Where to spawn it.
      * @param territory Where to place its territory .
      * @param family Their family members.
      */
-
     public Bear(World world, boolean isAdult, Location location, Location territory, ArrayList<Bear> family) {
         super(world, isAdult);
         world.setTile(location, this);
@@ -107,17 +105,13 @@ public class Bear extends Animal{
         if (target == null) {
             if (isInsideTerritory() == false) {
                 moveTowards(territory);
-            }
-            else {
+            } else {
                 // Chill
             }
-        }
-        else {
-            //TODO bear hunting
-            moveTowards(territory);
+        } else {
+            hunting();
             System.out.println(target + " is kil");
         }
-
 
         if (world.getCurrentTime() >= 7) {
             sleeperTime();
@@ -130,16 +124,28 @@ public class Bear extends Animal{
     }
 
     @Override
+    void hunting() {
+        if (this.target != null && world.contains(target)) {
+            if (Functions.calculateDistance(world.getLocation(this), world.getLocation(target)) == 1) {
+                kill(target);
+            } else {
+                moveTowards(world.getLocation(target));
+            }
+        } else {
+            super.hunting();
+        }
+    }
+
+    @Override
     void breed(Animal partner) {
         // Bear child;
         // this.family.add(child);
     }
 
-    
     /**
-     * Checks if an animal enters the bears territory and sets it as a target. Does not target family members.
+     * Checks if an animal enters the bears territory and sets it as a target.
+     * Does not target family members.
      */
-
     void checkForIllegalActivity() {
         Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
 
@@ -157,9 +163,9 @@ public class Bear extends Animal{
         target = null;
     }
 
-
     /**
-     * Finds and eats the nearest non-depleted BerryBush if no animals are in its territory.
+     * Finds and eats the nearest non-depleted BerryBush if no animals are in
+     * its territory.
      *
      * @return True if a BerryBush was eaten; false otherwise.
      */
@@ -169,12 +175,13 @@ public class Bear extends Animal{
             if (world.getNonBlocking(location) instanceof BerryBush berryBush && !berryBush.isDepleted()) {
                 moveTowards(location);
 
-
                 if (world.getLocation(this).equals(location)) {
                     int nutrition = berryBush.consumeBerries();
                     this.energy += nutrition;
 
-                    if (this.energy > maxEnergy) this.energy = maxEnergy;
+                    if (this.energy > maxEnergy) {
+                        this.energy = maxEnergy;
+                    }
 
                     return true;
                 }
@@ -184,13 +191,13 @@ public class Bear extends Animal{
         return false;
     }
 
-
     /**
      * Goes back to its territory and sleeps.
      */
-
     void sleeperTime() {
-        if (isSleeping) return;
+        if (isSleeping) {
+            return;
+        }
 
         moveTowards(territory);
         if (isInsideTerritory()) {
@@ -201,11 +208,14 @@ public class Bear extends Animal{
 
     /**
      * Check if the bear is inside its territory
+     *
      * @return whether the bear is in the terrotory.
      */
     boolean isInsideTerritory() {
         for (Location l : world.getSurroundingTiles(territory, territorySize)) {
-            if (l.equals(world.getLocation(this))) return true;
+            if (l.equals(world.getLocation(this))) {
+                return true;
+            }
         }
         return false;
     }
