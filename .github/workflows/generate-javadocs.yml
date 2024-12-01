@@ -24,7 +24,9 @@ jobs:
       # Step 3: Generate Javadocs (allow failure)
       - name: Generate Javadocs
         run: |
-          javadoc -d ./code/miniverdener_docs -sourcepath ./code/src ./code/src/*.java || true
+          find ./code/src -type d -not -path './code/src/Itumulator' > subpackages.txt
+          javadoc -d miniverdener_docs -subpackages $(cat subpackages.txt) || true
+
 
       # Step 4: Publish Javadocs to GitHub Pages
       - name: Deploy to GitHub Pages
