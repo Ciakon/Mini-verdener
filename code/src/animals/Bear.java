@@ -195,14 +195,16 @@ public class Bear extends Animal {
      * Goes back to its territory and sleeps.
      */
     void sleeperTime() {
+        if (isInsideTerritory()) {
+            isSleeping = true;
+        }
+
         if (isSleeping) {
             return;
         }
 
         moveTowards(territory);
-        if (isInsideTerritory()) {
-            isSleeping = true;
-        }
+        
 
     }
 
