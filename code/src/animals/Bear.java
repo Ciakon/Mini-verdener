@@ -7,6 +7,9 @@ import java.util.Set;
 
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.BerryBush;
+import utils.Functions;
+
 
 /**
  * "bear is kil" 
@@ -149,8 +152,38 @@ public class Bear extends Animal{
                 }
                 target = animal;
             }
+
         }
+        target = null;
     }
+
+
+    /**
+     * Finds and eats the nearest non-depleted BerryBush if no animals are in its territory.
+     *
+     * @return True if a BerryBush was eaten; false otherwise.
+     */
+    boolean eatBerryBush() {
+        Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
+        for (Location location : territoryTiles) {
+            if (world.getNonBlocking(location) instanceof BerryBush berryBush && !berryBush.isDepleted()) {
+                moveTowards(location);
+
+
+                if (world.getLocation(this).equals(location)) {
+                    int nutrition = berryBush.consumeBerries();
+                    this.energy += nutrition;
+
+                    if (this.energy > maxEnergy) this.energy = maxEnergy;
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 
     /**
      * Goes back to its territory and sleeps.
