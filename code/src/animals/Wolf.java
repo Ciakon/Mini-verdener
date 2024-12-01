@@ -212,9 +212,7 @@ public class Wolf extends Animal {
      * @param rabbit The rabbit to be eaten.
      */
     private void eatRabbit(Rabbit rabbit) {
-        int gainedEnergy = rabbit.nutritionalValue;
-        rabbit.die();
-        this.energy += gainedEnergy;
+        this.energy += this.kill(rabbit);
         if (this.energy > maxEnergy) this.energy = maxEnergy;
     }
 
