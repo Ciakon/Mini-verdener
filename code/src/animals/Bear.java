@@ -158,9 +158,7 @@ public class Bear extends Animal {
                 }
                 target = animal;
             }
-
         }
-        target = null;
     }
 
     /**
