@@ -174,32 +174,58 @@ public class Bear extends Animal {
     }
 
     /**
-     * Finds and eats the nearest non-depleted BerryBush if no animals are in
-     * its territory.
+     * Finds the nearest non-depleted BerryBush within the bear's vision range.
      *
-     * @return True if a BerryBush was eaten; false otherwise.
+     * @return The nearest BerryBush, or null if none are found.
      */
-    boolean eatBerryBush() {
+    public BerryBush findNearestBerryBush() {
         Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
+
         for (Location location : territoryTiles) {
             if (world.getNonBlocking(location) instanceof BerryBush berryBush && !berryBush.isDepleted()) {
-                moveTowards(location);
-
-                if (world.getLocation(this).equals(location)) {
-                    int nutrition = berryBush.consumeBerries();
-                    this.energy += nutrition;
-
-                    if (this.energy > maxEnergy) {
-                        this.energy = maxEnergy;
-                    }
-
-                    return true;
-                }
+                return berryBush;
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Consumes berries from a BerryBush if the bear is at the same location as the bush.
+     *
+     * @param berryBush The BerryBush to consume berries from.
+     * @return True if berries were consumed, false otherwise.
+     */
+    public boolean eatBerryBush(BerryBush berryBush) {
+        if (berryBush == null) return false;
+
+
+        if (world.getLocation(this).equals(world.getLocation(berryBush))) {
+            int nutrition = berryBush.consumeBerries();
+            this.energy += nutrition;
+
+            if (this.energy > maxEnergy) this.energy = maxEnergy;
+            return true;
         }
 
         return false;
     }
+
+    /**
+     * Handles the bear's interaction with a BerryBush:
+     * Finds the nearest BerryBush
+     * Moves toward it if not already there
+     * Eats it when at the same location
+     */
+    public void interactWithBerryBush() {
+        BerryBush nearestBush = findNearestBerryBush();
+        if (nearestBush != null) {
+            if (!eatBerryBush(nearestBush)) {
+                moveTowards(world.getLocation(nearestBush));
+            }
+        }
+    }
+}
 
     /**
      * Goes back to its territory and sleeps.
