@@ -1,19 +1,17 @@
 package animals;
 
+import animals.nests.RabbitHole;
 import itumulator.world.Location;
 import itumulator.world.World;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Set;
 import plants.Grass;
 import utils.Functions;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-import animals.nests.RabbitHole;
-
 public class Rabbit extends Animal {
+
     double digNewExitChance = 0.2;
     boolean isInsideRabbithole;
     RabbitHole rabbitHole;
@@ -43,7 +41,7 @@ public class Rabbit extends Animal {
 
     /**
      * This constructor should be used whebn spawning a rabbit outside.
-     * 
+     *
      * @param world The simulation world.
      * @param isAdult Whether to spawn the rabbit as an adult or baby.
      * @param location Where to spawn it.
@@ -58,8 +56,9 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * This constructor should be used whebn spawning a rabbit inside a rabbithole.
-     * 
+     * This constructor should be used whebn spawning a rabbit inside a
+     * rabbithole.
+     *
      * @param world The simulation world.
      * @param isAdult Whether to spawn the rabbit as an adult or baby.
      * @param location Where to spawn it.
@@ -107,7 +106,7 @@ public class Rabbit extends Animal {
 
     @Override
     void nightTimeAI() {
-        
+
     }
 
     /**
@@ -125,7 +124,7 @@ public class Rabbit extends Animal {
 
     /**
      * breeds with other rabbit
-     * 
+     *
      * @param partner Rabbit to breed with
      */
     @Override
@@ -161,9 +160,9 @@ public class Rabbit extends Animal {
      *
      */
     public void eatIfOnGrass() {
-        Location closetgrass = this.closetGrass();
-        if (closetgrass == world.getLocation(this)) {
-            if (world.getNonBlocking(closetgrass) instanceof Grass grass) {
+        Location nearestGrass = this.nearestGrass();
+        if (nearestGrass == world.getLocation(this)) {
+            if (world.getNonBlocking(nearestGrass) instanceof Grass grass) {
                 this.energy += grass.getNutritionalValue();
                 if (this.energy > maxEnergy) {
                     this.energy = maxEnergy;
@@ -185,15 +184,12 @@ public class Rabbit extends Animal {
 
             Location desiredGrass = nearestObject(nearbyGrass);
             moveTowards(world, desiredGrass);
-            this.energy -= (int) (energyLoss*0.1);
-        } 
-        else {
-
-            Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
-            Location nextLocation = randomLocation(freeLocations);
-            if (freeLocations != null) {
+            this.energy -= (int) (energyLoss * 0.1);
+        } else {
+            Location nextLocation = randomFreeLocation();
+            if (nextLocation != null) {
                 world.move(this, nextLocation);
-                this.energy -= (int) (energyLoss*0.1);
+                this.energy -= (int) (energyLoss * 0.1);
             }
         }
     }
@@ -203,13 +199,13 @@ public class Rabbit extends Animal {
      * @param world The simulation world.
      * @return returns the closet grass to the Rabbit
      */
-    public Location closetGrass() {
+    public Location nearestGrass() {
         ArrayList<Location> nearbyGrass = findGrass(world);
-        Location closetGrass = null;
+        Location nearestGrass = null;
         if (!nearbyGrass.isEmpty()) {
-            closetGrass = nearestObject(nearbyGrass);
+            nearestGrass = nearestObject(nearbyGrass);
         }
-        return closetGrass;
+        return nearestGrass;
     }
 
     /**
@@ -222,7 +218,7 @@ public class Rabbit extends Animal {
         ArrayList<Location> nearbyGrass = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         Location here = world.getLocation(this);
-        if (world.containsNonBlocking(here) && world.getNonBlocking(here) instanceof Grass) {
+        if (world.containsNonBlocking(here) && world.getNonBlocking(here) instanceof Grass) { //if rabbit standing on grass
             nearbyGrass.add(world.getLocation(this));
         }
         for (Location location : surroundings) {
@@ -234,7 +230,6 @@ public class Rabbit extends Animal {
         }
         return nearbyGrass;
     }
-
 
     /**
      * Finds the nearest rabbit hole within the rabbit's vision range.
@@ -285,6 +280,7 @@ public class Rabbit extends Animal {
             world.move(this, movement);
         }
     }
+
     /**
      * Moves the rabbit toward the nearest rabbit hole using moveTowards() if
      * one exists. If no rabbit hole is nearby, the rabbit digs a new hole.
@@ -294,14 +290,12 @@ public class Rabbit extends Animal {
     public void moveToOrDigHole() {
         if (rabbitHole != null) {
             moveTowards(world, world.getLocation(rabbitHole));
-            
+
             if (previousPosition.equals(world.getLocation(rabbitHole)) && world.getLocation(this).equals(previousPosition)) {
                 enterHole();
             }
             return;
         }
-
-        
 
         RabbitHole nearestHole = findNearestRabbitHole(world);
 
@@ -314,21 +308,6 @@ public class Rabbit extends Animal {
         } else {
             digHole();
         }
-    }
-
-    /**
-     * chooses random location out of set of locations
-     *
-     * @param locationSet a Set<> of Location. returns null if Set is empty
-     */
-    public Location randomLocation(Set<Location> LocationSet) {
-        if (LocationSet.isEmpty()) {
-            return null;
-        }
-        List<Location> LocationlList = new ArrayList<>(LocationSet);
-        Random random = new Random();
-        int randomIndex = random.nextInt(LocationlList.size());
-        return LocationlList.get(randomIndex);
     }
 
     /**
@@ -363,7 +342,7 @@ public class Rabbit extends Animal {
         isSleeping = true;
         world.remove(this); // gaming time
 
-         // TODO chance based so they can dig around tunnels?
+        // TODO chance based so they can dig around tunnels?
     }
 
     public void exitHole() {
@@ -372,19 +351,17 @@ public class Rabbit extends Animal {
 
         if (isInsideRabbithole == false) {
             throw new RuntimeException("nah");
-        }
-        else if (random.nextDouble() < digNewExitChance) {
+        } else if (random.nextDouble() < digNewExitChance) {
             Location l = Functions.findRandomValidLocation(world);
             RabbitHole new_exit = new RabbitHole(world, l, exits);
             rabbitHole = new_exit;
-        }
-        else {
-        // choose a random connected hole in the tunnel. That is now the new and only entrance (dementia moment).
+        } else {
+            // choose a random connected hole in the tunnel. That is now the new and only entrance (dementia moment).
             int hole_nr = random.nextInt(exits.size());
             RabbitHole new_exit = exits.get(hole_nr);
             rabbitHole = new_exit;
         }
-    
+
         Location holeLocation = world.getLocation(rabbitHole);
         if (world.isTileEmpty(holeLocation)) {
             isInsideRabbithole = false;

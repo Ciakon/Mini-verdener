@@ -1,19 +1,22 @@
 package animals;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
 import itumulator.executable.DisplayInformation;
 import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import utils.Functions;
 
 /**
  * Crazy
  */
 abstract class Animal implements Actor, DynamicDisplayInformationProvider {
+
     int age;
     int adultAge = 120;
 
@@ -37,26 +40,25 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     String imageKeySleepingBaby;
     String imageKeySleepingAdult;
     Color color = Color.red;
-    
+
     Location previousPosition;
     World world;
-    
+    ArrayList<String> preferedPrey;
+
     /**
-     * 
+     *
      * @param world The simulation world.
      * @param isAdult Whether to spawn the animal as an adult or baby.
      */
     public Animal(World world, boolean isAdult) {
         this.world = world;
         world.add(this);
-
         if (isAdult) {
             this.isAdult = true;
             this.age = adultAge;
             this.breedable = true;
             this.nutritionalValue = nutritionalValueAdult;
-        }
-        else {
+        } else {
             this.isAdult = false;
             this.age = 0;
             this.breedable = false;
@@ -68,8 +70,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     public void act(World world) {
         if (world.isDay()) {
             dayTimeAI();
-        }
-        else {
+        } else {
             nightTimeAI();
         }
         generalAI(); // Remember this runs last.
@@ -89,16 +90,13 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         if (isSleeping) {
             if (isAdult) {
                 imageKey = imageKeySleepingAdult;
-            }
-            else {
+            } else {
                 imageKey = imageKeySleepingBaby;
             }
-        }
-        else {
+        } else {
             if (isAdult) {
                 imageKey = imageKeyAdult;
-            }
-            else {
+            } else {
                 imageKey = imageKeyBaby;
             }
         }
@@ -113,7 +111,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     }
 
     /**
-     * 
+     *
      * @param prey The prey to kill
      * @return The prey's nutrional value.
      */
@@ -123,14 +121,72 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         return NV;
     }
 
+    ArrayList<Location> findPrey() {
+        ArrayList<Location> nearbyPrey = new ArrayList<>();
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+        for (Location location : surroundings) {
+            if (world.getTile(location) instanceof Animal animal) {
+                if (isPrey(animal)) {
+                    nearbyPrey.add(location);
+                }
+            }
+        }
+        return nearbyPrey;
+    }
+
+    void hunting() {
+        ArrayList<Location> nearbyPrey = findPrey();
+        if (!nearbyPrey.isEmpty()) {
+            Location nearestPrey = nearestObject(nearbyPrey);
+            if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
+                moveTowards(nearestPrey);
+            } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
+                this.energy += kill((Animal) world.getTile(nearestPrey));
+            } else {
+                Location nextLocation = randomFreeLocation();
+                if (nextLocation != null) {
+                    world.move(this, nextLocation);
+                    this.energy -= (int) (energyLoss * 0.1);
+                }
+            }
+        }
+    }
+
+    /**
+     * Finds empty surrounding location to move to
+     *
+     * @return Returns random empty surrounding location if there exists at
+     * least 1
+     */
+    Location randomFreeLocation() {
+        Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
+        if (freeLocations.isEmpty()) {
+            return null;
+        }
+        List<Location> LocationlList = new ArrayList<>(freeLocations);
+        Random random = new Random();
+        int randomIndex = random.nextInt(LocationlList.size());
+        return LocationlList.get(randomIndex);
+    }
+
     abstract void generalAI();
 
     abstract void dayTimeAI();
 
     abstract void nightTimeAI();
 
+    Boolean isPrey(Animal animal) {
+        for (String prey : preferedPrey) {
+            if (animal.getClass().getSimpleName().equals(prey)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
-     * Animal grows once a day. When it reaches a certain age, it becomes an adult.
+     * Animal grows once a day. When it reaches a certain age, it becomes an
+     * adult.
      */
     void grow() {
         age++;
@@ -148,10 +204,8 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     //     Animal child = new Animal(world, isAdult = false);
     //     energy -= energyLoss;
     //     hasBred = true; 
-
     //     return child;
     // }
-
     public void findBreedingPartner() {
         //TODO cook.
     }
@@ -184,17 +238,16 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     /**
      * Finds nearest item in given ArrayList
      *
-     * @param world The simulation world.
      * @param Arraylist Arraylist of multiple objects in the world.
      * @return returns location of the closest object
      */
     public Location nearestObject(ArrayList<Location> object) {
-        Location closest = object.get(0);
+        Location nearest = object.get(0);
         for (Location location : object) {
-            if (Functions.calculateDistance(world.getLocation(this), location) <Functions.calculateDistance(world.getLocation(this), closest)) {
-                closest = location;
+            if (Functions.calculateDistance(world.getLocation(this), location) < Functions.calculateDistance(world.getLocation(this), nearest)) {
+                nearest = location;
             }
         }
-        return closest;
+        return nearest;
     }
 }
