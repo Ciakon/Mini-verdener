@@ -15,7 +15,7 @@ import utils.Functions;
 /**
  * Crazy
  */
-abstract class Animal implements Actor, DynamicDisplayInformationProvider {
+public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     int age;
     int adultAge = 120;
