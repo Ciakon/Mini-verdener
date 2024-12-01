@@ -86,6 +86,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         if (energy <= 0) {
             die();
         }
+        if (energy >= maxEnergy) {
+            energy = maxEnergy;
+        }
     }
 
     @Override
@@ -175,7 +178,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
                 Location nextLocation = randomFreeLocation();
                 if (nextLocation != null) {
                     world.move(this, nextLocation);
-                    this.energy -= (int) (this.energyLoss * 0.1);
+                    this.energy -= (int) (this.energyLoss * 2);
                 }
             }
         }

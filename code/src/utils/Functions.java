@@ -196,4 +196,18 @@ public class Functions {
     public static int calculateDistance(Location loc1, Location loc2) {
         return Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY());
     }
+
+    public static void swapObjects(World world, Object o1, Object o2) {
+        int x1 = world.getLocation(o1).getX();
+        int y1 = world.getLocation(o1).getY();
+        int x2 = world.getLocation(o2).getX();
+        int y2 = world.getLocation(o2).getY();
+
+        Location l1 = new Location(x1, y1);
+        Location l2 = new Location(x2, y2);
+
+        world.remove(o1);
+        world.move(o2, l1);
+        world.setTile(l2, o1);
+    }
 }

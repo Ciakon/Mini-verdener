@@ -251,6 +251,7 @@ public class Bear extends Animal {
         }
 
         moveTowards(territory);
+        
 
     }
 
