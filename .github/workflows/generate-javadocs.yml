@@ -24,6 +24,7 @@ jobs:
       # Step 3: Generate Javadocs (allow failure)
       - name: Generate Javadocs
         run: |
+          # hassan er gay  
           javadoc -d ./docs -sourcepath ./code/src $(find ./code/src -name "*.java" -not -path "./code/src/itumulator/*") || true
 
       # Step 4: Publish Javadocs to GitHub Pages
