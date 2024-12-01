@@ -190,6 +190,51 @@ public class Wolf extends Animal {
         }
     }
 
+    /**
+     * Handles combat between this wolf and another animal.
+     *
+     * @param opponent The animal this wolf is fighting.
+     */
+    public void combat(Animal opponent) {
+        if (opponent instanceof Rabbit) {
+            eatRabbit((Rabbit) opponent);
+        } else if (opponent instanceof Wolf) {
+            wolfCombat((Wolf) opponent);
+        }
+    }
+
+    /**
+     * the wolf hunts a rabbit.
+     *
+     * @param rabbit The rabbit to be eaten.
+     */
+    private void eatRabbit(Rabbit rabbit) {
+        int gainedEnergy = rabbit.nutritionalValue;
+        rabbit.die();
+        this.energy += gainedEnergy;
+        if (this.energy > maxEnergy) this.energy = maxEnergy;
+    }
+
+    /**
+     * Resolves a fight between two wolves based on their energy.
+     *
+     * @param otherWolf The wolf this wolf is fighting.
+     */
+    private void wolfCombat(Wolf otherWolf) {
+        if (this.energy > otherWolf.energy) {
+            this.energy -= otherWolf.energy;
+            otherWolf.die();
+        } else if (this.energy < otherWolf.energy) {
+            otherWolf.energy -= this.energy;
+            this.die();
+        } else {
+            this.die();
+            otherWolf.die();
+        }
+    }
+
+
+
     public void addToPack(ArrayList<Wolf> pack) {
         this.pack = pack;
         pack.add(this);
