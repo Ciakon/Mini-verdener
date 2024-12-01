@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import animals.nests.AnimalNest;
 import utils.Functions;
 
 /**
  * Crazy
  */
-abstract class Animal implements Actor, DynamicDisplayInformationProvider {
+public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     int age;
     int adultAge = 120;
@@ -28,12 +30,14 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     int nutritionalValue;
     int nutritionalValueAdult = 30;
     int nutritionalValueBaby = 10;
+    int breedingEnergy = 15;
 
     boolean isSleeping = false;
     boolean hasBred = false;
     boolean breedable;
     boolean isAdult;
     boolean willDie;
+    boolean isInsideNest;
 
     String imageKeyBaby;
     String imageKeyAdult;
@@ -44,6 +48,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     Location previousPosition;
     World world;
     ArrayList<String> preferedPrey;
+    AnimalNest animalNest;
 
     /**
      *
@@ -121,6 +126,26 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         return NV;
     }
 
+    /**
+     * Checks if an animal is a prey
+     *
+     * @param animal animal to check if prey
+     * @return Returns true if animal is in prefered prey list
+     */
+    Boolean isPrey(Animal animal) {
+        for (String prey : preferedPrey) {
+            if (animal.getClass().getSimpleName().equals(prey)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * finds all nearby prey within visionRange
+     *
+     * @return an ArrayList of all nearby prey
+     */
     ArrayList<Location> findPrey() {
         ArrayList<Location> nearbyPrey = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
@@ -134,6 +159,10 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
         return nearbyPrey;
     }
 
+    /**
+     * Moves towards nearest prey. If they are within range, eat them instead.
+     * If there is no prey move randomly
+     */
     void hunting() {
         ArrayList<Location> nearbyPrey = findPrey();
         if (!nearbyPrey.isEmpty()) {
@@ -146,7 +175,7 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
                 Location nextLocation = randomFreeLocation();
                 if (nextLocation != null) {
                     world.move(this, nextLocation);
-                    this.energy -= (int) (energyLoss * 0.1);
+                    this.energy -= (int) (this.energyLoss * 0.1);
                 }
             }
         }
@@ -175,15 +204,6 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
     abstract void nightTimeAI();
 
-    Boolean isPrey(Animal animal) {
-        for (String prey : preferedPrey) {
-            if (animal.getClass().getSimpleName().equals(prey)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * Animal grows once a day. When it reaches a certain age, it becomes an
      * adult.
@@ -207,7 +227,13 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
     //     return child;
     // }
     public void findBreedingPartner() {
-        //TODO cook.
+        ArrayList<Animal> animalList = this.animalNest.getAllRabbits();
+        for (Animal animal : animalList) {
+            if (animal != this && animal.getBreedable() && !animal.getHasBred() && animal.getIsInsideNest() && animal.getEnergy() > this.breedingEnergy && this.getClass() == animal.getClass()) {
+                this.breed(animal);
+                break;
+            }
+        }
     }
 
     /**
@@ -249,5 +275,34 @@ abstract class Animal implements Actor, DynamicDisplayInformationProvider {
             }
         }
         return nearest;
+    }
+
+    boolean getBreedable() {
+        return this.breedable;
+    }
+
+    boolean getHasBred() {
+        return this.hasBred;
+    }
+
+    void setHasBred(boolean hasBred) {
+        this.hasBred = hasBred;
+    }
+
+    boolean getIsInsideNest() {
+        return this.isInsideNest;
+    }
+
+    int getEnergy() {
+        return this.energy;
+    }
+
+    /**
+     * removes a certain amount of energy
+     *
+     * @param amount positive int of how much energy needs to be removed
+     */
+    void removeEnergy(int amount) {
+        this.energy -= amount;
     }
 }

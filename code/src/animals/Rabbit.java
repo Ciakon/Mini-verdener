@@ -183,7 +183,7 @@ public class Rabbit extends Animal {
         if (!nearbyGrass.isEmpty()) {
 
             Location desiredGrass = nearestObject(nearbyGrass);
-            moveTowards(world, desiredGrass);
+            moveTowards(desiredGrass);
             this.energy -= (int) (energyLoss * 0.1);
         } else {
             Location nextLocation = randomFreeLocation();
@@ -256,32 +256,6 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * Moves rabbit 1 tile towards a given location
-     *
-     * @param world world which the rabbit is in
-     * @param desiredlocation location to move towards
-     */
-    public void moveTowards(World world, Location desiredLocation) {
-        int movementInX = world.getLocation(this).getX();
-        int movementInY = world.getLocation(this).getY();
-        if (world.getLocation(this).getX() < desiredLocation.getX()) {
-            movementInX++;
-        } else if (world.getLocation(this).getX() > desiredLocation.getX()) {
-            movementInX--;
-        }
-
-        if (world.getLocation(this).getY() < desiredLocation.getY()) {
-            movementInY++;
-        } else if (world.getLocation(this).getY() > desiredLocation.getY()) {
-            movementInY--;
-        }
-        Location movement = new Location(movementInX, movementInY);
-        if (world.isTileEmpty(movement)) {
-            world.move(this, movement);
-        }
-    }
-
-    /**
      * Moves the rabbit toward the nearest rabbit hole using moveTowards() if
      * one exists. If no rabbit hole is nearby, the rabbit digs a new hole.
      *
@@ -289,7 +263,7 @@ public class Rabbit extends Animal {
      */
     public void moveToOrDigHole() {
         if (rabbitHole != null) {
-            moveTowards(world, world.getLocation(rabbitHole));
+            moveTowards(world.getLocation(rabbitHole));
 
             if (previousPosition.equals(world.getLocation(rabbitHole)) && world.getLocation(this).equals(previousPosition)) {
                 enterHole();
@@ -300,7 +274,7 @@ public class Rabbit extends Animal {
         RabbitHole nearestHole = findNearestRabbitHole(world);
 
         if (nearestHole != null) {
-            moveTowards(world, world.getLocation(nearestHole));
+            moveTowards(world.getLocation(nearestHole));
             if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
                 rabbitHole = nearestHole;
                 nearestHole.addRabbit(this);
