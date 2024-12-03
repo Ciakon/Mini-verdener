@@ -18,7 +18,7 @@ public class Wolf extends Animal {
      */
     void wolfInit() {
         imageKeyBaby = "wolf-small";
-        imageKeyAdult = "wolf";
+        imageKeyAdult = "dog";
         imageKeySleepingBaby = "wolf-small-sleeping";
         imageKeySleepingAdult = "wolf-sleeping";
         color = Color.gray;
