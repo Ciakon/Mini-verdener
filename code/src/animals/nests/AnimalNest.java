@@ -30,8 +30,8 @@ public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayI
      *
      * @param animal The animal object.
      */
-    public void addAnimal(Animal animal) {
-        animals.add((Type) animal);
+    public void addAnimal(Type animal) {
+        animals.add(animal);
     }
 
     /**
@@ -39,7 +39,7 @@ public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayI
      *
      * @param animal The animal object.
      */
-    public void removeAnimal(Animal animal) {
+    public void removeAnimal(Type animal) {
         animals.remove(animal);
     }
 
@@ -48,8 +48,8 @@ public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayI
      *
      * @return list of animals.
      */
-    public ArrayList<Animal> getAllAnimals() {
-        return (ArrayList<Animal>) this.animals;
+    public ArrayList<Type> getAllAnimals() {
+        return (ArrayList<Type>) this.animals;
     }
 
 }
