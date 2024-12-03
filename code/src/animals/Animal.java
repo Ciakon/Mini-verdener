@@ -232,7 +232,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     public void findBreedingPartner() {
         ArrayList<Animal> animalList = this.animalNest.getAllAnimals();
         for (Animal animal : animalList) {
-            if (animal != this && animal.getBreedable() && !animal.getHasBred() && animal.getIsInsideNest() && animal.getEnergy() > this.breedingEnergy && this.getClass() == animal.getClass()) {
+            if (animal != this && animal.getBreedable() && !animal.getHasBred() && animal.getIsInsideNest() && animal.getEnergy() > this.breedingEnergy) {
                 this.breed(animal);
                 break;
             }
