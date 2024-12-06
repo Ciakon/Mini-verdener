@@ -74,10 +74,23 @@ public class Rabbit extends Animal {
     }
 
     void generalAI() {
+
         if (isInsideRabbithole == false) {
             this.eatIfOnGrass();
             previousPosition = world.getLocation(this);
+
+            if (rabbitHole != null && rabbitHole.getAllRabbits().size() == 1) {
+    
+                RabbitHole newHole = checkForNewHole(1);
+                if (newHole != null) {
+                    rabbitHole.removeRabbit(this);
+                    newHole.addRabbit(this);
+                    rabbitHole = newHole;
+                }
+            }
         }
+
+        
     }
 
     @Override
@@ -171,7 +184,6 @@ public class Rabbit extends Animal {
                 world.delete(grass);
             }
         }
-
     }
 
     /**
@@ -342,5 +354,51 @@ public class Rabbit extends Animal {
             isInsideRabbithole = false;
             world.setTile(holeLocation, this);
         }
+    }
+
+    /**
+     * The rabbit looks for a new hole to migrate to. The hole must be in the rabbit's vision range.
+     * 
+     * @param minRabbits The minimum amount of rabbits in the new hole, for it to be considered.
+     * @return Returns the new hole. Returns null if no such hole is found.
+     */
+    RabbitHole checkForNewHole(int minRabbits) {
+        RabbitHole rh = null;
+        ArrayList<RabbitHole> validHoles = new ArrayList<>();
+
+        // find valid holes
+        Set<Location> locations = world.getSurroundingTiles(world.getLocation(this), visionRange);
+        for (Location location : locations) {
+            Object tile = world.getTile(location);
+            if (tile instanceof RabbitHole == false) continue;
+
+            if (tile.equals(rabbitHole)) continue;
+
+            if (((RabbitHole) tile).getAllRabbits().size() >= minRabbits) {
+                validHoles.add((RabbitHole) tile);
+            }
+        }
+
+        if (validHoles.size() == 0) return null;
+
+        // find the closest hole
+        rh = validHoles.get(0);
+        for (RabbitHole hole : validHoles) {
+            int currentDistance = Functions.calculateDistance(world.getLocation(this), world.getLocation(rh));
+            int newDistance = Functions.calculateDistance(world.getLocation(this), world.getLocation(hole));
+            if (newDistance < currentDistance) {
+                rh = hole;
+            }
+        }
+
+        return rh;
+    }
+
+    public RabbitHole getRabbitHole() {
+        return rabbitHole;
+    }
+
+    public void setRabbitHole(RabbitHole rh) {
+        rabbitHole = rh;
     }
 }

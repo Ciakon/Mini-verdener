@@ -8,6 +8,7 @@ import itumulator.world.NonBlocking;
 import itumulator.world.World;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 
 import animals.Rabbit;
 
@@ -15,6 +16,8 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
 
     ArrayList<Rabbit> rabbits;
     ArrayList<RabbitHole> connectedHoles; // includes itself.
+    int collapseTimer = 0;
+    int collapseTime = 120;
 
     public RabbitHole(World world, Location location) {
         world.add(this);
@@ -62,6 +65,10 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
         this.connectedHoles.add(new_hole);
     }
 
+    public void removeHole(RabbitHole hole) {
+        this.connectedHoles.remove(hole);
+    }
+
     /**
      * Gets all rabbits connected to the rabbithole
      * 
@@ -82,7 +89,35 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
     }
 
     public void act(World world) {
-        //todo remove actor interface?
+        collapseTimer++;
+        if (collapseTimer >= collapseTime) {
+            collapse(world);
+        }
+    }
+
+    void collapse(World world) {
+        
+
+        if (getAllConnectedHoles().size() > 1) {
+            connectedHoles.remove(this);
+            world.delete(this);
+
+            Random random = new Random();
+            int randomNumber = random.nextInt(connectedHoles.size());
+
+            // replace the rabbithole with another in the tunnel for the rabbits.
+            for (Rabbit rabbit : getAllRabbits()) {
+                if (rabbit.getRabbitHole().equals(this)) {
+                    rabbit.setRabbitHole(connectedHoles.get(randomNumber));
+                }
+            }
+
+        }
+        
+    }
+
+    public void resetCollapseTimer() {
+        collapseTimer = 0;
     }
 
     public DisplayInformation getInformation() {
