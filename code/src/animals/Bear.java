@@ -152,11 +152,55 @@ public class Bear extends Animal {
             }
         }
     }
-
+    /**
+     * Handles the process of bear breeding.
+     *
+     * When two bears meet the conditions for breeding (both are adults, have sufficient energy,
+     * and have not already bred during this cycle), this method creates a new bear as their offspring.
+     * The child inherits the parents' territory.
+     *
+     * @param partner The other bear participating in the breeding process.
+     * @throws RuntimeException If the partner is not a bear.
+     */
     @Override
     void breed(Animal partner) {
-        // Bear child;
-        // this.family.add(child);
+        if (!(partner instanceof Bear)) {
+            throw new RuntimeException("ayo!");
+        }
+
+        Location childLocation = Functions.findRandomValidLocation(world);
+        Bear child = new Bear(world, false, childLocation, this.territory, this.family);
+
+        this.energy -= this.breedingEnergy;
+        this.hasBred = true;
+        partner.setHasBred(true);
+        partner.removeEnergy(this.breedingEnergy);
+
+        this.family.add(child);
+    }
+    /**
+     * Attempts to find a suitable breeding partner in the adjacent tiles.
+     *
+     * A bear will attempt to breed with another bear if the following conditions are met:
+     * - Both bears are adults.
+     * - Both have sufficient energy for breeding.
+     * - Neither bear has already bred during that day.
+     *
+     * If a suitable partner is found, the `breed` method is called.
+     */
+    void attemptBreeding() {
+        if (!breedable || hasBred || energy < breedingEnergy) return;
+
+        Set<Location> surroundingTiles = world.getSurroundingTiles(world.getLocation(this), 1);
+
+        for (Location location : surroundingTiles) {
+            if (world.getTile(location) instanceof Bear partner) {
+                if (partner.isAdult && partner.breedable && !partner.hasBred && partner.energy >= breedingEnergy) {
+                    breed(partner);
+                    return;
+                }
+            }
+        }
     }
 
     /**
