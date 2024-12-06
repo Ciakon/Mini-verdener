@@ -15,6 +15,7 @@ public class Grass extends Plant implements Actor, DynamicDisplayInformationProv
     private int nutritionalValue;
 
     public Grass(World world, Location location) {
+        super(world, location);
         world.add(this);
         world.setTile(location, this);
         this.nutritionalValue = 10;

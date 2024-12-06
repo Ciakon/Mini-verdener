@@ -19,6 +19,7 @@ public class BerryBush extends Plant implements Actor, DynamicDisplayInformation
     private int stepsSinceDepletion;
 
     public BerryBush(World world, Location location) {
+        super(world, location);
         world.add(this);
         world.setTile(location, this);
         this.nutritionalValue = 10;
