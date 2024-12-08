@@ -10,21 +10,49 @@ import java.util.ArrayList;
  */
 public interface Herbivorous {
     /**
-     * Finds nearby plants to eat.
+     * Finds all nearby plants within the vision range.
      *
-     * @return A list of nearby plants.
+     * @return An ArrayList of nearby plant locations.
      */
-    ArrayList<Plant> findNearbyPlants();
+    public ArrayList<Plant> findNearbyPlants() {
+        ArrayList<Plant> nearbyPlants = new ArrayList<>();
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), visionRange);
+
+        for (Location location : surroundings) {
+            if (world.getNonBlocking(location) instanceof Plant plant) {
+                nearbyPlants.add(plant);
+            }
+        }
+
+        return nearbyPlants;
+    }
 
     /**
-     * Eats the plant at the current location.
-     *
-     * @param plant The plant to eat.
+     * Herbivore-specific AI for locating and eating plants.
      */
-    void eatPlant(Plant plant);
+    public void forage() {
+        ArrayList<Plant> plants = findNearbyPlants();
+        if (!plants.isEmpty()) {
+            Plant nearestPlant = plants.get(0);
+            moveTowards(world.getLocation(nearestPlant));
+            if (world.getLocation(this).equals(world.getLocation(nearestPlant))) {
+                this.energy += nearestPlant.getNutritionalValue();
+                nearestPlant.consume();
+            }
+        } else {
+            moveRandomly();
+        }
+    }
 
     /**
-     * Moves towards a plant and eats it if on the same location.
+     * Moves randomly if no food is found.
      */
-    void forage();
+    private void moveRandomly() {
+        Location randomLocation = randomFreeLocation();
+        if (randomLocation != null) {
+            world.move(this, randomLocation);
+        }
+    }
+
+
 }

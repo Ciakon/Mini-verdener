@@ -12,7 +12,7 @@ import utils.Functions;
 /**
  * "bear is kil" "no"
  */
-public class Bear extends Carnivore {
+public class Bear extends Animal implements Carnivorous {
 
     Location territory;
     int territorySize = 2;
