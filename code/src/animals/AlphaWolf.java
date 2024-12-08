@@ -1,13 +1,13 @@
 package animals;
 
-import java.util.ArrayList;
-
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
+import java.util.ArrayList;
 import utils.Functions;
 
 public class AlphaWolf extends Wolf {
+
     ArrayList<Wolf> Pack;
 
     void wolfInit() {
@@ -31,7 +31,7 @@ public class AlphaWolf extends Wolf {
     public AlphaWolf(World world, boolean isAdult, Location location, WolfNest wolfNest, int energy, int age) {
         super(world, isAdult, location);
         wolfInit();
-        
+
         this.wolfNest = wolfNest;
         this.energy = energy;
         this.age = age;
@@ -58,51 +58,29 @@ public class AlphaWolf extends Wolf {
 
     @Override
     void nightTimeAI() {
-        
+
     }
 
-    @Override 
+    @Override
     void die() {
         createNewAlpha();
         super.die();
     }
 
-    /**
-     * Moves towards nearest prey. If they are within range, eat them instead.
-     * If there is no prey move randomly
-     */
-    void hunting() {
-        ArrayList<Location> nearbyPrey = findPrey();
-        if (!nearbyPrey.isEmpty()) {
-            Location nearestPrey = nearestObject(nearbyPrey);
-            if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
-                moveTowards(nearestPrey);
-            } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
-                int nv = kill((Animal) world.getTile(nearestPrey));
-                for (Wolf wolf : pack) {
-                    wolf.energy += Math.ceil(nv / pack.size());
-                }
-
-            } else {
-                Location nextLocation = randomFreeLocation();
-                if (nextLocation != null) {
-                    world.move(this, nextLocation);
-                    this.energy -= (int) (this.energyLoss * 2);
-                }
-            }
-        }
-    }
-
     void createNewAlpha() {
         Wolf alpha = pack.get(0);
         for (Wolf wolf : pack) {
-            if (wolf instanceof AlphaWolf) continue;
+            if (wolf instanceof AlphaWolf) {
+                continue;
+            }
 
             if (wolf.getEnergy() > alpha.getEnergy()) {
                 alpha = wolf;
             }
         }
-        if (alpha instanceof AlphaWolf) return;
+        if (alpha instanceof AlphaWolf) {
+            return;
+        }
         alpha.andrewTateMode();
     }
 }

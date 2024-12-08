@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Set;
 import utils.Functions;
 
-public class Wolf extends Animal {
+public class Wolf extends Carnivore {
+
     WolfNest wolfNest;
     ArrayList<Wolf> pack;
     AlphaWolf alpha;
@@ -58,8 +59,7 @@ public class Wolf extends Animal {
 
         if (world.contains(alpha) == false) {
 
-        }
-        else {
+        } else {
             moveTowards(world.getLocation(alpha));
         }
 
@@ -90,11 +90,10 @@ public class Wolf extends Animal {
             for (Wolf wolf : pack) {
                 wolf.setAlpha(alpha);
             }
-        }
-        else {
+        } else {
             new Wolf(world, false, this.wolfNest);
         }
-        
+
         this.energy -= this.breedingEnergy;
         this.hasBred = true;
         partner.setHasBred(true);
@@ -198,21 +197,9 @@ public class Wolf extends Animal {
      * @param opponent The animal this wolf is fighting.
      */
     public void combat(Animal opponent) {
-        if (opponent instanceof Rabbit) {
-            eatRabbit((Rabbit) opponent);
-        } else if (opponent instanceof Wolf) {
+        if (opponent instanceof Wolf) {
             wolfCombat((Wolf) opponent);
         }
-    }
-
-    /**
-     * the wolf hunts a rabbit.
-     *
-     * @param rabbit The rabbit to be eaten.
-     */
-    private void eatRabbit(Rabbit rabbit) {
-        this.energy += this.kill(rabbit);
-        if (this.energy > maxEnergy) this.energy = maxEnergy;
     }
 
     /**
@@ -233,16 +220,14 @@ public class Wolf extends Animal {
         }
     }
 
-
-
     public void addToPack(ArrayList<Wolf> pack) {
         this.pack = pack;
         pack.add(this);
     }
-    
 
     // todo bear stuff
-    @Override void die() {
+    @Override
+    void die() {
         super.die();
         pack.remove(this);
     }
@@ -265,6 +250,5 @@ public class Wolf extends Animal {
 
         return alpha;
     }
-
 
 }

@@ -1,11 +1,5 @@
 package utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
-
 import animals.AlphaWolf;
 import animals.Bear;
 import animals.Rabbit;
@@ -15,16 +9,22 @@ import itumulator.executable.Program;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
 import itumulator.world.World;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
 import plants.BerryBush;
 import plants.Grass;
 
+public class Functions {
 
-
-public class Functions {    
-    /** 
+    /**
      * Creates the simulation from a text file.
-     * 
-     * @param filename The filename of where the simulation parameters are stored.
+     *
+     * @param filename The filename of where the simulation parameters are
+     * stored.
      * @return Program The simulation program.
      * @throws FileNotFoundException Happens when the file can't be found.
      */
@@ -54,8 +54,7 @@ public class Functions {
                 int max = Integer.parseInt(amountSTR.split("-")[1]);
 
                 amount = RNG.nextInt(min, max + 1);
-            }
-            else {
+            } else {
                 amount = Integer.parseInt(amountSTR);
             }
 
@@ -66,20 +65,18 @@ public class Functions {
             }
 
             for (int i = 0; i < amount; i++) {
-                 // When given bear territory position
+                // When given bear territory position
                 if (args.length == 3 && args[0].equals("bear")) {
 
                     String[] coordinates = args[2].strip().replaceAll("[()]", "").split(",");
                     Location territory = new Location(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
 
                     createActor(world, type, territory);
-                }
-                else {
+                } else {
                     createActor(world, type);
                 }
 
             }
-
 
             System.out.println("Spawned: " + amount + " " + type);
         }
@@ -87,13 +84,12 @@ public class Functions {
         return program;
     }
 
-    
-    /** 
+    /**
      * Creates actors in the world.
-     * 
+     *
      * @param world The world where the actors spawn.
      * @param actor_name The name of the actor in the text file.
-     * @return The actor object. 
+     * @return The actor object.
      */
     public static Actor createActor(World world, String actor_name) {
         Location location = findRandomValidLocation(world);
@@ -118,13 +114,12 @@ public class Functions {
 
     /**
      * Spawns actor with a territory
-     * 
+     *
      * @param world The world where the actors spawn.
-     * @param actor_name  The name of the actor in the text file.
+     * @param actor_name The name of the actor in the text file.
      * @param territory The actors territory.
-     * @return The actor object. 
+     * @return The actor object.
      */
-
     public static Actor createActor(World world, String actor_name, Location territory) {
         Location location = territory;
 
@@ -138,14 +133,13 @@ public class Functions {
 
     /**
      * Spawns actors in a pack
-     * 
+     *
      * @param world The world where the actors spawn.
-     * @param actor_name  The name of the actor in the text file.
+     * @param actor_name The name of the actor in the text file.
      * @param amount Amount of animals in the pack
      * @return Returns the wolf pack list.
      */
-
-     public static ArrayList<Wolf> createWolfPack(World world, int amount) {
+    public static ArrayList<Wolf> createWolfPack(World world, int amount) {
 
         // spawn alpha wolf
         ArrayList<Wolf> pack = new ArrayList<>();
@@ -157,7 +151,9 @@ public class Functions {
         // spawn the betas around it.
         for (int i = 1; i < amount; i++) {
             location = alpha.randomFreeLocation();
-            if (location == null) location = findRandomValidLocation(world);
+            if (location == null) {
+                location = findRandomValidLocation(world);
+            }
 
             Wolf wolf = new Wolf(world, true, location);
             wolf.addToPack(pack);
@@ -166,10 +162,10 @@ public class Functions {
         return pack;
     }
 
-    
-    /** 
-     * Finds a random location in the world, that is completely empty (no non-blocking object)
-     * 
+    /**
+     * Finds a random location in the world, that is completely empty (no
+     * non-blocking object)
+     *
      * @param world The simulation world
      * @return Location The random valid location.
      */
@@ -212,5 +208,22 @@ public class Functions {
         world.remove(o1);
         world.move(o2, l1);
         world.setTile(l2, o1);
+    }
+
+    /**
+     * finds all nearby objects, of certain type, within visionRange of a
+     * certain location
+     *
+     * @return an ArrayList of all nearby objects
+     */
+    public <T> ArrayList<Location> findNearbyObjects(World world, Location myLocation, Class<T> type, int range) {
+        ArrayList<Location> nearbyObjects = new ArrayList<Location>();
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(myLocation), range);
+        for (Location location : surroundings) {
+            if (type.isInstance(world.getTile(location))) {
+                nearbyObjects.add((Location) location);
+            }
+        }
+        return nearbyObjects;
     }
 }

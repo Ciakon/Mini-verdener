@@ -12,7 +12,7 @@ import utils.Functions;
 /**
  * "bear is kil" "no"
  */
-public class Bear extends Animal {
+public class Bear extends Carnivore {
 
     Location territory;
     int territorySize = 2;
@@ -147,17 +147,19 @@ public class Bear extends Animal {
                 } else if (distance == 1) {
                     Animal prey = (Animal) world.getTile(nearestPrey);
                     killList.remove(prey);
-                    this.energy += kill(prey);
+                    kill(prey);
                 }
             }
         }
     }
+
     /**
      * Handles the process of bear breeding.
      *
-     * When two bears meet the conditions for breeding (both are adults, have sufficient energy,
-     * and have not already bred during this cycle), this method creates a new bear as their offspring.
-     * The child inherits the parents' territory.
+     * When two bears meet the conditions for breeding (both are adults, have
+     * sufficient energy, and have not already bred during this cycle), this
+     * method creates a new bear as their offspring. The child inherits the
+     * parents' territory.
      *
      * @param partner The other bear participating in the breeding process.
      * @throws RuntimeException If the partner is not a bear.
@@ -178,18 +180,20 @@ public class Bear extends Animal {
 
         this.family.add(child);
     }
+
     /**
      * Attempts to find a suitable breeding partner in the adjacent tiles.
      *
-     * A bear will attempt to breed with another bear if the following conditions are met:
-     * - Both bears are adults.
-     * - Both have sufficient energy for breeding.
-     * - Neither bear has already bred during that day.
+     * A bear will attempt to breed with another bear if the following
+     * conditions are met: - Both bears are adults. - Both have sufficient
+     * energy for breeding. - Neither bear has already bred during that day.
      *
      * If a suitable partner is found, the `breed` method is called.
      */
     void attemptBreeding() {
-        if (!breedable || hasBred || energy < breedingEnergy) return;
+        if (!breedable || hasBred || energy < breedingEnergy) {
+            return;
+        }
 
         Set<Location> surroundingTiles = world.getSurroundingTiles(world.getLocation(this), 1);
 
@@ -294,7 +298,6 @@ public class Bear extends Animal {
         }
 
         moveTowards(territory);
-        
 
     }
 

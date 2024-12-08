@@ -2,13 +2,10 @@ package animals;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import utils.Functions;
-
 import java.util.ArrayList;
 import java.util.Set;
-
 import plants.Carcass;
-import plants.Plant;
+import utils.Functions;
 
 /**
  * Abstract class for carnivorous animals that hunt prey.
@@ -23,6 +20,85 @@ public abstract class Carnivore extends Animal {
      */
     public Carnivore(World world, boolean isAdult) {
         super(world, isAdult);
+    }
+
+    /**
+     *
+     * @param prey The prey to kill
+     * @return The prey's nutrional value.
+     */
+    void kill(Animal prey) {
+        prey.die();
+    }
+
+    /**
+     * Checks if an object is a prey
+     *
+     * @param animal object to check if prey
+     * @return Returns true if object is in prefered prey list
+     */
+    public <T> Boolean isPrey(T type) {
+        for (String prey : preferedPrey) {
+            if (type.getClass().getSimpleName().equals(prey)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    ArrayList<Location> findPrey() {
+        ArrayList<Location> nearbyPrey = new ArrayList<>();
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+        for (Location location : surroundings) {
+            if (world.getTile(location) instanceof Animal animal) {
+                if (isPrey(animal)) {
+                    nearbyPrey.add(location);
+                }
+            }
+        }
+        return nearbyPrey;
+    }
+
+    /**
+     * Moves towards nearest prey. If they are within range, eat them instead.
+     * If there is no prey move randomly
+     */
+    void hunting() {
+        ArrayList<Location> nearbyPrey = findPrey();
+        if (!nearbyPrey.isEmpty()) {
+            Location nearestPrey = nearestObject(nearbyPrey);
+            if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
+                moveTowards(nearestPrey);
+            } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
+                if (world.getTile(nearestPrey) instanceof Carcass) {
+                    this.energy += this.eatCarcass((Carcass) world.getTile(nearestPrey));
+                } else {
+                    kill((Animal) world.getTile(nearestPrey));
+                }
+            } else {
+                Location nextLocation = randomFreeLocation();
+                if (nextLocation != null) {
+                    world.move(this, nextLocation);
+                }
+            }
+        }
+    }
+
+    /**
+     * takes Nutritional value away from Carcass and gives it as energy.
+     *
+     * @param carcass Carcass to be eaten from
+     * @return Returns the amount of Nutritional value eaten
+     */
+    public int eatCarcass(Carcass carcass) {
+        int totalAmount = carcass.getNutritionalValue();
+        int desiredAmount = this.maxEnergy - this.energy;
+        if (totalAmount < desiredAmount) {
+            carcass.setNutritionalValue(0);
+            return totalAmount;
+        }
+        carcass.setNutritionalValue(totalAmount - desiredAmount);
+        return desiredAmount;
     }
 
     /**
