@@ -107,7 +107,7 @@ public class Bear extends Carnivore {
         if (killList.isEmpty()) {
             if (findNearestBerryBush() != null) {
                 interactWithBerryBush();
-            } else if (this.energy <= 75) {
+            } else if (this.energy <= (this.maxEnergy - this.maxEnergy / 3)) {
                 findFood();
             } else if (isInsideTerritory() == false) {
                 moveTowards(territory);
