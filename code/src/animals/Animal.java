@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import plants.Carcass;
 import utils.Functions;
 
 /**
- * Hassan er gay
+ *
  */
 public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
@@ -115,7 +116,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * L, bozo.
      */
     void die() {
+        Location location = world.getLocation(this);
         world.delete(this);
+        new Carcass(this.world, location, this.isAdult, this.maxEnergy);
     }
 
     /**
@@ -173,7 +176,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
             if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
                 moveTowards(nearestPrey);
             } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
-                this.energy += kill((Animal) world.getTile(nearestPrey));
+                if (world.getTile(nearestPrey) instanceof Carcass) {
+                    this.energy += this.eatCarcass((Carcass) world.getTile(nearestPrey));
+                } else {
+                    this.energy += kill((Animal) world.getTile(nearestPrey));
+                }
             } else {
                 Location nextLocation = randomFreeLocation();
                 if (nextLocation != null) {
@@ -181,6 +188,27 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
                     this.energy -= (int) (this.energyLoss * 2);
                 }
             }
+        }
+    }
+
+    public int eatCarcass(Carcass carcass) {
+        int totalAmount = carcass.getNutritionalValue();
+        int desiredAmount = this.maxEnergy - this.energy;
+        if (totalAmount < desiredAmount) {
+            carcass.setNutritionalValue(0);
+            return totalAmount;
+        }
+        carcass.setNutritionalValue(totalAmount - desiredAmount);
+        return desiredAmount;
+    }
+
+    /**
+     * Moves randomly if no prey is found.
+     */
+    private void moveRandomly() {
+        Location randomLocation = randomFreeLocation();
+        if (randomLocation != null) {
+            world.move(this, randomLocation);
         }
     }
 

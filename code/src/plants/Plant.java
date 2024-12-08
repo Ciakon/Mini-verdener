@@ -2,11 +2,11 @@ package plants;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-
 import java.util.Random;
 import java.util.Set;
 
 public class Plant {
+
     protected int nutritionalValue;
     protected boolean isDepleted;
 
@@ -26,6 +26,13 @@ public class Plant {
     }
 
     /**
+     * Returns the nutritional value of the plant.
+     */
+    public void setNutritionalValue(int newNutritionalValue) {
+        this.nutritionalValue = newNutritionalValue;
+    }
+
+    /**
      * Marks the plant as consumed, setting its nutritional value to 0.
      */
     public void consume() {
@@ -39,7 +46,8 @@ public class Plant {
      * Plants grow at surrounding tiles based on a percentage chance.
      *
      * @param world The world in which the plant is located.
-     * @param percent The percentage chance for the plant to grow in surrounding tiles.
+     * @param percent The percentage chance for the plant to grow in surrounding
+     * tiles.
      */
     public void grow(World world, int percent) {
         Random random = new Random();

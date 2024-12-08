@@ -7,6 +7,8 @@ import utils.Functions;
 import java.util.ArrayList;
 import java.util.Set;
 
+import plants.Carcass;
+import plants.Plant;
 
 /**
  * Abstract class for carnivorous animals that hunt prey.
@@ -24,40 +26,6 @@ public abstract class Carnivore extends Animal {
     }
 
     /**
-     * Finds all nearby prey within vision range.
-     *
-     * @return An ArrayList of nearby prey locations.
-     */
-    public ArrayList<Animal> findNearbyPrey() {
-        ArrayList<Animal> preyList = new ArrayList<>();
-        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), visionRange);
-
-        for (Location location : surroundings) {
-            if (world.getTile(location) instanceof Animal animal && isPrey(animal)) {
-                preyList.add(animal);
-            }
-        }
-
-        return preyList;
-    }
-
-    /**
-     * Handles hunting behavior for the carnivore.
-     */
-    public void hunt() {
-        ArrayList<Animal> prey = findNearbyPrey();
-        if (!prey.isEmpty()) {
-            Animal nearestPrey = prey.get(0);
-            moveTowards(world.getLocation(nearestPrey));
-            if (Functions.calculateDistance(world.getLocation(this), world.getLocation(nearestPrey)) <= 1) {
-                this.energy += kill(nearestPrey);
-            }
-        } else {
-            moveRandomly();
-        }
-    }
-
-    /**
      * Handles combat behavior when encountering another carnivore.
      *
      * @param opponent The other carnivore to fight.
@@ -72,18 +40,8 @@ public abstract class Carnivore extends Animal {
         }
     }
 
-    /**
-     * Moves randomly if no prey is found.
-     */
-    private void moveRandomly() {
-        Location randomLocation = randomFreeLocation();
-        if (randomLocation != null) {
-            world.move(this, randomLocation);
-        }
-    }
-
     @Override
     void dayTimeAI() {
-        hunt();
+        hunting();
     }
 }
