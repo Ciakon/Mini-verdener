@@ -80,7 +80,7 @@ public class Rabbit extends Animal {
             previousPosition = world.getLocation(this);
 
             if (rabbitHole != null && rabbitHole.getAllRabbits().size() == 1) {
-    
+
                 RabbitHole newHole = checkForNewHole(1);
                 if (newHole != null) {
                     rabbitHole.removeRabbit(this);
@@ -90,7 +90,6 @@ public class Rabbit extends Animal {
             }
         }
 
-        
     }
 
     @Override
@@ -113,7 +112,7 @@ public class Rabbit extends Animal {
 
     @Override
     void nightTimeAI() {
-        if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
+        if (!this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
             this.findBreedingPartner();
         }
         if (isInsideRabbithole == false) {
@@ -357,9 +356,11 @@ public class Rabbit extends Animal {
     }
 
     /**
-     * The rabbit looks for a new hole to migrate to. The hole must be in the rabbit's vision range.
-     * 
-     * @param minRabbits The minimum amount of rabbits in the new hole, for it to be considered.
+     * The rabbit looks for a new hole to migrate to. The hole must be in the
+     * rabbit's vision range.
+     *
+     * @param minRabbits The minimum amount of rabbits in the new hole, for it
+     * to be considered.
      * @return Returns the new hole. Returns null if no such hole is found.
      */
     RabbitHole checkForNewHole(int minRabbits) {
@@ -370,16 +371,22 @@ public class Rabbit extends Animal {
         Set<Location> locations = world.getSurroundingTiles(world.getLocation(this), visionRange);
         for (Location location : locations) {
             Object tile = world.getTile(location);
-            if (tile instanceof RabbitHole == false) continue;
+            if (tile instanceof RabbitHole == false) {
+                continue;
+            }
 
-            if (tile.equals(rabbitHole)) continue;
+            if (tile.equals(rabbitHole)) {
+                continue;
+            }
 
             if (((RabbitHole) tile).getAllRabbits().size() >= minRabbits) {
                 validHoles.add((RabbitHole) tile);
             }
         }
 
-        if (validHoles.size() == 0) return null;
+        if (validHoles.size() == 0) {
+            return null;
+        }
 
         // find the closest hole
         rh = validHoles.get(0);

@@ -191,7 +191,7 @@ public class Bear extends Carnivore {
      * If a suitable partner is found, the `breed` method is called.
      */
     void attemptBreeding() {
-        if (!breedable || hasBred || energy < breedingEnergy) {
+        if (age < adultAge || hasBred || energy < breedingEnergy) {
             return;
         }
 
@@ -199,7 +199,7 @@ public class Bear extends Carnivore {
 
         for (Location location : surroundingTiles) {
             if (world.getTile(location) instanceof Bear partner) {
-                if (partner.isAdult && partner.breedable && !partner.hasBred && partner.energy >= breedingEnergy) {
+                if (partner.isBreedable()) {
                     breed(partner);
                     return;
                 }

@@ -75,7 +75,7 @@ public class Wolf extends Carnivore {
 
     @Override
     void nightTimeAI() {
-        // if (this.breedable && !this.hasBred && energy > breedingEnergy && this.isInsideNest) {
+        // if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
         //     this.findBreedingPartner();
         // }
         // this.moveToOrDigHole();

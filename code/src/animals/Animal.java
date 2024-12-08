@@ -34,7 +34,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
     boolean isSleeping = false;
     boolean hasBred = false;
-    boolean breedable;
     boolean isAdult;
     boolean willDie;
     boolean isInsideNest;
@@ -62,12 +61,10 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         if (isAdult) {
             this.isAdult = true;
             this.age = adultAge;
-            this.breedable = true;
             this.nutritionalValue = nutritionalValueAdult;
         } else {
             this.isAdult = false;
             this.age = 0;
-            this.breedable = false;
             this.nutritionalValue = nutritionalValueBaby;
         }
     }
@@ -162,7 +159,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         age++;
         if (age == adultAge) {
             isAdult = true;
-            breedable = true;
             nutritionalValue = nutritionalValueAdult;
         }
     }
@@ -179,10 +175,18 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     public void findBreedingPartner() {
         ArrayList<Animal> animalList = this.animalNest.getAllAnimals();
         for (Animal animal : animalList) {
-            if (animal != this && animal.getBreedable() && !animal.getHasBred() && animal.getIsInsideNest() && animal.getEnergy() > this.breedingEnergy) {
+            if (animal.isBreedable() && animal != this) {
                 this.breed(animal);
                 break;
             }
+        }
+    }
+
+    public boolean isBreedable() {
+        if (this.age > this.adultAge && !this.getHasBred() && this.getIsInsideNest() && this.getEnergy() > this.breedingEnergy) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -225,10 +229,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
             }
         }
         return nearest;
-    }
-
-    boolean getBreedable() {
-        return this.breedable;
     }
 
     boolean getHasBred() {
