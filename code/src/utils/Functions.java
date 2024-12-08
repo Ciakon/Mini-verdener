@@ -218,10 +218,12 @@ public class Functions {
      */
     public static <T> ArrayList<Location> findNearbyObjects(World world, Location myLocation, Class<T> type, int range) {
         ArrayList<Location> nearbyObjects = new ArrayList<>();
-        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(myLocation), range);
-        for (Location location : surroundings) {
-            if (type.isInstance(world.getTile(location))) {
-                nearbyObjects.add((Location) location);
+        Set<Location> surroundings = world.getSurroundingTiles(myLocation, range);
+        if (!surroundings.isEmpty()) {
+            for (Location location : surroundings) {
+                if (type.isInstance(world.getTile(location))) {
+                    nearbyObjects.add((Location) location);
+                }
             }
         }
         return nearbyObjects;

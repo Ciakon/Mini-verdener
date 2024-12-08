@@ -1,13 +1,10 @@
-
 package animals;
 
-import animals.Wolf;
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
 import java.util.ArrayList;
 import utils.Functions;
-
 
 public class AlphaWolf extends Wolf {
 
@@ -86,22 +83,4 @@ public class AlphaWolf extends Wolf {
         }
         alpha.andrewTateMode();
     }
-}
-
-/**
-* takes Nutritional value away from Carcass and gives it as energy.
-*
-* @param carcass Carcass to be eaten from
-* @return Returns the amount of Nutritional value eaten
-*/
-@Override
-public int eatCarcass(Carcass carcass) {
-   int totalAmount = carcass.getNutritionalValue();
-   int desiredAmount = this.maxEnergy - this.energy;
-   if (totalAmount < desiredAmount) {
-       carcass.setNutritionalValue(0);
-       return totalAmount;
-   }
-   carcass.setNutritionalValue(totalAmount - desiredAmount);
-   return desiredAmount;
 }

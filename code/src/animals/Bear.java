@@ -103,17 +103,19 @@ public class Bear extends Carnivore {
     void dayTimeAI() {
         Random random = new Random();
         isSleeping = false;
-
+        System.out.println(this.energy);
         if (killList.isEmpty()) {
             if (findNearestBerryBush() != null) {
                 interactWithBerryBush();
+            } else if (this.energy <= 75) {
+                findFood();
             } else if (isInsideTerritory() == false) {
                 moveTowards(territory);
             } else {
                 // Chill
             }
         } else {
-            hunting();
+            hitman();
         }
 
         if (world.getCurrentTime() >= 7) {
@@ -126,8 +128,11 @@ public class Bear extends Carnivore {
         sleeperTime();
     }
 
-    @Override
-    public void hunting() {
+    /**
+     * finds animals in bears kill list and kills them.
+     */
+    public void hitman() {
+        System.out.println("the hunt begins");
         if (!killList.isEmpty()) {
             killList.removeIf(animal -> !world.contains(animal));
 
@@ -139,11 +144,13 @@ public class Bear extends Carnivore {
             }
 
             if (!hitList.isEmpty()) {
+                System.out.println("hitlist empty");
                 Location nearestPrey = nearestObject(hitList);
 
                 int distance = Functions.calculateDistance(world.getLocation(this), nearestPrey);
                 if (distance > 1) {
                     moveTowards(nearestPrey);
+                    System.out.println("moving towards prey");
                 } else if (distance == 1) {
                     Animal prey = (Animal) world.getTile(nearestPrey);
                     killList.remove(prey);
