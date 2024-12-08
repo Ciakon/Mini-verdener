@@ -127,7 +127,7 @@ public class Bear extends Carnivore {
     }
 
     @Override
-    void hunting() {
+    public void hunting() {
         if (!killList.isEmpty()) {
             killList.removeIf(animal -> !world.contains(animal));
 

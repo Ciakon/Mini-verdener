@@ -160,7 +160,7 @@ public class Rabbit extends Animal {
     public void findBreedingPartner() {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
         for (Rabbit rabbit : rabbitList) {
-            if (rabbit != this && rabbit.breedable && !rabbit.hasBred && rabbit.isInsideRabbithole && rabbit.energy > breedingEnergy) {
+            if (this.isAdult && rabbit != this && !rabbit.hasBred && rabbit.isInsideRabbithole && rabbit.energy > breedingEnergy) {
                 this.breed(rabbit);
                 break;
             }

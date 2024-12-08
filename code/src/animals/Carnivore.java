@@ -46,7 +46,7 @@ public abstract class Carnivore extends Animal {
         return false;
     }
 
-    ArrayList<Location> findPrey() {
+    public ArrayList<Location> findPrey() {
         ArrayList<Location> nearbyPrey = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         for (Location location : surroundings) {
@@ -63,24 +63,34 @@ public abstract class Carnivore extends Animal {
      * Moves towards nearest prey. If they are within range, eat them instead.
      * If there is no prey move randomly
      */
-    void hunting() {
+    public void hunting() {
         ArrayList<Location> nearbyPrey = findPrey();
         if (!nearbyPrey.isEmpty()) {
             Location nearestPrey = nearestObject(nearbyPrey);
             if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
                 moveTowards(nearestPrey);
             } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
-                if (world.getTile(nearestPrey) instanceof Carcass) {
-                    this.energy += this.eatCarcass((Carcass) world.getTile(nearestPrey));
-                } else {
-                    kill((Animal) world.getTile(nearestPrey));
-                }
+                kill((Animal) world.getTile(nearestPrey));
             } else {
                 Location nextLocation = randomFreeLocation();
                 if (nextLocation != null) {
                     world.move(this, nextLocation);
                 }
             }
+        }
+    }
+
+    public void findFood() {
+        ArrayList<Location> nearbyCarcass = Functions.findNearbyObjects(this.world, world.getLocation(this), Carcass.class, this.visionRange);
+        if (!nearbyCarcass.isEmpty()) {
+            Location nearestCarcass = nearestObject(nearbyCarcass);
+            if (Functions.calculateDistance(world.getLocation(this), nearestCarcass) > 1) {
+                moveTowards(nearestCarcass);
+            } else if (Functions.calculateDistance(world.getLocation(this), nearestCarcass) == 1) {
+                this.eatCarcass((Carcass) world.getTile(nearestCarcass));
+            }
+        } else {
+            this.hunting();
         }
     }
 
@@ -118,6 +128,6 @@ public abstract class Carnivore extends Animal {
 
     @Override
     void dayTimeAI() {
-        hunting();
+        findFood();
     }
 }

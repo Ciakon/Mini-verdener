@@ -216,8 +216,8 @@ public class Functions {
      *
      * @return an ArrayList of all nearby objects
      */
-    public <T> ArrayList<Location> findNearbyObjects(World world, Location myLocation, Class<T> type, int range) {
-        ArrayList<Location> nearbyObjects = new ArrayList<Location>();
+    public static <T> ArrayList<Location> findNearbyObjects(World world, Location myLocation, Class<T> type, int range) {
+        ArrayList<Location> nearbyObjects = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(myLocation), range);
         for (Location location : surroundings) {
             if (type.isInstance(world.getTile(location))) {
