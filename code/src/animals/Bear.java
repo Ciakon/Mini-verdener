@@ -101,8 +101,6 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
     @Override
     void generalAI() {
         checkForIllegalActivity();
-
-        System.out.println(energy);
     }
 
     @Override

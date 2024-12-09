@@ -12,30 +12,26 @@ import java.util.Random;
 
 import animals.Rabbit;
 
-public class RabbitHole implements Actor, DynamicDisplayInformationProvider, NonBlocking {
+public class RabbitHole extends AnimalNest implements Actor, DynamicDisplayInformationProvider, NonBlocking {
 
-    ArrayList<Rabbit> rabbits;
     ArrayList<RabbitHole> connectedHoles; // includes itself.
     int collapseTimer = 0;
     int collapseTime = 120;
+    ArrayList<Rabbit> rabbits;
 
     public RabbitHole(World world, Location location) {
-        world.add(this);
-        world.setTile(location, this);
-
-        this.rabbits = new ArrayList<>();
+        super(world, location);
         this.connectedHoles = new ArrayList<>();
         this.connectedHoles.add(this);
+        this.rabbits = new ArrayList<>();
     }
 
     public RabbitHole(World world, Location location, ArrayList<RabbitHole> connectedHoles) {
-        world.add(this);
-        world.setTile(location, this);
-
-        this.rabbits = connectedHoles.get(0).getAllRabbits();
+        super(world, location);
 
         this.connectedHoles = connectedHoles;
         this.connectedHoles.add(this);
+        this.rabbits = connectedHoles.get(0).getAllRabbits();
     }
 
     /**
@@ -118,9 +114,5 @@ public class RabbitHole implements Actor, DynamicDisplayInformationProvider, Non
 
     public void resetCollapseTimer() {
         collapseTimer = 0;
-    }
-
-    public DisplayInformation getInformation() {
-        return new DisplayInformation(Color.black, "hole");
     }
 }

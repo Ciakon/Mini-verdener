@@ -1,5 +1,5 @@
 15
-bear 1 (3,3)
+bear 1 (2,2)
 wolf 3
 grass 30
 burrow 2

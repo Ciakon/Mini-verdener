@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public abstract class AnimalNest implements DynamicDisplayInformationProvider, NonBlocking {
 
-    private ArrayList<Animal> animals;
+    protected ArrayList<Animal> animals;
 
     public AnimalNest(World world, Location location) {
         world.add(this);
