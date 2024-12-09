@@ -3,6 +3,7 @@ package animals;
 import itumulator.world.Location;
 import itumulator.world.World;
 import plants.Carcass;
+import utils.Functions;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -19,7 +20,7 @@ public interface Carnivorous {
      * @return The prey's nutrional value.
      */
     default void kill(Animal prey) {
-        prey.die();
+        prey.die(); // L bozo.
     }
 
     /**
@@ -28,7 +29,7 @@ public interface Carnivorous {
      * @param animal object to check if prey
      * @return Returns true if object is in prefered prey list
      */
-    default public <T> Boolean isPrey(T type, ArrayList<String> preferedPrey) {
+    default <T> Boolean isPrey(T type, ArrayList<String> preferedPrey) {
         for (String prey : preferedPrey) {
             if (type.getClass().getSimpleName().equals(prey)) {
                 return true;
@@ -37,7 +38,7 @@ public interface Carnivorous {
         return false;
     }
 
-    default public ArrayList<Location> findPrey(World world, Animal me) {
+    default ArrayList<Location> findPrey(World world, Animal me) {
         ArrayList<Location> nearbyPrey = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
         for (Location location : surroundings) {
@@ -52,15 +53,15 @@ public interface Carnivorous {
 
     /**
      * Moves towards nearest prey. If they are within range, eat them instead.
-     * If there is no prey move randomly
+     * If there is no prey, wander
      */
-    public void hunting(Animal me) {
-        ArrayList<Location> nearbyPrey = findPrey();
+    default void hunting(World world, Animal me) {
+        ArrayList<Location> nearbyPrey = findPrey(world, me);
         if (!nearbyPrey.isEmpty()) {
-            Location nearestPrey = nearestObject(nearbyPrey);
-            if (Functions.calculateDistance(world.getLocation(this), nearestPrey) > 1) {
-                moveTowards(nearestPrey);
-            } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
+            Location nearestPrey = me.nearestObject(nearbyPrey);
+            if (Functions.calculateDistance(world.getLocation(me), nearestPrey) > 1) {
+                me.moveTowards(nearestPrey);
+            } else if (Functions.calculateDistance(world.getLocation(me), nearestPrey) == 1) {
                 kill((Animal) world.getTile(nearestPrey));
             }
         } else {
@@ -68,17 +69,18 @@ public interface Carnivorous {
         }
     }
 
-    public void findFood() {
-        ArrayList<Location> nearbyCarcass = Functions.findNearbyObjects(this.world, world.getLocation(this), Carcass.class, this.visionRange);
+    default void findFood(World world, Animal me) {
+        ArrayList<Location> nearbyCarcass = Functions.findNearbyObjects(world, world.getLocation(me), Carcass.class, me.visionRange);
         if (!nearbyCarcass.isEmpty()) {
-            Location nearestCarcass = nearestObject(nearbyCarcass);
-            if (Functions.calculateDistance(world.getLocation(this), nearestCarcass) > 1) {
-                moveTowards(nearestCarcass);
-            } else if (Functions.calculateDistance(world.getLocation(this), nearestCarcass) == 1) {
-                this.eatCarcass((Carcass) world.getTile(nearestCarcass));
+            Location nearestCarcass = me.nearestObject(nearbyCarcass);
+            if (Functions.calculateDistance(world.getLocation(me), nearestCarcass) > 1) {
+                me.moveTowards(nearestCarcass);
+            } else if (Functions.calculateDistance(world.getLocation(me), nearestCarcass) == 1) {
+                Carcass c = (Carcass) world.getTile(nearestCarcass);
+                eatCarcass(c, me);
             }
         } else {
-            this.hunting();
+            hunting(world, me);
         }
     }
 
@@ -88,9 +90,9 @@ public interface Carnivorous {
      * @param carcass Carcass to be eaten from
      * @return Returns the amount of Nutritional value eaten
      */
-    public int eatCarcass(Carcass carcass) {
+    default int eatCarcass(Carcass carcass, Animal me) {
         int totalAmount = carcass.getNutritionalValue();
-        int desiredAmount = this.maxEnergy - this.energy;
+        int desiredAmount = me.maxEnergy - me.energy;
         if (totalAmount < desiredAmount) {
             carcass.setNutritionalValue(0);
             return totalAmount;
@@ -104,12 +106,16 @@ public interface Carnivorous {
      *
      * @param opponent The other carnivore to fight.
      */
-    public void engageInCombat(Carnivore opponent) {
-        if (opponent.energy > this.energy) {
-            opponent.energy -= this.energy;
-            this.die();
+    default void engageInCombat(Animal me, Animal opponent) {
+        if (opponent instanceof Carnivorous == false) {
+            throw new RuntimeException("Carnivorous animal cannot engage in combat with non-Carnivorous opponent");
+        }
+
+        if (opponent.energy > me.energy) {
+            opponent.energy -= me.energy;
+            me.die();
         } else {
-            this.energy -= opponent.energy;
+            me.energy -= opponent.energy;
             opponent.die();
         }
     }

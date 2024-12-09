@@ -126,7 +126,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Moves randomly in a random direction
      */
-    private void wander() {
+    void wander() {
         moveTowards(wanderGoal);
 
         // Update wander goal.

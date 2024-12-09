@@ -194,7 +194,7 @@ public class Functions {
     // todo infinte loop glitch, L
     public static Location findRandomValidLocation(World world) {
         while (true) {
-            Location location = findRandomValidLocation(world);
+            Location location = findRandomEmptyLocation(world);
 
             if (world.getTile(location) == null) {
                 return location;

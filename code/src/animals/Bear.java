@@ -108,7 +108,7 @@ public class Bear extends Animal implements Carnivorous {
             if (findNearestBerryBush() != null) {
                 interactWithBerryBush();
             } else if (this.energy <= (this.maxEnergy - this.maxEnergy / 3)) {
-                findFood();
+                findFood(world, this);
             } else if (isInsideTerritory() == false) {
                 moveTowards(territory);
             } else {

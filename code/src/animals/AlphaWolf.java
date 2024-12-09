@@ -43,7 +43,7 @@ public class AlphaWolf extends Wolf {
 
     @Override
     void dayTimeAI() {
-        hunting();
+        hunting(world, this);
 
         // If Alpha is stuck, swap with one of the betas.
         if (world.getEmptySurroundingTiles(world.getLocation(this)).isEmpty()) {
