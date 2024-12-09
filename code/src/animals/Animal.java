@@ -129,6 +129,8 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     void wander() {
         moveTowards(wanderGoal);
 
+        System.out.println(this + " wandering");
+
         // Update wander goal.
         if (world.getLocation(this).equals(wanderGoal) || world.getCurrentTime() == 0) {
             wanderGoal = Functions.findRandomEmptyLocation(world);
@@ -352,5 +354,12 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
             isInsideNest = false;
             world.setTile(holeLocation, this);
         }
+    }
+
+    boolean isHungry() {
+        if (energy < maxEnergy * 0.7) {
+            return true;
+        }
+        return false;
     }
 }

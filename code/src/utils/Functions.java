@@ -202,9 +202,6 @@ public class Functions {
         }
     }
 
-    
-    
-
     /**
      * Calculates the Manhattan distance between two locations.
      *

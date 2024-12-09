@@ -59,6 +59,11 @@ public interface Carnivorous {
         ArrayList<Location> nearbyPrey = findPrey(world, me);
         if (!nearbyPrey.isEmpty()) {
             Location nearestPrey = me.nearestObject(nearbyPrey);
+
+            if (me instanceof AlphaWolf) {
+                System.out.println("prey: " + Functions.calculateDistance(world.getLocation(me), nearestPrey));
+            }
+
             if (Functions.calculateDistance(world.getLocation(me), nearestPrey) > 1) {
                 me.moveTowards(nearestPrey);
             } else if (Functions.calculateDistance(world.getLocation(me), nearestPrey) == 1) {

@@ -1,3 +1,0 @@
-15
-rabbit 2
-grass 20

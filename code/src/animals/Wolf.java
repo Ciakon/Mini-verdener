@@ -55,22 +55,20 @@ public class Wolf extends Animal implements Carnivorous {
 
     @Override
     void generalAI() {
-        System.out.println(alpha);
-
-        if (world.contains(alpha) == false) {
-
-        } else {
-            moveTowards(world.getLocation(alpha));
-        }
-
-        if (world.isDay()) {
-            isSleeping = false;
-        }
+        
     }
 
     @Override
     void dayTimeAI() {
-        // hunting();
+        isSleeping = false;
+
+        if (isHungry()) {
+            hunting(world, alpha);
+        }
+        else {
+            
+        }
+
     }
 
     @Override
@@ -249,6 +247,11 @@ public class Wolf extends Animal implements Carnivorous {
         }
 
         return alpha;
+    }
+
+    void followAlpha() {
+        if (world.isOnTile(alpha) == false) return;
+        moveTowards(world.getLocation(alpha));
     }
 
 }
