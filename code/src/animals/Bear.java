@@ -24,10 +24,10 @@ public class Bear extends Animal implements Carnivorous {
      * Another br'ish method jumpscare
      */
     void bearInit() {
-        visionRange = 8;
+        visionRange = 3;
         maxEnergy = 150;
-        energy = 75;
-        energyLoss = 2;
+        energy = 120;
+        energyLoss = 1;
 
         adultAge = 40;
 
@@ -99,6 +99,9 @@ public class Bear extends Animal implements Carnivorous {
 
     @Override
     void generalAI() {
+
+        System.out.println(energy);
+
         checkForIllegalActivity();
         previousPosition = world.getLocation(this);
     }
@@ -110,12 +113,12 @@ public class Bear extends Animal implements Carnivorous {
         if (killList.isEmpty()) {
             if (findNearestBerryBush() != null) {
                 interactWithBerryBush();
-            } else if (this.energy <= (this.maxEnergy - this.maxEnergy / 3)) {
+            } else if (isHungry()) {
                 findFood(world, this);
-            } else if (isInsideTerritory() == false) {
+            } else if (isInsideTerritory() == false && isHungry() == false) {
                 moveTowards(territory);
             } else {
-                // Chill
+                wander();
             }
         } else {
             hitman();
@@ -245,9 +248,14 @@ public class Bear extends Animal implements Carnivorous {
      * @return The nearest BerryBush, or null if none are found.
      */
     public BerryBush findNearestBerryBush() {
-        Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
+        if (world.getNonBlocking(world.getLocation(this)) instanceof BerryBush) {
+            return (BerryBush) world.getNonBlocking(world.getLocation(this));
+        }
 
-        for (Location location : territoryTiles) {
+
+        Set<Location> tiles = world.getSurroundingTiles(world.getLocation(this), visionRange);
+
+        for (Location location : tiles) {
             if (world.getNonBlocking(location) instanceof BerryBush berryBush && !berryBush.isDepleted()) {
                 return berryBush;
             }
@@ -267,14 +275,19 @@ public class Bear extends Animal implements Carnivorous {
         if (berryBush == null) {
             return false;
         }
+        System.out.println("1");
 
         if (world.getLocation(this).equals(world.getLocation(berryBush))) {
+
+            System.out.println("2");
+
             int nutrition = berryBush.consumeBerries();
             this.energy += nutrition;
 
             if (this.energy > maxEnergy) {
                 this.energy = maxEnergy;
             }
+
             return true;
         }
 
@@ -289,6 +302,9 @@ public class Bear extends Animal implements Carnivorous {
     public void interactWithBerryBush() {
         BerryBush nearestBush = findNearestBerryBush();
         if (nearestBush != null) {
+
+            System.out.println(world.getLocation(this) + " " + world.getLocation(nearestBush) );
+
             if (!eatBerryBush(nearestBush)) {
                 moveTowards(world.getLocation(nearestBush));
             }
