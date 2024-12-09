@@ -52,11 +52,13 @@ public interface Carnivorous {
     }
 
     /**
-     * Moves towards nearest prey. If they are within range, eat them instead.
+     * Moves towards nearest prey. If they are within range, kill them instead.
      * If there is no prey, wander
      */
     default void hunting(World world, Animal me) {
+
         ArrayList<Location> nearbyPrey = findPrey(world, me);
+        
         if (!nearbyPrey.isEmpty()) {
             Location nearestPrey = me.nearestObject(nearbyPrey);
 

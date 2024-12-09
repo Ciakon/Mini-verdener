@@ -50,9 +50,8 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
 
     @Override
     public void act(World world) {
-        this.rot();
         this.shrooms();
-        System.out.println(world.getLocation(this));
+        this.rot();
     }
 
     @Override

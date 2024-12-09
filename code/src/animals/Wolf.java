@@ -63,7 +63,7 @@ public class Wolf extends Animal implements Carnivorous {
         isSleeping = false;
 
         if (isHungry()) {
-            hunting(world, alpha);
+            findFood(world, alpha);
         }
         else {
             
