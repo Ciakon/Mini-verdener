@@ -54,7 +54,7 @@ public interface Carnivorous {
      * Moves towards nearest prey. If they are within range, eat them instead.
      * If there is no prey move randomly
      */
-    public void hunting() {
+    public void hunting(Animal me) {
         ArrayList<Location> nearbyPrey = findPrey();
         if (!nearbyPrey.isEmpty()) {
             Location nearestPrey = nearestObject(nearbyPrey);
@@ -62,12 +62,9 @@ public interface Carnivorous {
                 moveTowards(nearestPrey);
             } else if (Functions.calculateDistance(world.getLocation(this), nearestPrey) == 1) {
                 kill((Animal) world.getTile(nearestPrey));
-            } else {
-                Location nextLocation = randomFreeLocation();
-                if (nextLocation != null) {
-                    world.move(this, nextLocation);
-                }
             }
+        } else {
+            me.wander();
         }
     }
 
