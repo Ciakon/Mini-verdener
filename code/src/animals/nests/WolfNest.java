@@ -5,7 +5,7 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import java.util.ArrayList;
 
-public class WolfNest extends AnimalNest<Wolf> {
+public class WolfNest extends AnimalNest {
 
     ArrayList<Wolf> wolves;
 

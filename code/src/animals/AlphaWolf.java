@@ -1,5 +1,6 @@
 package animals;
 
+import animals.nests.AnimalNest;
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -27,43 +28,57 @@ public class AlphaWolf extends Wolf {
         alphaWolfInit();
     }
 
-    public AlphaWolf(World world, boolean isAdult, WolfNest wolfNest) {
-        super(world, isAdult, wolfNest);
+    public AlphaWolf(World world, boolean isAdult, AnimalNest wolfNest, ArrayList<Wolf> pack) {
+        super(world, isAdult, wolfNest, pack);
         alphaWolfInit();
     }
 
-    public AlphaWolf(World world, boolean isAdult, Location location, WolfNest wolfNest, int energy, int age) {
+    public AlphaWolf(World world, boolean isAdult, Location location, AnimalNest wolfNest, int energy, int age) {
         super(world, isAdult, location);
         alphaWolfInit();
 
-        this.wolfNest = wolfNest;
+        this.animalNest = wolfNest;
         this.energy = energy;
         this.age = age;
     }
 
     @Override
     void generalAI() {
-
     }
 
     @Override
     void dayTimeAI() {
-        findFood(world, this);
+        isSleeping = false;
 
-        // If Alpha is stuck, swap with one of the betas.
-        if (world.getEmptySurroundingTiles(world.getLocation(this)).isEmpty()) {
-            for (Location tile : world.getSurroundingTiles()) {
-                Animal animal = (Animal) world.getTile(tile);
-                if (pack.contains(animal)) {
-                    Functions.swapObjects(world, this, animal);
+        if (isInsideNest && world.getCurrentTime() < 7) {
+            exitHole(); // Not guranteed, rabbits may be in the way.
+        }
+
+        if (isInsideNest == false) {
+            findFood(world, this);
+
+            // If Alpha is stuck, swap with one of the betas.
+            if (world.getEmptySurroundingTiles(world.getLocation(this)).isEmpty()) {
+                for (Location tile : world.getSurroundingTiles()) {
+                    Animal animal = (Animal) world.getTile(tile);
+                    if (pack.contains(animal)) {
+                        Functions.swapObjects(world, this, animal);
+                    }
                 }
             }
         }
+
+        
     }
 
     @Override
     void nightTimeAI() {
-
+        if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
+            this.findBreedingPartner();
+        }
+        if (isInsideNest == false) {
+            this.moveToOrDigHole(); 
+        }
     }
 
     @Override

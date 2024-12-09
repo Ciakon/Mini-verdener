@@ -9,9 +9,9 @@ import itumulator.world.World;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayInformationProvider, NonBlocking {
+public abstract class AnimalNest implements DynamicDisplayInformationProvider, NonBlocking {
 
-    private ArrayList<Type> animals;
+    private ArrayList<Animal> animals;
 
     public AnimalNest(World world, Location location) {
         world.add(this);
@@ -30,7 +30,7 @@ public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayI
      *
      * @param animal The animal object.
      */
-    public void addAnimal(Type animal) {
+    public void addAnimal(Animal animal) {
         animals.add(animal);
     }
 
@@ -39,7 +39,7 @@ public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayI
      *
      * @param animal The animal object.
      */
-    public void removeAnimal(Type animal) {
+    public void removeAnimal(Animal animal) {
         animals.remove(animal);
     }
 
@@ -48,8 +48,8 @@ public abstract class AnimalNest<Type extends Animal> implements DynamicDisplayI
      *
      * @return list of animals.
      */
-    public ArrayList<Type> getAllAnimals() {
-        return (ArrayList<Type>) this.animals;
+    public ArrayList<Animal> getAllAnimals() {
+        return this.animals;
     }
 
 }

@@ -59,15 +59,25 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
         return new DisplayInformation(Color.green, this.imageKey);
     }
 
+    /**
+     * Makes Carcass loss nutritional Value. if nutritional value is too low,
+     * deletes carcass.
+     */
     public void rot() {
-        Location location = world.getLocation(this);
-
         this.nutritionalValue -= this.energyLoss;
         if (isColony) {
             this.nutritionalValue -= this.energyLoss;
             colonizer.gainEnergy(energyLoss);
         }
+    }
+
+    /**
+     * If carcass nutritional value is too low delete it. If it has been growing
+     * mushrooms, mushrooms will spawn on it's location.
+     */
+    public void purgeLowEnergyCarcass() {
         if (this.nutritionalValue < 20) {
+            Location location = world.getLocation(this);
             if (isColony) {
                 colonizer.removeColony(this);
             }
@@ -82,6 +92,9 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
         }
     }
 
+    /**
+     * Certain chance to make mushrooms grow on the carcass.
+     */
     public void shrooms() {
         if (!this.hasShrooms && Math.random() < this.chanceForShrooms) {
             this.hasShrooms = true;
@@ -93,11 +106,23 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
         }
     }
 
+    /**
+     * Makes mushrooms That are on the map feed on the nutritional value of the
+     * carcass which makes it rot faster.
+     *
+     * @param mushrooms The mushroom that reaches out to.
+     */
     public void getColonized(Mushrooms mushrooms) {
         this.isColony = true;
         this.colonizer = mushrooms;
     }
 
+    /**
+     * Checks if carcass is being consummed by mushrooms that are on the map.
+     *
+     * @return Returns true if carcass is being consumed by mushrooms on the
+     * map, otherwise returns false.
+     */
     public boolean getIsColony() {
         if (this.isColony) {
             return true;

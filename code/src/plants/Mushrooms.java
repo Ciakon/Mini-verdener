@@ -39,6 +39,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
 
     @Override
     public void act(World world) {
+        changeImageKey();
         findColonies();
         decay();
     }
@@ -48,6 +49,9 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
         return new DisplayInformation(Color.green, this.imageKey);
     }
 
+    /**
+     * changes imagekey depending on how much energy the mushrooms have.
+     */
     public void changeImageKey() {
         if (energy > 100) {
             this.imageKey = "fungi";
@@ -56,10 +60,16 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
         }
     }
 
+    /**
+     * Makes mushrooms lose energy.
+     */
     public void decay() {
         this.energy -= this.energyLoss;
     }
 
+    /**
+     * Looks for nearby carcass to feed off.
+     */
     public void findColonies() {
         ArrayList<Location> pontentialColonies = Functions.findNearbyObjects(this.world, world.getLocation(this), Carcass.class, this.reachRange);
         for (Location location : pontentialColonies) {
@@ -69,15 +79,30 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
         }
     }
 
+    /**
+     * Gives energy to the mushrooms given an amount.
+     *
+     * @param amount The amount of energy gained by the mushrooms.
+     */
     void gainEnergy(int amount) {
         this.energy += amount;
     }
 
+    /**
+     * Connects and feeds off carcass.
+     *
+     * @param carcass Carcass to feed off of.
+     */
     public void createColony(Carcass carcass) {
         carcass.getColonized(this);
         this.colonies.add(carcass);
     }
 
+    /**
+     * Removes carcass from mushroom network.
+     *
+     * @param carcass Carcass to remove.
+     */
     public void removeColony(Carcass carcass) {
         this.colonies.remove(carcass);
     }

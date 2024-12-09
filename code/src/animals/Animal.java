@@ -47,8 +47,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     Location previousPosition;
     Location wanderGoal; // Animals will wander towards this tile, updated daily.
     World world;
-    AnimalNest<Animal> animalNest;
+    AnimalNest animalNest;
     ArrayList<String> preferedPrey = new ArrayList<>();
+
     /**
      *
      * @param world The simulation world.
@@ -81,6 +82,10 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
         grow();
 
+        if (world.isOnTile(this)) {
+            previousPosition = world.getLocation(this);
+        }
+
         this.energy -= energyLoss;
         if (energy <= 0) {
             die();
@@ -88,6 +93,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         if (energy >= maxEnergy) {
             energy = maxEnergy;
         }
+        
     }
 
     @Override
@@ -111,7 +117,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     }
 
     /**
-     * L, bozo.
+     * Deletes Animal and replaces it with Carcass.
      */
     void die() {
         Location location = world.getLocation(this);
@@ -182,6 +188,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     public void findBreedingPartner() {
         ArrayList<Animal> animalList = this.animalNest.getAllAnimals();
         for (Animal animal : animalList) {
+            if (animal.isInsideNest == false) continue;
             if (animal.isBreedable() && animal != this) {
                 this.breed(animal);
                 break;
@@ -189,6 +196,12 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+    /**
+     * Checks if the animal checks off criteria to breed.
+     *
+     * @return Returns true if all criteria for breeding are met otherwise
+     * returns false.
+     */
     public boolean isBreedable() {
         if (this.age > this.adultAge && !this.getHasBred() && this.getIsInsideNest() && this.getEnergy() > this.breedingEnergy) {
             return true;
@@ -219,8 +232,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         Location movement = new Location(movementInX, movementInY);
         if (world.isTileEmpty(movement)) {
             world.move(this, movement);
-        }
-        else if (world.getLocation(this).equals(desiredLocation) == false){
+        } else if (world.getLocation(this).equals(desiredLocation) == false) {
             // try another position nearby
             for (Location surroundingLocation : world.getEmptySurroundingTiles(world.getLocation(this))) {
                 for (Location desireableLocation : world.getEmptySurroundingTiles(movement)) {
@@ -249,18 +261,38 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         return nearest;
     }
 
+    /**
+     * Checks if this animal has breed.
+     *
+     * @return returns boolean of whether this animal have bred.
+     */
     boolean getHasBred() {
         return this.hasBred;
     }
 
+    /**
+     * Sets hasbred variable
+     *
+     * @param hasBred Boolean to change variable.
+     */
     void setHasBred(boolean hasBred) {
         this.hasBred = hasBred;
     }
 
+    /**
+     * Checks of this Animal is inside it's nest.
+     *
+     * @return Returns a boolean of whether it's true.
+     */
     boolean getIsInsideNest() {
         return this.isInsideNest;
     }
 
+    /**
+     * Gives energy of animal.
+     *
+     * @return Returns int amount of energy.
+     */
     int getEnergy() {
         return this.energy;
     }
@@ -347,6 +379,10 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         enterHole();
     }
 
+    /**
+     * Makes Animal go inside hole if they are on their hole tile, otherwise
+     * throws RunTimeException.
+     */
     public void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(this.animalNest)) == false) {
             throw new RuntimeException("animals should only enter their own hole when standing on it");
@@ -357,6 +393,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         world.remove(this); // gaming time
     }
 
+    /**
+     * Makes animal exit hole if the hole tile is empty.
+     */
     public void exitHole() {
         Location holeLocation = world.getLocation(this.animalNest);
         if (world.isTileEmpty(holeLocation)) {
@@ -365,6 +404,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+    /**
+     * Checks if animal energy is below 70 percent of max energy.
+     *
+     * @return Returns boolean if true otherwise false.
+     */
     boolean isHungry() {
         if (energy < maxEnergy * 0.7) {
             return true;
@@ -372,6 +416,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         return false;
     }
 
+    /**
+     * Adds a certain amount of energy.
+     *
+     * @param energy int of amount of energy to add.
+     */
     public void addEnergy(int energy) {
         this.energy += energy;
     }
