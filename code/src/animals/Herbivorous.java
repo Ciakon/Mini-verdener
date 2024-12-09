@@ -30,7 +30,7 @@ public interface Herbivorous {
     /**
      * Herbivore-specific AI for locating and eating plants.
      */
-    public void forage() {
+    public void forage(Animal me) {
         ArrayList<Plant> plants = findNearbyPlants();
         if (!plants.isEmpty()) {
             Plant nearestPlant = plants.get(0);
@@ -40,19 +40,7 @@ public interface Herbivorous {
                 nearestPlant.consume();
             }
         } else {
-            moveRandomly();
+            me.wander();
         }
     }
-
-    /**
-     * Moves randomly if no food is found.
-     */
-    private void moveRandomly() {
-        Location randomLocation = randomFreeLocation();
-        if (randomLocation != null) {
-            world.move(this, randomLocation);
-        }
-    }
-
-
 }
