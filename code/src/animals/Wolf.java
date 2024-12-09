@@ -4,11 +4,10 @@ import animals.nests.AnimalNest;
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
-import plants.Carcass;
-
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Set;
+import plants.Carcass;
 import utils.Functions;
 
 public class Wolf extends Animal implements Carnivorous {
@@ -238,7 +237,7 @@ public class Wolf extends Animal implements Carnivorous {
     void die() {
         super.die();
         pack.remove(this);
-        
+
     }
 
     public void setAlpha(AlphaWolf alpha) {
@@ -266,12 +265,14 @@ public class Wolf extends Animal implements Carnivorous {
             wander();
             return;
         }
-            
+
         if (world.isOnTile(alpha) == false) {
             wander();
             return;
         }
-        if (Functions.calculateDistance(world.getLocation(this), world.getLocation(alpha)) == 1) return;
+        if (Functions.calculateDistance(world.getLocation(this), world.getLocation(alpha)) == 1) {
+            return;
+        }
         moveTowards(world.getLocation(alpha));
     }
 
@@ -297,17 +298,16 @@ public class Wolf extends Animal implements Carnivorous {
 
         if (totalAmount < desiredAmount) {
             carcass.setNutritionalValue(0);
-            individualEnergy = Math.ceilDiv(totalAmount, nearbyPackMembers.size());
+            individualEnergy = Functions.ceilDiv(totalAmount, nearbyPackMembers.size());
         } else {
             carcass.setNutritionalValue(totalAmount - desiredAmount);
-            individualEnergy = Math.ceilDiv(desiredAmount, nearbyPackMembers.size());;
+            individualEnergy = Functions.ceilDiv(desiredAmount, nearbyPackMembers.size());;
         }
-        
+
         for (Wolf wolf : nearbyPackMembers) {
             wolf.addEnergy(individualEnergy);
         }
 
-        
     }
 
 }
