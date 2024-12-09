@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 import plants.Grass;
+import plants.Plant;
 import utils.Functions;
 
-public class Rabbit extends Animal {
+public class Rabbit extends Animal implements Herbivorous {
 
     double digNewExitChance = 0.2;
     boolean isInsideRabbithole;
@@ -74,11 +75,7 @@ public class Rabbit extends Animal {
     }
 
     void generalAI() {
-
         if (isInsideRabbithole == false) {
-            this.eatIfOnGrass();
-            previousPosition = world.getLocation(this);
-
             if (rabbitHole != null && rabbitHole.getAllRabbits().size() == 1) {
 
                 RabbitHole newHole = checkForNewHole(1);
@@ -97,6 +94,7 @@ public class Rabbit extends Animal {
 
         hasBred = false;
         isSleeping = false;
+
         if (isInsideRabbithole && world.getCurrentTime() < 7) {
             exitHole(); // Not guranteed, rabbits may be in the way.
         }
@@ -105,7 +103,7 @@ public class Rabbit extends Animal {
             if (world.getCurrentTime() >= 7) { // go back in the evening
                 moveToOrDigHole();
             } else {
-                DayTimeMovementAI();
+                forage(world, this);
             }
         }
     }
@@ -167,81 +165,100 @@ public class Rabbit extends Animal {
         }
     }
 
-    /**
-     * if Rabbit is standing on grass, eat it
-     *
-     *
-     */
-    public void eatIfOnGrass() {
-        Location nearestGrass = this.nearestGrass();
-        if (nearestGrass == world.getLocation(this)) {
-            if (world.getNonBlocking(nearestGrass) instanceof Grass grass) {
-                this.energy += grass.getNutritionalValue();
-                if (this.energy > maxEnergy) {
-                    this.energy = maxEnergy;
-                }
-                world.delete(grass);
-            }
-        }
-    }
+    // /**
+    //  * if Rabbit is standing on grass, eat it
+    //  *
+    //  *
+    //  */
+    // public void eatIfOnGrass() {
+    //     Location nearestGrass = this.nearestGrass();
+    //     if (nearestGrass == world.getLocation(this)) {
+    //         if (world.getNonBlocking(nearestGrass) instanceof Grass grass) {
+    //             this.energy += grass.getNutritionalValue();
+    //             if (this.energy > maxEnergy) {
+    //                 this.energy = maxEnergy;
+    //             }
+    //             world.delete(grass);
+    //         }
+    //     }
+    // }
+
+    // /**
+    //  * Moves rabbit in direction of grass if seen otherwise in a random
+    //  * direction
+    //  *
+    //  */
+    // public void DayTimeMovementAI() {
+    //     ArrayList<Location> nearbyGrass = findGrass(world);
+    //     if (!nearbyGrass.isEmpty()) {
+
+    //         Location desiredGrass = nearestObject(nearbyGrass);
+    //         moveTowards(desiredGrass);
+    //         this.energy -= (int) (energyLoss * 0.1);
+    //     } else {
+    //         Location nextLocation = randomFreeLocation();
+    //         if (nextLocation != null) {
+    //             world.move(this, nextLocation);
+    //             this.energy -= (int) (energyLoss * 0.1);
+    //         }
+    //     }
+    // }
 
     /**
-     * Moves rabbit in direction of grass if seen otherwise in a random
-     * direction
+     * Finds all nearby grass within the vision range. Overidden from default method.
      *
+     * @return An ArrayList of nearby grass locations.
      */
-    public void DayTimeMovementAI() {
-        ArrayList<Location> nearbyGrass = findGrass(world);
-        if (!nearbyGrass.isEmpty()) {
+    @Override
+    public ArrayList<Plant> findNearbyPlants(World world, Animal me) {
+        ArrayList<Plant> nearbyPlants = new ArrayList<>();
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
 
-            Location desiredGrass = nearestObject(nearbyGrass);
-            moveTowards(desiredGrass);
-            this.energy -= (int) (energyLoss * 0.1);
-        } else {
-            Location nextLocation = randomFreeLocation();
-            if (nextLocation != null) {
-                world.move(this, nextLocation);
-                this.energy -= (int) (energyLoss * 0.1);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param world The simulation world.
-     * @return returns the closet grass to the Rabbit
-     */
-    public Location nearestGrass() {
-        ArrayList<Location> nearbyGrass = findGrass(world);
-        Location nearestGrass = null;
-        if (!nearbyGrass.isEmpty()) {
-            nearestGrass = nearestObject(nearbyGrass);
-        }
-        return nearestGrass;
-    }
-
-    /**
-     * Finds nearby grass, that is not accoupied by other rabbits
-     *
-     * @param world world which the rabbit is in
-     * @return Arraylist of all grass locations seen nearby
-     */
-    public ArrayList<Location> findGrass(World world) {
-        ArrayList<Location> nearbyGrass = new ArrayList<>();
-        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
-        Location here = world.getLocation(this);
-        if (world.containsNonBlocking(here) && world.getNonBlocking(here) instanceof Grass) { //if rabbit standing on grass
-            nearbyGrass.add(world.getLocation(this));
-        }
         for (Location location : surroundings) {
-            if (world.containsNonBlocking(location) && world.isTileEmpty(location)) {
-                if (world.getNonBlocking(location) instanceof Grass) {
-                    nearbyGrass.add(location);
-                }
+            if (world.getNonBlocking(location) instanceof Grass plant) {
+                nearbyPlants.add(plant);
             }
         }
-        return nearbyGrass;
+
+        return nearbyPlants;
     }
+
+    // /**
+    //  *
+    //  * @param world The simulation world.
+    //  * @return returns the closet grass to the Rabbit
+    //  */
+    // public Location nearestGrass() {
+    //     ArrayList<Location> nearbyGrass = findGrass(world);
+    //     Location nearestGrass = null;
+    //     if (!nearbyGrass.isEmpty()) {
+    //         nearestGrass = nearestObject(nearbyGrass);
+    //     }
+    //     return nearestGrass;
+    // }
+
+    // /**
+    //  * Finds nearby grass, that is not accoupied by other rabbits
+    //  *
+    //  * @param world world which the rabbit is in
+    //  * @return Arraylist of all grass locations seen nearby
+    //  */
+    // public ArrayList<Location> findGrass(World world) {
+    //     ArrayList<Location> nearbyGrass = new ArrayList<>();
+    //     Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+    //     Location here = world.getLocation(this);
+    //     if (world.containsNonBlocking(here) && world.getNonBlocking(here) instanceof Grass) { //if rabbit standing on grass
+    //         nearbyGrass.add(world.getLocation(this));
+    //     }
+    //     for (Location location : surroundings) {
+    //         if (world.containsNonBlocking(location) && world.isTileEmpty(location)) {
+    //             if (world.getNonBlocking(location) instanceof Grass) {
+    //                 nearbyGrass.add(location);
+    //             }
+    //         }
+    //     }
+    //     return nearbyGrass;
+    // }
 
     /**
      * Finds the nearest rabbit hole within the rabbit's vision range.
@@ -276,8 +293,8 @@ public class Rabbit extends Animal {
     public void moveToOrDigHole() {
         if (rabbitHole != null) {
             moveTowards(world.getLocation(rabbitHole));
-
-            if (previousPosition.equals(world.getLocation(rabbitHole)) && world.getLocation(this).equals(previousPosition)) {
+            
+            if (previousPosition != null && previousPosition.equals(world.getLocation(rabbitHole)) && world.getLocation(this).equals(previousPosition)) {
                 enterHole();
             }
             return;
