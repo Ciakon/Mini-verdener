@@ -136,7 +136,6 @@ public class Bear extends Animal implements Carnivorous {
      * finds animals in bears kill list and kills them.
      */
     public void hitman() {
-        System.out.println("the hunt begins");
         if (!killList.isEmpty()) {
             killList.removeIf(animal -> !world.contains(animal));
 
@@ -148,13 +147,11 @@ public class Bear extends Animal implements Carnivorous {
             }
 
             if (!hitList.isEmpty()) {
-                System.out.println("hitlist empty");
                 Location nearestPrey = nearestObject(hitList);
 
                 int distance = Functions.calculateDistance(world.getLocation(this), nearestPrey);
                 if (distance > 1) {
                     moveTowards(nearestPrey);
-                    System.out.println("moving towards prey");
                 } else if (distance == 1) {
                     Animal prey = (Animal) world.getTile(nearestPrey);
                     killList.remove(prey);
@@ -297,8 +294,6 @@ public class Bear extends Animal implements Carnivorous {
     public void interactWithBerryBush() {
         BerryBush nearestBush = findNearestBerryBush();
         if (nearestBush != null) {
-
-            System.out.println(world.getLocation(this) + " " + world.getLocation(nearestBush) );
 
             if (!eatBerryBush(nearestBush)) {
                 moveTowards(world.getLocation(nearestBush));

@@ -44,7 +44,6 @@ public class AlphaWolf extends Wolf {
 
     @Override
     void generalAI() {
-        System.out.println(pack);
     }
 
     @Override
