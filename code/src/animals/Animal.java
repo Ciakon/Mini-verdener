@@ -47,7 +47,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     Location previousPosition;
     Location wanderGoal; // Animals will wander towards this tile, updated daily.
     World world;
-    AnimalNest<Animal> animalNest;
+    AnimalNest animalNest;
     ArrayList<String> preferedPrey = new ArrayList<>();
     /**
      *
@@ -81,6 +81,10 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
         grow();
 
+        if (world.isOnTile(this)) {
+            previousPosition = world.getLocation(this);
+        }
+
         this.energy -= energyLoss;
         if (energy <= 0) {
             die();
@@ -88,6 +92,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         if (energy >= maxEnergy) {
             energy = maxEnergy;
         }
+        
     }
 
     @Override
@@ -182,6 +187,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     public void findBreedingPartner() {
         ArrayList<Animal> animalList = this.animalNest.getAllAnimals();
         for (Animal animal : animalList) {
+            if (animal.isInsideNest == false) continue;
             if (animal.isBreedable() && animal != this) {
                 this.breed(animal);
                 break;

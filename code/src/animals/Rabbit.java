@@ -77,7 +77,6 @@ public class Rabbit extends Animal {
 
         if (isInsideRabbithole == false) {
             this.eatIfOnGrass();
-            previousPosition = world.getLocation(this);
 
             if (rabbitHole != null && rabbitHole.getAllRabbits().size() == 1) {
 

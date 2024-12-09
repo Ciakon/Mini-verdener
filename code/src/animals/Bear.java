@@ -100,8 +100,6 @@ public class Bear extends Animal implements Carnivorous {
     @Override
     void generalAI() {
 
-        System.out.println(energy);
-
         checkForIllegalActivity();
         previousPosition = world.getLocation(this);
     }
@@ -275,11 +273,8 @@ public class Bear extends Animal implements Carnivorous {
         if (berryBush == null) {
             return false;
         }
-        System.out.println("1");
 
         if (world.getLocation(this).equals(world.getLocation(berryBush))) {
-
-            System.out.println("2");
 
             int nutrition = berryBush.consumeBerries();
             this.energy += nutrition;

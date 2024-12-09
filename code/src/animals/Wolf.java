@@ -1,5 +1,6 @@
 package animals;
 
+import animals.nests.AnimalNest;
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
@@ -11,8 +12,6 @@ import java.util.Set;
 import utils.Functions;
 
 public class Wolf extends Animal implements Carnivorous {
-
-    WolfNest wolfNest;
     ArrayList<Wolf> pack;
     AlphaWolf alpha;
 
@@ -46,54 +45,57 @@ public class Wolf extends Animal implements Carnivorous {
         wolfInit();
     }
 
-    public Wolf(World world, boolean isAdult, WolfNest WolfNest) {
+    public Wolf(World world, boolean isAdult, AnimalNest WolfNest, ArrayList<Wolf> pack) {
         super(world, isAdult);
 
         this.isInsideNest = true;
-        this.wolfNest = WolfNest;
+        this.animalNest = WolfNest;
         this.isSleeping = true;
         WolfNest.addAnimal(this);
+        this.pack = pack;
+        pack.add(this);
         wolfInit();
     }
 
     @Override
     void generalAI() {
-
     }
 
     @Override
     void dayTimeAI() {
         isSleeping = false;
+        hasBred = false;
 
-        if (isHungry()) {
-            findFood(world, this);
+        if (isInsideNest && world.getCurrentTime() < 7) {
+            exitHole(); // Not guranteed, rabbits may be in the way.
         }
-        else {
-            followAlpha();
+
+        if (isInsideNest == false) {
+            if (isHungry()) {
+                findFood(world, this);
+            }
+            else {
+                followAlpha();
+            }
         }
 
     }
 
     @Override
     void nightTimeAI() {
-        // if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
-        //     this.findBreedingPartner();
-        // }
-        // this.moveToOrDigHole();
+        if (!this.hasBred && energy > breedingEnergy && this.isInsideNest && isAdult) {
+            this.findBreedingPartner();
+        }
+        if (isInsideNest == false) {
+            this.moveToOrDigHole(); 
+        }
+        
+        
     }
 
     @Override
     void breed(Animal partner) {
-
-        if (world.contains(alpha) || alpha == null) {
-            AlphaWolf alpha = new AlphaWolf(world, false, this.wolfNest);
-
-            for (Wolf wolf : pack) {
-                wolf.setAlpha(alpha);
-            }
-        } else {
-            new Wolf(world, false, this.wolfNest);
-        }
+        new Wolf(world, false, this.animalNest, pack);
 
         this.energy -= this.breedingEnergy;
         this.hasBred = true;
@@ -131,10 +133,12 @@ public class Wolf extends Animal implements Carnivorous {
      * @param world the world in which the animal is located
      */
     public void moveToOrDigHole() {
-        if (this.wolfNest != null) {
-            moveTowards(world.getLocation(wolfNest));
+        if (this.animalNest != null) {
+            moveTowards(world.getLocation(animalNest));
 
-            if (previousPosition.equals(world.getLocation(wolfNest)) && world.getLocation(this).equals(previousPosition)) {
+            if (previousPosition == null) return;
+
+            if (previousPosition.equals(world.getLocation(animalNest)) && world.getLocation(this).equals(previousPosition)) {
                 enterHole();
             }
             return;
@@ -145,7 +149,7 @@ public class Wolf extends Animal implements Carnivorous {
         if (nearestHole != null) {
             moveTowards(world.getLocation(nearestHole));
             if (world.getLocation(this).equals(world.getLocation(nearestHole))) {
-                wolfNest = nearestHole;
+                animalNest = nearestHole;
                 nearestHole.addAnimal(this);
             }
         } else {
@@ -158,7 +162,7 @@ public class Wolf extends Animal implements Carnivorous {
      * sets the wolf's `WolfNest` attribute to the new hole.
      */
     public void digHole() {
-        if (this.wolfNest != null) {
+        if (this.animalNest != null) {
             throw new RuntimeException("animals should only dig a hole when they don't have one");
         }
 
@@ -168,14 +172,18 @@ public class Wolf extends Animal implements Carnivorous {
             return;
         }
 
-        this.wolfNest = new WolfNest(this.world, location);
-        wolfNest.addAnimal(this);
+        WolfNest newNest = new WolfNest(this.world, location);
+
+        for (Wolf wolf : pack) {
+            wolf.animalNest = newNest;
+            newNest.addAnimal(wolf);
+        }
 
         enterHole();
     }
 
     public void enterHole() {
-        if (world.getLocation(this).equals(world.getLocation(this.wolfNest)) == false) {
+        if (world.getLocation(this).equals(world.getLocation(this.animalNest)) == false) {
             throw new RuntimeException("animals should only enter their own hole when standing on it");
         }
         this.isInsideNest = true;
@@ -185,7 +193,7 @@ public class Wolf extends Animal implements Carnivorous {
     }
 
     public void exitHole() {
-        Location holeLocation = world.getLocation(this.wolfNest);
+        Location holeLocation = world.getLocation(this.animalNest);
         if (world.isTileEmpty(holeLocation)) {
             isInsideNest = false;
             world.setTile(holeLocation, this);
@@ -243,7 +251,7 @@ public class Wolf extends Animal implements Carnivorous {
         world.delete(this);
         pack.remove(this);
 
-        AlphaWolf alpha = new AlphaWolf(world, isAdult, l, wolfNest, energy, age);
+        AlphaWolf alpha = new AlphaWolf(world, isAdult, l, animalNest, energy, age);
         alpha.addToPack(this.pack);
 
         for (Wolf wolf : pack) {
