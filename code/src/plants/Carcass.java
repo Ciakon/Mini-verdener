@@ -65,12 +65,16 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
             colonizer.gainEnergy(energyLoss);
         }
         if (this.nutritionalValue < 20) {
+            World myWorld = world;
+            Location location = world.getLocation(this);
             if (isColony) {
                 colonizer.removeColony(this);
             }
-            world.delete(this);
             if (this.hasShrooms && !this.isColony) {
-                new Mushrooms(this.world, world.getLocation(this), this.shroomValue);
+                world.delete(this);
+                new Mushrooms(myWorld, location, this.shroomValue);
+            } else {
+                world.delete(this);
             }
 
         }
