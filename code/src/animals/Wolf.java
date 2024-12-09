@@ -283,6 +283,7 @@ public class Wolf extends Animal implements Carnivorous {
     public void eatCarcass(Carcass carcass, Animal me) {
         ArrayList<Wolf> nearbyPackMembers = new ArrayList<>(); // Includes the wolf itself
         for (Wolf wolf : pack) {
+            if (wolf.isInsideNest) continue;
             if (Functions.calculateDistance(world.getLocation(this), world.getLocation(wolf)) <= 2) {
                 nearbyPackMembers.add(wolf);
             }
@@ -307,6 +308,7 @@ public class Wolf extends Animal implements Carnivorous {
         for (Wolf wolf : nearbyPackMembers) {
             wolf.addEnergy(individualEnergy);
         }
+        System.out.println(totalAmount);
 
     }
 

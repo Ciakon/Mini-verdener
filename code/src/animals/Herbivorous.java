@@ -1,6 +1,7 @@
 package animals;
 
 import plants.Plant;
+import utils.Functions;
 import itumulator.world.Location;
 import itumulator.world.World;
 
@@ -36,6 +37,13 @@ public interface Herbivorous {
         ArrayList<Plant> plants = findNearbyPlants(world, me);
         if (!plants.isEmpty()) {
             Plant nearestPlant = plants.get(0);
+
+            for (Plant plant : plants) {
+                if (Functions.calculateDistance(world.getLocation(this), world.getLocation(plant)) < Functions.calculateDistance(world.getLocation(this), world.getLocation(nearestPlant))) {
+                    nearestPlant = plant;
+                }
+            }
+
             me.moveTowards(world.getLocation(nearestPlant));
             if (world.getLocation(me).equals(world.getLocation(nearestPlant))) {
                 me.energy += nearestPlant.getNutritionalValue();

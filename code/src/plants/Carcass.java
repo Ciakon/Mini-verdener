@@ -52,6 +52,7 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     public void act(World world) {
         this.shrooms();
         this.rot();
+        this.purgeLowEnergyCarcass();
     }
 
     @Override

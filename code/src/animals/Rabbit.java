@@ -14,7 +14,6 @@ import utils.Functions;
 public class Rabbit extends Animal implements Herbivorous {
 
     double digNewExitChance = 0.2;
-    boolean isInsideRabbithole;
     RabbitHole rabbitHole;
     int breedingEnergy = 15;
 
@@ -49,7 +48,7 @@ public class Rabbit extends Animal implements Herbivorous {
     public Rabbit(World world, boolean isAdult, Location location) {
         super(world, isAdult);
 
-        this.isInsideRabbithole = false;
+        this.isInsideNest = false;
         world.setTile(location, this);
 
         rabbitInit();
@@ -66,7 +65,7 @@ public class Rabbit extends Animal implements Herbivorous {
     public Rabbit(World world, boolean isAdult, RabbitHole rabbitHole) {
         super(world, isAdult);
 
-        this.isInsideRabbithole = true;
+        this.isInsideNest = true;
         this.rabbitHole = rabbitHole;
         this.isSleeping = true;
         rabbitHole.addRabbit(this);
@@ -75,7 +74,7 @@ public class Rabbit extends Animal implements Herbivorous {
     }
 
     void generalAI() {
-        if (isInsideRabbithole == false) {
+        if (isInsideNest == false) {
             if (rabbitHole != null && rabbitHole.getAllRabbits().size() == 1) {
 
                 RabbitHole newHole = checkForNewHole(1);
@@ -95,11 +94,11 @@ public class Rabbit extends Animal implements Herbivorous {
         hasBred = false;
         isSleeping = false;
 
-        if (isInsideRabbithole && world.getCurrentTime() < 7) {
+        if (isInsideNest && world.getCurrentTime() < 7) {
             exitHole(); // Not guranteed, rabbits may be in the way.
         }
 
-        if (isInsideRabbithole == false) {
+        if (isInsideNest == false) {
             if (world.getCurrentTime() >= 7) { // go back in the evening
                 moveToOrDigHole();
             } else {
@@ -110,10 +109,10 @@ public class Rabbit extends Animal implements Herbivorous {
 
     @Override
     void nightTimeAI() {
-        if (!this.hasBred && energy > breedingEnergy && this.isInsideRabbithole) {
+        if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
             this.findBreedingPartner();
         }
-        if (isInsideRabbithole == false) {
+        if (isInsideNest == false) {
             moveToOrDigHole();
         }
 
@@ -158,7 +157,7 @@ public class Rabbit extends Animal implements Herbivorous {
     public void findBreedingPartner() {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
         for (Rabbit rabbit : rabbitList) {
-            if (this.isAdult && rabbit != this && !rabbit.hasBred && rabbit.isInsideRabbithole && rabbit.energy > breedingEnergy) {
+            if (this.isAdult && rabbit != this && !rabbit.hasBred && rabbit.isInsideNest && rabbit.energy > breedingEnergy) {
                 this.breed(rabbit);
                 break;
             }
@@ -340,7 +339,7 @@ public class Rabbit extends Animal implements Herbivorous {
         if (world.getLocation(this).equals(world.getLocation(rabbitHole)) == false) {
             throw new RuntimeException("Rabbits should only enter their own hole when standing on it");
         }
-        isInsideRabbithole = true;
+        isInsideNest = true;
 
         isSleeping = true;
         world.remove(this); // gaming time
@@ -352,7 +351,7 @@ public class Rabbit extends Animal implements Herbivorous {
         Random random = new Random();
         ArrayList<RabbitHole> exits = rabbitHole.getAllConnectedHoles();
 
-        if (isInsideRabbithole == false) {
+        if (isInsideNest == false) {
             throw new RuntimeException("nah");
         } else if (random.nextDouble() < digNewExitChance) {
             Location l = Functions.findRandomValidLocation(world);
@@ -367,7 +366,7 @@ public class Rabbit extends Animal implements Herbivorous {
 
         Location holeLocation = world.getLocation(rabbitHole);
         if (world.isTileEmpty(holeLocation)) {
-            isInsideRabbithole = false;
+            isInsideNest = false;
             world.setTile(holeLocation, this);
         }
     }

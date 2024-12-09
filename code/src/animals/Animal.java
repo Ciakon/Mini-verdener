@@ -87,7 +87,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
 
         this.energy -= energyLoss;
-        if (energy <= 0) {
+        if (energy <= 0 && isInsideNest == false) {
             die();
         }
         if (energy >= maxEnergy) {
