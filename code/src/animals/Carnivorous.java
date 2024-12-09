@@ -1,14 +1,18 @@
 package animals;
 
 import itumulator.world.Location;
+import itumulator.world.World;
 import plants.Carcass;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Interface for carnivorous behavior.
  */
 public interface Carnivorous {
+    ArrayList<String> preferedPrey = new ArrayList<>();
+
     /**
      *
      * @param prey The prey to kill
@@ -33,12 +37,12 @@ public interface Carnivorous {
         return false;
     }
 
-    public ArrayList<Location> findPrey() {
+    default public ArrayList<Location> findPrey(World world, Animal me) {
         ArrayList<Location> nearbyPrey = new ArrayList<>();
-        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
         for (Location location : surroundings) {
             if (world.getTile(location) instanceof Animal animal) {
-                if (isPrey(animal)) {
+                if (isPrey(animal, preferedPrey)) {
                     nearbyPrey.add(location);
                 }
             }
@@ -113,8 +117,4 @@ public interface Carnivorous {
         }
     }
 
-    @Override
-    void dayTimeAI() {
-        findFood();
-    }
 }

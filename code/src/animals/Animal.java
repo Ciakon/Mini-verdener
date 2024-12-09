@@ -46,7 +46,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
     Location previousPosition;
     World world;
-    ArrayList<String> preferedPrey;
     AnimalNest animalNest;
 
     /**
@@ -55,7 +54,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * @param isAdult Whether to spawn the animal as an adult or baby.
      */
     public Animal(World world, boolean isAdult) {
-        this.preferedPrey = new ArrayList<>();
         this.world = world;
         world.add(this);
         if (isAdult) {
