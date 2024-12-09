@@ -228,10 +228,15 @@ public class Functions {
     }
 
     /**
-     * finds all nearby objects, of certain type, within visionRange of a
-     * certain location
+     * finds all nearby objects, of certain type, within range of a certain
+     * location
      *
-     * @return an ArrayList of all nearby objects
+     * @param world The world to interact with
+     * @param myLocation The location of e.g. the location of a rabbit
+     * @param type Class of the objects to look for e.g. Grass
+     * @param range the radius to look out from the location e.g. rabbit's
+     * vision range
+     * @return returns an Arraylist of all nearby objects of a certain type
      */
     public static <T> ArrayList<Location> findNearbyObjects(World world, Location myLocation, Class<T> type, int range) {
         ArrayList<Location> nearbyObjects = new ArrayList<>();
