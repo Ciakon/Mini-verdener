@@ -24,6 +24,7 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
         this.nutritionalValue = maxEnergy;
         this.chanceForShrooms = 0.01;
         this.energyLoss = 3;
+        this.world = world;
         world.add(this);
         world.setTile(location, this);
         if (IsAdult) {
@@ -51,6 +52,7 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     public void act(World world) {
         this.rot();
         this.shrooms();
+        System.out.println(world.getLocation(this));
     }
 
     @Override
@@ -59,20 +61,21 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     }
 
     public void rot() {
+        Location location = world.getLocation(this);
+
         this.nutritionalValue -= this.energyLoss;
         if (isColony) {
             this.nutritionalValue -= this.energyLoss;
             colonizer.gainEnergy(energyLoss);
         }
         if (this.nutritionalValue < 20) {
-            World myWorld = world;
-            Location location = world.getLocation(this);
             if (isColony) {
                 colonizer.removeColony(this);
             }
             if (this.hasShrooms && !this.isColony) {
+                System.out.println(location);
                 world.delete(this);
-                new Mushrooms(myWorld, location, this.shroomValue);
+                new Mushrooms(this.world, location, this.shroomValue);
             } else {
                 world.delete(this);
             }
