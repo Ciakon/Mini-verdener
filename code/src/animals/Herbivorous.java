@@ -21,6 +21,10 @@ public interface Herbivorous {
         ArrayList<Plant> nearbyPlants = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
 
+        if (world.getTile(world.getLocation(me)) instanceof Plant plant) {
+            nearbyPlants.add(plant);
+        }
+
         for (Location location : surroundings) {
             if (world.getNonBlocking(location) instanceof Plant plant) {
                 nearbyPlants.add(plant);

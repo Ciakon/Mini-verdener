@@ -78,6 +78,7 @@ public interface Carnivorous {
                 me.moveTowards(nearestCarcass);
             } else if (Functions.calculateDistance(world.getLocation(me), nearestCarcass) == 1) {
                 Carcass c = (Carcass) world.getTile(nearestCarcass);
+
                 eatCarcass(c, me);
             }
         } else {
@@ -96,6 +97,7 @@ public interface Carnivorous {
         if (totalAmount < desiredAmount) {
             carcass.setNutritionalValue(0);
             me.addEnergy(totalAmount);
+            return;
         }
         carcass.setNutritionalValue(totalAmount - desiredAmount);
         me.addEnergy(desiredAmount);

@@ -308,8 +308,6 @@ public class Wolf extends Animal implements Carnivorous {
         for (Wolf wolf : nearbyPackMembers) {
             wolf.addEnergy(individualEnergy);
         }
-        System.out.println(totalAmount);
-
     }
 
 }

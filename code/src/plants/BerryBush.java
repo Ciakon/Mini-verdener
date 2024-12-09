@@ -14,7 +14,7 @@ public class BerryBush extends Plant implements Actor, DynamicDisplayInformation
 
 
 
-    private int nutritionalValue;
+    private int defaultNutritionalValue;
     private boolean depleted;
     private int stepsSinceDepletion;
 
@@ -22,7 +22,8 @@ public class BerryBush extends Plant implements Actor, DynamicDisplayInformation
         super(world, location);
         world.add(this);
         world.setTile(location, this);
-        this.nutritionalValue = 10;
+        this.defaultNutritionalValue = 10;
+        this.nutritionalValue = this.defaultNutritionalValue;
         this.depleted = false;
         this.stepsSinceDepletion = 0;
 
@@ -45,24 +46,21 @@ public class BerryBush extends Plant implements Actor, DynamicDisplayInformation
     /**
      * Reduces the bush's nutritional value and marks it as depleted.
      *
-     * @return The amount of nutrition provided to the animal.
      */
-    public int consumeBerries() {
-        if (depleted) return 0;
+    @Override
+    public void consume() {
+        if (depleted) return;
 
-        int nutrition = nutritionalValue;
         nutritionalValue = 0;
         depleted = true;
         stepsSinceDepletion = 0;
-
-        return nutrition;
     }
 
     /**
      * Replenishes the bush by resetting its nutritional value and texture.
      */
     private void replenish() {
-        this.nutritionalValue = 10;
+        this.nutritionalValue = this.defaultNutritionalValue;
         this.depleted = false;
         this.stepsSinceDepletion = 0;
     }

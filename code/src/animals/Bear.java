@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 import plants.BerryBush;
+import plants.Plant;
 import utils.Functions;
 
 /**
  * "bear is kil" "no"
  */
-public class Bear extends Animal implements Carnivorous {
+public class Bear extends Animal implements Carnivorous, Herbivorous {
 
     Location territory;
     int territorySize = 2;
@@ -99,32 +100,32 @@ public class Bear extends Animal implements Carnivorous {
 
     @Override
     void generalAI() {
-
         checkForIllegalActivity();
-        previousPosition = world.getLocation(this);
+
+        System.out.println(energy);
     }
 
     @Override
     void dayTimeAI() {
-        Random random = new Random();
         isSleeping = false;
+
+        if (world.getCurrentTime() >= 7) {
+            sleeperTime(); 
+            return;
+        }
+
         if (killList.isEmpty()) {
-            if (findNearestBerryBush() != null) {
-                interactWithBerryBush();
-            } else if (isHungry()) {
+            if (isStarving()) {
                 findFood(world, this);
-            } else if (isInsideTerritory() == false && isHungry() == false) {
-                moveTowards(territory);
+            } else if (isHungry()) {
+                forage(world, this);
             } else {
-                wander();
+                moveTowards(territory);
             }
         } else {
             hitman();
         }
 
-        if (world.getCurrentTime() >= 7) {
-            sleeperTime();
-        }
     }
 
     @Override
@@ -237,69 +238,6 @@ public class Bear extends Animal implements Carnivorous {
         }
     }
 
-    /**
-     * Finds the nearest non-depleted BerryBush within the bear's vision range.
-     *
-     * @return The nearest BerryBush, or null if none are found.
-     */
-    public BerryBush findNearestBerryBush() {
-        if (world.getNonBlocking(world.getLocation(this)) instanceof BerryBush) {
-            return (BerryBush) world.getNonBlocking(world.getLocation(this));
-        }
-
-
-        Set<Location> tiles = world.getSurroundingTiles(world.getLocation(this), visionRange);
-
-        for (Location location : tiles) {
-            if (world.getNonBlocking(location) instanceof BerryBush berryBush && !berryBush.isDepleted()) {
-                return berryBush;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Consumes berries from a BerryBush if the bear is at the same location as
-     * the bush.
-     *
-     * @param berryBush The BerryBush to consume berries from.
-     * @return True if berries were consumed, false otherwise.
-     */
-    public boolean eatBerryBush(BerryBush berryBush) {
-        if (berryBush == null) {
-            return false;
-        }
-
-        if (world.getLocation(this).equals(world.getLocation(berryBush))) {
-
-            int nutrition = berryBush.consumeBerries();
-            this.energy += nutrition;
-
-            if (this.energy > maxEnergy) {
-                this.energy = maxEnergy;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Handles the bear's interaction with a BerryBush: Finds the nearest
-     * BerryBush Moves toward it if not already there Eats it when at the same
-     * location
-     */
-    public void interactWithBerryBush() {
-        BerryBush nearestBush = findNearestBerryBush();
-        if (nearestBush != null) {
-
-            if (!eatBerryBush(nearestBush)) {
-                moveTowards(world.getLocation(nearestBush));
-            }
-        }
-    }
 
     /**
      * Goes back to its territory and sleeps.
@@ -328,7 +266,35 @@ public class Bear extends Animal implements Carnivorous {
                 return true;
             }
         }
+
+        if (territory.equals(world.getLocation(this))) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Finds all nearby berryBushes within the vision range. Overidden from default method.
+     *
+     * @return An ArrayList of nearby berryBush locations.
+     */
+    @Override
+    public ArrayList<Plant> findNearbyPlants(World world, Animal me) {
+        ArrayList<Plant> nearbyPlants = new ArrayList<>();
+        Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
+
+        if (world.getTile(world.getLocation(me)) instanceof BerryBush plant && plant.isDepleted() == false) {
+            nearbyPlants.add(plant);
+        }
+
+        for (Location location : surroundings) {
+            if (world.getNonBlocking(location) instanceof BerryBush plant && plant.isDepleted() == false) {
+                nearbyPlants.add(plant);
+            }
+        }
+
+        return nearbyPlants;
     }
 
 }

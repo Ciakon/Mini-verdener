@@ -113,6 +113,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
                 imageKey = imageKeyBaby;
             }
         }
+
         return new DisplayInformation(color, imageKey);
     }
 
@@ -411,6 +412,18 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      */
     boolean isHungry() {
         if (energy < maxEnergy * 0.7) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if animal energy is below 20 percent of max energy.
+     *
+     * @return Returns boolean if true otherwise false.
+     */
+    boolean isStarving() {
+        if (energy < maxEnergy * 0.2) {
             return true;
         }
         return false;
