@@ -3,6 +3,8 @@ package animals;
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.Carcass;
+
 import java.util.ArrayList;
 import utils.Functions;
 
@@ -10,27 +12,29 @@ public class AlphaWolf extends Wolf {
 
     ArrayList<Wolf> Pack;
 
-    void wolfInit() {
+    void alphaWolfInit() {
         imageKeyBaby = "Alpha";
         imageKeyAdult = "Alpha";
         imageKeySleepingBaby = "Alpha";
         imageKeySleepingAdult = "Alpha";
-        preferedPrey.add("Rabbit");
+
+        pack = new ArrayList<>();
+        pack.add(this);
     }
 
     public AlphaWolf(World world, boolean isAdult, Location location) {
         super(world, isAdult, location);
-        wolfInit();
+        alphaWolfInit();
     }
 
     public AlphaWolf(World world, boolean isAdult, WolfNest wolfNest) {
         super(world, isAdult, wolfNest);
-        wolfInit();
+        alphaWolfInit();
     }
 
     public AlphaWolf(World world, boolean isAdult, Location location, WolfNest wolfNest, int energy, int age) {
         super(world, isAdult, location);
-        wolfInit();
+        alphaWolfInit();
 
         this.wolfNest = wolfNest;
         this.energy = energy;
@@ -39,6 +43,7 @@ public class AlphaWolf extends Wolf {
 
     @Override
     void generalAI() {
+
     }
 
     @Override
@@ -63,13 +68,16 @@ public class AlphaWolf extends Wolf {
 
     @Override
     void die() {
-        createNewAlpha();
         super.die();
+        createNewAlpha();
     }
 
     void createNewAlpha() {
+        if (pack.isEmpty()) return;
+
         Wolf alpha = pack.get(0);
         for (Wolf wolf : pack) {
+
             if (wolf instanceof AlphaWolf) {
                 continue;
             }
@@ -82,5 +90,9 @@ public class AlphaWolf extends Wolf {
             return;
         }
         alpha.andrewTateMode();
+    }
+
+    public ArrayList<Wolf> getPack() {
+        return pack;
     }
 }

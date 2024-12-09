@@ -3,6 +3,8 @@ package animals;
 import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.Carcass;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Set;
@@ -27,13 +29,14 @@ public class Wolf extends Animal implements Carnivorous {
         breedingEnergy = 15;
         visionRange = 4;
         maxEnergy = 100;
-        energy = 50;
+        energy = 80;
         energyLoss = 1;
 
         adultAge = 40;
 
         nutritionalValueAdult = 50;
         nutritionalValueBaby = 20;
+
         preferedPrey.add("Rabbit");
     }
 
@@ -55,7 +58,7 @@ public class Wolf extends Animal implements Carnivorous {
 
     @Override
     void generalAI() {
-        
+
     }
 
     @Override
@@ -63,10 +66,10 @@ public class Wolf extends Animal implements Carnivorous {
         isSleeping = false;
 
         if (isHungry()) {
-            findFood(world, alpha);
+            findFood(world, this);
         }
         else {
-            
+            followAlpha();
         }
 
     }
@@ -223,11 +226,11 @@ public class Wolf extends Animal implements Carnivorous {
         pack.add(this);
     }
 
-    // todo bear stuff
     @Override
     void die() {
         super.die();
         pack.remove(this);
+        
     }
 
     public void setAlpha(AlphaWolf alpha) {
@@ -237,7 +240,8 @@ public class Wolf extends Animal implements Carnivorous {
     public AlphaWolf andrewTateMode() {
         Location l = world.getLocation(this);
 
-        this.die();
+        world.delete(this);
+        pack.remove(this);
 
         AlphaWolf alpha = new AlphaWolf(world, isAdult, l, wolfNest, energy, age);
         alpha.addToPack(this.pack);
@@ -250,8 +254,52 @@ public class Wolf extends Animal implements Carnivorous {
     }
 
     void followAlpha() {
-        if (world.isOnTile(alpha) == false) return;
+        if (alpha == null) {
+            wander();
+            return;
+        }
+            
+        if (world.isOnTile(alpha) == false) {
+            wander();
+            return;
+        }
+        if (Functions.calculateDistance(world.getLocation(this), world.getLocation(alpha)) == 1) return;
         moveTowards(world.getLocation(alpha));
+    }
+
+    /**
+     * When wolves eat a carcass, they share it with nearby pack members.
+     */
+    @Override
+    public void eatCarcass(Carcass carcass, Animal me) {
+        ArrayList<Wolf> nearbyPackMembers = new ArrayList<>(); // Includes the wolf itself
+        for (Wolf wolf : pack) {
+            if (Functions.calculateDistance(world.getLocation(this), world.getLocation(wolf)) <= 2) {
+                nearbyPackMembers.add(wolf);
+            }
+        }
+
+        int totalAmount = carcass.getNutritionalValue();
+        int desiredAmount = 0;
+        int individualEnergy;
+
+        for (Wolf wolf : nearbyPackMembers) {
+            desiredAmount += wolf.maxEnergy - wolf.energy;
+        }
+
+        if (totalAmount < desiredAmount) {
+            carcass.setNutritionalValue(0);
+            individualEnergy = Math.ceilDiv(totalAmount, nearbyPackMembers.size());
+        } else {
+            carcass.setNutritionalValue(totalAmount - desiredAmount);
+            individualEnergy = Math.ceilDiv(desiredAmount, nearbyPackMembers.size());;
+        }
+        
+        for (Wolf wolf : nearbyPackMembers) {
+            wolf.addEnergy(individualEnergy);
+        }
+
+        
     }
 
 }

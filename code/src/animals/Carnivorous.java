@@ -12,8 +12,6 @@ import java.util.Set;
  * Interface for carnivorous behavior.
  */
 public interface Carnivorous {
-    ArrayList<String> preferedPrey = new ArrayList<>();
-
     /**
      *
      * @param prey The prey to kill
@@ -43,7 +41,7 @@ public interface Carnivorous {
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
         for (Location location : surroundings) {
             if (world.getTile(location) instanceof Animal animal) {
-                if (isPrey(animal, preferedPrey)) {
+                if (isPrey(animal, me.preferedPrey)) {
                     nearbyPrey.add(location);
                 }
             }
@@ -58,13 +56,9 @@ public interface Carnivorous {
     default void hunting(World world, Animal me) {
 
         ArrayList<Location> nearbyPrey = findPrey(world, me);
-        
+
         if (!nearbyPrey.isEmpty()) {
             Location nearestPrey = me.nearestObject(nearbyPrey);
-
-            if (me instanceof AlphaWolf) {
-                System.out.println("prey: " + Functions.calculateDistance(world.getLocation(me), nearestPrey));
-            }
 
             if (Functions.calculateDistance(world.getLocation(me), nearestPrey) > 1) {
                 me.moveTowards(nearestPrey);
@@ -95,17 +89,16 @@ public interface Carnivorous {
      * takes Nutritional value away from Carcass and gives it as energy.
      *
      * @param carcass Carcass to be eaten from
-     * @return Returns the amount of Nutritional value eaten
      */
-    default int eatCarcass(Carcass carcass, Animal me) {
+    default void eatCarcass(Carcass carcass, Animal me) {
         int totalAmount = carcass.getNutritionalValue();
         int desiredAmount = me.maxEnergy - me.energy;
         if (totalAmount < desiredAmount) {
             carcass.setNutritionalValue(0);
-            return totalAmount;
+            me.addEnergy(totalAmount);
         }
         carcass.setNutritionalValue(totalAmount - desiredAmount);
-        return desiredAmount;
+        me.addEnergy(desiredAmount);
     }
 
     /**

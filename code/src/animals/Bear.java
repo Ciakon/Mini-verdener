@@ -43,6 +43,10 @@ public class Bear extends Animal implements Carnivorous {
         preferedPrey.add("Wolf");
         killList = new ArrayList<>();
         this.family.add(this);
+
+        preferedPrey.add("Rabbit");
+        preferedPrey.add("Wolf");
+        preferedPrey.add("AlphaWolf");
     }
 
     /**
@@ -103,7 +107,6 @@ public class Bear extends Animal implements Carnivorous {
     void dayTimeAI() {
         Random random = new Random();
         isSleeping = false;
-        System.out.println(this.energy);
         if (killList.isEmpty()) {
             if (findNearestBerryBush() != null) {
                 interactWithBerryBush();

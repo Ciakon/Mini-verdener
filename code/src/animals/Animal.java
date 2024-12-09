@@ -48,7 +48,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     Location wanderGoal; // Animals will wander towards this tile, updated daily.
     World world;
     AnimalNest<Animal> animalNest;
-
+    ArrayList<String> preferedPrey = new ArrayList<>();
     /**
      *
      * @param world The simulation world.
@@ -128,8 +128,6 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      */
     void wander() {
         moveTowards(wanderGoal);
-
-        System.out.println(this + " wandering");
 
         // Update wander goal.
         if (world.getLocation(this).equals(wanderGoal) || world.getCurrentTime() == 0) {
@@ -221,6 +219,17 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         Location movement = new Location(movementInX, movementInY);
         if (world.isTileEmpty(movement)) {
             world.move(this, movement);
+        }
+        else if (world.getLocation(this).equals(desiredLocation) == false){
+            // try another position nearby
+            for (Location surroundingLocation : world.getEmptySurroundingTiles(world.getLocation(this))) {
+                for (Location desireableLocation : world.getEmptySurroundingTiles(movement)) {
+                    if (surroundingLocation.equals(desireableLocation)) {
+                        world.move(this, desireableLocation);
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -361,5 +370,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
             return true;
         }
         return false;
+    }
+
+    public void addEnergy(int energy) {
+        this.energy += energy;
     }
 }
