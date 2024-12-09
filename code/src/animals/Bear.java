@@ -12,7 +12,7 @@ import utils.Functions;
 /**
  * "bear is kil" "no"
  */
-public class Bear extends Carnivore {
+public class Bear extends Animal implements Carnivorous {
 
     Location territory;
     int territorySize = 2;
@@ -108,7 +108,7 @@ public class Bear extends Carnivore {
             if (findNearestBerryBush() != null) {
                 interactWithBerryBush();
             } else if (this.energy <= (this.maxEnergy - this.maxEnergy / 3)) {
-                findFood();
+                findFood(world, this);
             } else if (isInsideTerritory() == false) {
                 moveTowards(territory);
             } else {

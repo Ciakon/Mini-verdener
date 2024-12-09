@@ -163,14 +163,13 @@ public class Functions {
     }
 
     /**
-     * Finds a random location in the world, that is completely empty (no
-     * non-blocking object)
+     * Finds a random empty location in the world
      *
      * @param world The simulation world
-     * @return Location The random valid location.
+     * @return Location The random location.
      */
     // todo infinte loop glitch, L
-    public static Location findRandomValidLocation(World world) {
+    public static Location findRandomEmptyLocation(World world) {
         Random RNG = new Random();
         int N = world.getSize();
 
@@ -179,11 +178,32 @@ public class Functions {
             int y = RNG.nextInt(0, N);
             Location location = new Location(x, y);
 
+            if (world.isTileEmpty(location)) {
+                return location;
+            }
+        }
+    }
+
+    /**
+     * Finds a random location in the world, that is completely empty (no
+     * non-blocking object)
+     *
+     * @param world The simulation world
+     * @return Location The random valid location.
+     */
+    // todo infinte loop glitch, L
+    public static Location findRandomValidLocation(World world) {
+        while (true) {
+            Location location = findRandomEmptyLocation(world);
+
             if (world.getTile(location) == null) {
                 return location;
             }
         }
     }
+
+    
+    
 
     /**
      * Calculates the Manhattan distance between two locations.

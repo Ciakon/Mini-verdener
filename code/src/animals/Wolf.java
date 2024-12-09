@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import utils.Functions;
 
-public class Wolf extends Carnivore {
+public class Wolf extends Animal implements Carnivorous {
 
     WolfNest wolfNest;
     ArrayList<Wolf> pack;

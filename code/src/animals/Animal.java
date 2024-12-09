@@ -45,9 +45,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     Color color = Color.red;
 
     Location previousPosition;
+    Location wanderGoal; // Animals will wander towards this tile, updated daily.
     World world;
-    ArrayList<String> preferedPrey;
-    AnimalNest animalNest;
+    AnimalNest<Animal> animalNest;
 
     /**
      *
@@ -55,9 +55,10 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * @param isAdult Whether to spawn the animal as an adult or baby.
      */
     public Animal(World world, boolean isAdult) {
-        this.preferedPrey = new ArrayList<>();
         this.world = world;
         world.add(this);
+        wanderGoal = Functions.findRandomEmptyLocation(world);
+
         if (isAdult) {
             this.isAdult = true;
             this.age = adultAge;
@@ -125,10 +126,12 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Moves randomly in a random direction
      */
-    private void moveRandomly() {
-        Location randomLocation = randomFreeLocation();
-        if (randomLocation != null) {
-            world.move(this, randomLocation);
+    void wander() {
+        moveTowards(wanderGoal);
+
+        // Update wander goal.
+        if (world.getLocation(this).equals(wanderGoal) || world.getCurrentTime() == 0) {
+            wanderGoal = Functions.findRandomEmptyLocation(world);
         }
     }
 
