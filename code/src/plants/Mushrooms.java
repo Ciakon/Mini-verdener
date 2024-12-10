@@ -12,7 +12,7 @@ import utils.Functions;
 public class Mushrooms extends Plant implements Actor, DynamicDisplayInformationProvider {
 
     protected String imageKey;
-    protected int maxEnergy=100;
+    protected int maxEnergy = 150;
 
     protected int energy;
     protected int energyLoss;
