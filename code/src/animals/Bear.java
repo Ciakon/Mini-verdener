@@ -183,7 +183,9 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         this.hasBred = true;
         partner.setHasBred(true);
         partner.removeEnergy(this.breedingEnergy);
+        this.family.add((Bear) partner);
         this.family.add(child);
+        ((Bear) partner).setFamiliy(this.family);
     }
 
     /**
@@ -243,10 +245,9 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
                 if (killList.contains(animal)) {
                     continue;
                 }
-                if (animal instanceof Bear == false) {
+                if (animal instanceof Bear == false || this.isBreedable() == false) {
                     killList.add(animal);
                 }
-
             }
         }
     }
@@ -308,6 +309,10 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         }
 
         return nearbyPlants;
+    }
+
+    void setFamiliy(ArrayList<Bear> family) {
+        this.family = family;
     }
 
 }
