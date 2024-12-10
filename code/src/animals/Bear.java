@@ -4,7 +4,6 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Set;
 import plants.BerryBush;
 import plants.Plant;

@@ -1,10 +1,8 @@
 package animals;
 
 import animals.nests.AnimalNest;
-import animals.nests.WolfNest;
 import itumulator.world.Location;
 import itumulator.world.World;
-import plants.Carcass;
 
 import java.util.ArrayList;
 import utils.Functions;
@@ -60,6 +58,7 @@ public class AlphaWolf extends Wolf {
             // If Alpha is stuck, swap with one of the betas.
             if (world.getEmptySurroundingTiles(world.getLocation(this)).isEmpty()) {
                 for (Location tile : world.getSurroundingTiles()) {
+                    if (world.getTile(tile) instanceof Animal == false) continue;
                     Animal animal = (Animal) world.getTile(tile);
                     if (pack.contains(animal)) {
                         Functions.swapObjects(world, this, animal);

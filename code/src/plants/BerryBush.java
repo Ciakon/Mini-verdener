@@ -8,7 +8,6 @@ import itumulator.world.Location;
 import itumulator.world.NonBlocking;
 import itumulator.world.World;
 import java.awt.Color;
-import java.util.*;
 
 public class BerryBush extends Plant implements Actor, DynamicDisplayInformationProvider, NonBlocking {
 
