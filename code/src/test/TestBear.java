@@ -17,7 +17,7 @@ public class TestBear {
 
     /**
      * Tests if bears can breed and produce offspring. This test ensures that
-     * when two bears are placed together, they breed and create a bear cub.
+     * when two bears are placed together and are ready to breed, they breed and create a bear cub.
      */
     @Test
     public void testBearBreeding() {
