@@ -294,7 +294,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @return Returns int amount of energy.
      */
-    int getEnergy() {
+    public int getEnergy() {
         return this.energy;
     }
 
@@ -303,7 +303,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @param amount positive int of how much energy needs to be removed
      */
-    void removeEnergy(int amount) {
+    public void removeEnergy(int amount) {
         this.energy -= amount;
     }
 
