@@ -35,7 +35,7 @@ jobs:
           # javadoc -d ./docs -sourcepath ./code/src $(find ./code/src -name "*.java" -not -path "./code/src/itumulator/*" -not -path "./code/src/test/*") || true
           javadoc -d ./docs -sourcepath ./code/src \
           $(find ./code/src -name "*.java" -not -path "./code/src/itumulator/*") \
-          -classpath junit-platform-console-standalone-1.11.3.jar || true
+          -classpath junit-platform-console-standalone-1.11.3.jar -private || true
 
       # Step 5: Publish Javadocs to GitHub Pages
       - name: Deploy to GitHub Pages

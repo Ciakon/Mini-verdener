@@ -13,9 +13,10 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import utils.Functions;
 
+/**
+ * Testing class for the Wolf animal.
+ */
 public class TestWolf {
-    
-
     /**
      * Tests if a wolf can die. This doesn't require RNG, so it only runs once.
      */
