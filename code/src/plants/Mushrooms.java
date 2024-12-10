@@ -34,7 +34,8 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
 
         this.colonies = new ArrayList<>();
 
-        this.imageKey = "fungi";
+        this.imageKey = "fungi-small";
+        world.setTile(this.location, this);
     }
 
     @Override
@@ -64,6 +65,9 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
      * Makes mushrooms lose energy.
      */
     public void decay() {
+        if(energy<=0){
+            world.delete(this);
+        }
         this.energy -= this.energyLoss;
     }
 

@@ -37,7 +37,7 @@ public class Functions {
         int N = Integer.parseInt(scanner.nextLine());
         System.out.println("World size: " + N);
 
-        Program program = new Program(N, 1200, 200);
+        Program program = new Program(N, 900, 200);
         World world = program.getWorld();
 
         while (scanner.hasNext()) {
