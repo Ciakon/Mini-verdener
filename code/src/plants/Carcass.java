@@ -15,15 +15,14 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     protected Double chanceForShrooms;
     protected boolean hasShrooms;
     protected int shroomValue;
-    protected int energyLoss;
     protected Mushrooms colonizer;
     protected boolean isColony;
 
     public Carcass(World world, Location location, boolean IsAdult, int nutritionValue) {
         super(world, location);
         this.nutritionalValue = nutritionValue;
-        this.chanceForShrooms = 0.05;
-        this.energyLoss = 1;
+        this.chanceForShrooms = 0.10;
+        this.nutritionLoss = 1;
         this.world = world;
         world.add(this);
         world.setTile(location, this);
@@ -39,7 +38,7 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
         super(world, location);
         this.nutritionalValue = nutritionValue;
         this.chanceForShrooms = 0.05;
-        this.energyLoss = 1;
+        this.nutritionLoss = 1;
         world.add(this);
         world.setTile(location, this);
         if (IsAdult) {
@@ -66,10 +65,10 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
      * deletes carcass.
      */
     public void rot() {
-        this.nutritionalValue -= this.energyLoss;
+        this.nutritionalValue -= this.nutritionLoss;
         if (isColony) {
-            this.nutritionalValue -= this.energyLoss;
-            colonizer.gainEnergy(energyLoss);
+            this.nutritionalValue -= this.nutritionLoss;
+            colonizer.gainEnergy(nutritionLoss);
         }
     }
 
@@ -102,8 +101,8 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
             this.shroomValue = 0;
         }
         if (this.hasShrooms) {
-            this.nutritionalValue -= energyLoss;
-            this.shroomValue += energyLoss;
+            this.nutritionalValue -= nutritionLoss;
+            this.shroomValue += nutritionLoss;
         }
     }
 

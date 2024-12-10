@@ -251,8 +251,4 @@ public class Functions {
         return nearbyObjects;
     }
 
-    public static int ceilDiv(int a, int b) {
-        return (a + b - 1) / b;
-    }
-
 }

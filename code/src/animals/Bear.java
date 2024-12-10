@@ -183,7 +183,6 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         this.hasBred = true;
         partner.setHasBred(true);
         partner.removeEnergy(this.breedingEnergy);
-        System.out.println("lol1");
         this.family.add(child);
     }
 
@@ -220,7 +219,6 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         for (Location location : surroundingTiles) {
             if (world.getTile(location) instanceof Bear partner) {
                 if (partner.isBreedable()) {
-                    System.out.println("lol");
                     breed(partner);
                     return;
                 }
