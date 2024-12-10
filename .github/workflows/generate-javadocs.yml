@@ -21,14 +21,22 @@ jobs:
           java-version: '23'  # Replace with your Java version (e.g., 11, 17)
           distribution: 'temurin'
 
-      # Step 3: Generate Javadocs (allow failure)
+      # Step 3: Set up Dependencies (JUnit in particular)
+      - name: Set up Dependencies
+        run: |
+          mkdir -p libs
+          curl -L -o libs/junit-jupiter-api-5.10.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.10.0/junit-jupiter-api-5.10.0.jar
+
+      # Step 4: Generate Javadocs (allow failure)
       - name: Generate Javadocs
         run: |
           # hassan er gay  
           # javadoc -d ./docs -sourcepath ./code/src $(find ./code/src -name "*.java" -not -path "./code/src/itumulator/*" -not -path "./code/src/test/*") || true
-          javadoc -d ./docs -sourcepath ./code/src $(find ./code/src -name "*.java" -not -path "./code/src/itumulator/*") || true
+          javadoc -d ./docs -sourcepath ./code/src \
+          $(find ./code/src -name "*.java" -not -path "./code/src/itumulator/*") \
+          -classpath libs/junit-jupiter-api-5.10.0.jar || true
 
-      # Step 4: Publish Javadocs to GitHub Pages
+      # Step 5: Publish Javadocs to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
