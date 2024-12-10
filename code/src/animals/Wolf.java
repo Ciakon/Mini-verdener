@@ -314,10 +314,10 @@ public class Wolf extends Animal implements Carnivorous {
 
         if (totalAmount < desiredAmount) {
             carcass.setNutritionalValue(0);
-            individualEnergy = Functions.ceilDiv(totalAmount, nearbyPackMembers.size());
+            individualEnergy = Math.ceilDiv(totalAmount, nearbyPackMembers.size());
         } else {
             carcass.setNutritionalValue(totalAmount - desiredAmount);
-            individualEnergy = Functions.ceilDiv(desiredAmount, nearbyPackMembers.size());;
+            individualEnergy = Math.ceilDiv(desiredAmount, nearbyPackMembers.size());;
         }
 
         for (Wolf wolf : nearbyPackMembers) {
