@@ -1,15 +1,21 @@
 package test;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.FileNotFoundException;
 import java.util.Map;
 
 import animals.Bear;
+import animals.Rabbit;
+import animals.Wolf;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.Grass;
 import utils.Functions;
 
 
@@ -66,5 +72,72 @@ public class TestBear {
             }
         }
         Assert.assertTrue(finalBearCount > initialBearCount);
+    }
+
+    /**
+     * Tests if a bear can hunt rabbits or wolves.
+     */
+    
+    @Test
+    public void huntTest() {
+        int successfulHunts = 0;
+        int timesRabbitKilled = 0;
+        int timesWolfKilled = 0;
+        int simulationAmount = 20;
+
+        int rabbitAmount = 10;
+        int wolfAmount = 10;
+
+        for (int simulationNumber = 1; simulationNumber <= simulationAmount; simulationNumber++) {
+            Program program = new Program(10, 100, 200);
+            World world = program.getWorld();
+
+            // spawn bear
+            Location randomSpawn = Functions.findRandomEmptyLocation(world);
+            Bear bear = new Bear(world, true, randomSpawn);
+
+            // spawn grass
+            for (int i = 0; i < 20; i++) {
+                randomSpawn = Functions.findRandomValidLocation(world);
+                new Grass(world, randomSpawn);
+            }
+
+            // spawn rabbits
+            for (int i = 0; i < rabbitAmount; i++) {
+                randomSpawn = Functions.findRandomEmptyLocation(world);
+                new Rabbit(world, true, randomSpawn);
+            }
+
+            // spawn wolves
+            for (int i = 0; i < wolfAmount; i++) {
+                randomSpawn = Functions.findRandomEmptyLocation(world);
+                new Wolf(world, true, randomSpawn);
+            }
+
+            boolean rabbitKilled = false;
+            boolean wolfKilled = false;
+
+            // simulate 20 steps
+            for (int i = 0; i < 20; i++) {
+                bear.act(world);
+
+                // Check if bear eats
+                if (Functions.findNearbyObjects(world, new Location(0,0), Rabbit.class, 1000).size() < rabbitAmount) {
+                    rabbitKilled = true;
+                }
+                if (Functions.findNearbyObjects(world, new Location(0,0), Wolf.class, 1000).size() < wolfAmount) {
+                    wolfKilled = true;
+                }
+            }
+
+            if (rabbitKilled) timesRabbitKilled++;
+            if (wolfKilled) timesWolfKilled++;
+
+            if (rabbitKilled || wolfKilled) successfulHunts++;
+        }
+
+        assertTrue(timesRabbitKilled >= 1);
+        assertTrue(timesWolfKilled >= 1);
+        assertTrue(successfulHunts >= simulationAmount * 0.75);
     }
 }

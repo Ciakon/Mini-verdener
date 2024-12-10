@@ -50,7 +50,7 @@ public class TestWolf {
      * Tests if a wolf can hunt rabbits.
      */
     @Test
-    void huntTest() {
+    public void huntTest() {
 
         int successfulHunts = 0;
         int simulationAmount = 20;
@@ -93,6 +93,7 @@ public class TestWolf {
             }
         }
 
+        System.out.println(successfulHunts);
         assertTrue(successfulHunts >= simulationAmount*0.75);
     }
 
