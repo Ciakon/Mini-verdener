@@ -176,7 +176,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         if (!(partner instanceof Bear)) {
             throw new RuntimeException("ayo!");
         }
-        Location childLocation = Functions.findRandomValidLocation(world);
+        Location childLocation = Functions.findRandomEmptyLocation(world);
         Bear child = new Bear(world, false, childLocation, this.territory, this.family);
 
         this.energy -= this.breedingEnergy;

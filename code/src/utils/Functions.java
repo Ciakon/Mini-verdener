@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import plants.BerryBush;
+import plants.Carcass;
 import plants.Grass;
 
 public class Functions {
@@ -41,8 +42,9 @@ public class Functions {
         World world = program.getWorld();
 
         while (scanner.hasNext()) {
-            String line = scanner.nextLine();
+            String line = scanner.nextLine().toLowerCase();
 
+            line = line.replace("carcass fungi", "carcass_fungi"); // Prevent treating "carcass fungi" as seperate words.
             String[] args = line.split(" ");
 
             String type = args[0];
@@ -79,6 +81,9 @@ public class Functions {
             }
 
             System.out.println("Spawned: " + amount + " " + type);
+            for (Location grassLocation : findNearbyObjects(world, new Location(0, 0), Grass.class, 1000)) {
+                System.out.println("grass: " + grassLocation);
+            }
         }
         scanner.close();
         return program;
@@ -92,21 +97,37 @@ public class Functions {
      * @return The actor object.
      */
     public static Actor createActor(World world, String actor_name) {
-        Location location = findRandomValidLocation(world);
+        Location location;
 
         switch (actor_name) {
             case "grass":
+                location = findRandomValidLocation(world);
                 return new Grass(world, location);
             case "rabbit":
+            location = findRandomEmptyLocation(world);
                 return new Rabbit(world, true, location);
             case "bear":
+                location = findRandomEmptyLocation(world);
                 return new Bear(world, true, location);
             case "wolf":
+                location = findRandomEmptyLocation(world);
                 return new Wolf(world, true, location);
             case "burrow":
+                location = findRandomValidLocation(world);
                 return new RabbitHole(world, location);
             case "berry":
+                location = findRandomValidLocation(world);
                 return new BerryBush(world, location);
+            case "carcass":
+                location = findRandomEmptyLocation(world);
+                Random random = new Random();
+                int NV = random.nextInt(30, 100);
+                return new Carcass(world, location, true, NV);
+            case "carcass_fungi":
+                location = findRandomEmptyLocation(world);
+                random = new Random();
+                NV = random.nextInt(30, 100);
+                return new Carcass(world, location, true, NV, true);
             default:
                 throw new IllegalArgumentException(actor_name + " is not a valid actor");
         }
@@ -144,7 +165,7 @@ public class Functions {
         // spawn alpha wolf
         ArrayList<Wolf> pack = new ArrayList<>();
 
-        Location location = findRandomValidLocation(world);
+        Location location = findRandomEmptyLocation(world);
         AlphaWolf alpha = new AlphaWolf(world, true, location);
         alpha.addToPack(pack);
 
@@ -152,7 +173,7 @@ public class Functions {
         for (int i = 1; i < amount; i++) {
             location = alpha.randomFreeLocation();
             if (location == null) {
-                location = findRandomValidLocation(world);
+                location = findRandomEmptyLocation(world);
             }
 
             Wolf wolf = new Wolf(world, true, location);
@@ -163,38 +184,36 @@ public class Functions {
     }
 
     /**
-     * Finds a random empty location in the world
+     * Finds a random location in the world, that is completely empty (no
+     * non-blocking object)
      *
      * @param world The simulation world
      * @return Location The random location.
      */
-    // todo infinte loop glitch, L
-    public static Location findRandomEmptyLocation(World world) {
+    public static Location findRandomValidLocation(World world) {
         Random RNG = new Random();
         int N = world.getSize();
 
         while (true) {
-            int x = RNG.nextInt(0, N);
-            int y = RNG.nextInt(0, N);
+            int x = RNG.nextInt(1, N);
+            int y = RNG.nextInt(1, N);
             Location location = new Location(x, y);
 
-            if (world.isTileEmpty(location)) {
+            if (world.getTile(location) == null) {
                 return location;
             }
         }
     }
 
     /**
-     * Finds a random location in the world, that is completely empty (no
-     * non-blocking object)
+     * Finds an empty location in the world.
      *
      * @param world The simulation world
      * @return Location The random valid location.
      */
-    // todo infinte loop glitch, L
-    public static Location findRandomValidLocation(World world) {
+    public static Location findRandomEmptyLocation(World world) {
         while (true) {
-            Location location = findRandomEmptyLocation(world);
+            Location location = findRandomValidLocation(world);
 
             if (world.getTile(location) == null) {
                 return location;

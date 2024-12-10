@@ -46,6 +46,7 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
         } else {
             this.imageKey = "carcass-small";
         }
+        this.hasShrooms = hasShrooms;
     }
 
     @Override
@@ -125,6 +126,13 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
      */
     public boolean getIsColony() {
         if (this.isColony) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean getShroomStatus() {
+        if (hasShrooms) {
             return true;
         }
         return false;
