@@ -19,26 +19,27 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     protected Mushrooms colonizer;
     protected boolean isColony;
 
-    public Carcass(World world, Location location, boolean IsAdult, int maxEnergy) {
+    public Carcass(World world, Location location, boolean IsAdult, int nutritionValue) {
         super(world, location);
-        this.nutritionalValue = maxEnergy;
-        this.chanceForShrooms = 0.01;
-        this.energyLoss = 3;
+        this.nutritionalValue = nutritionValue;
+        this.chanceForShrooms = 0.05;
+        this.energyLoss = 1;
         this.world = world;
         world.add(this);
         world.setTile(location, this);
         if (IsAdult) {
             this.imageKey = "carcass";
+
         } else {
             this.imageKey = "carcass-small";
         }
     }
 
-    public Carcass(World world, Location location, boolean IsAdult, int maxEnergy, boolean hasShrooms) {
+    public Carcass(World world, Location location, boolean IsAdult, int nutritionValue, boolean hasShrooms) {
         super(world, location);
-        this.nutritionalValue = maxEnergy;
-        this.chanceForShrooms = 0.01;
-        this.energyLoss = 3;
+        this.nutritionalValue = nutritionValue;
+        this.chanceForShrooms = 0.05;
+        this.energyLoss = 1;
         world.add(this);
         world.setTile(location, this);
         if (IsAdult) {
@@ -78,12 +79,11 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
      */
     public void purgeLowEnergyCarcass() {
         if (this.nutritionalValue < 20) {
-            Location location = world.getLocation(this);
             if (isColony) {
                 colonizer.removeColony(this);
             }
-            if (this.hasShrooms && !this.isColony) {
-                System.out.println(location);
+            if (this.hasShrooms) {
+                Location location = world.getLocation(this);
                 world.delete(this);
                 new Mushrooms(this.world, location, this.shroomValue);
             } else {
@@ -97,13 +97,13 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
      * Certain chance to make mushrooms grow on the carcass.
      */
     public void shrooms() {
-        if (!this.hasShrooms && Math.random() < this.chanceForShrooms) {
+        if (!this.hasShrooms && Math.random() <= this.chanceForShrooms) {
             this.hasShrooms = true;
             this.shroomValue = 0;
         }
         if (this.hasShrooms) {
-            this.nutritionalValue -= 3;
-            this.shroomValue += 3;
+            this.nutritionalValue -= energyLoss;
+            this.shroomValue += energyLoss;
         }
     }
 
