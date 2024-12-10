@@ -204,7 +204,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * returns false.
      */
     public boolean isBreedable() {
-        if (this.age > this.adultAge && !this.getHasBred() && this.getIsInsideNest() && this.getEnergy() > this.breedingEnergy) {
+        if (this.age >= this.adultAge && !this.getHasBred() && this.getIsInsideNest() && this.getEnergy() > this.breedingEnergy) {
             return true;
         } else {
             return false;

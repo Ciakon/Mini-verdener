@@ -189,6 +189,20 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
     }
 
     /**
+     * Checks if the animal checks off criteria to breed.
+     *
+     * @return Returns true if all criteria for breeding are met otherwise
+     * returns false.
+     */
+    public boolean isBreedable() {
+        if (this.age >= this.adultAge && !this.getHasBred() && this.getEnergy() > this.breedingEnergy) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Attempts to find a suitable breeding partner in the adjacent tiles.
      *
      * A bear will attempt to breed with another bear if the following
@@ -198,7 +212,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * If a suitable partner is found, the `breed` method is called.
      */
     void attemptBreeding() {
-        if (age < adultAge || hasBred || energy < breedingEnergy) {
+        if (isBreedable() == false) {
             return;
         }
 
