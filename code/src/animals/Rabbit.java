@@ -236,6 +236,7 @@ public class Rabbit extends Animal implements Herbivorous {
                 nearestHole.addRabbit(this);
             }
         } else {
+            wander();
             digHole();
         }
     }

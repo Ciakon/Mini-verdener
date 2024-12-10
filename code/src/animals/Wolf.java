@@ -173,11 +173,18 @@ public class Wolf extends Animal implements Carnivorous {
 
         WolfNest newNest = new WolfNest(this.world, location);
 
-        for (Wolf wolf : pack) {
-            wolf.animalNest = newNest;
-            newNest.addAnimal(wolf);
+        if (pack != null) {
+            for (Wolf wolf : pack) {
+                wolf.animalNest = newNest;
+                newNest.addAnimal(wolf);
+            }
+        }
+        else {
+            animalNest = newNest;
+            animalNest.addAnimal(this);
         }
 
+        
         enterHole();
     }
 
@@ -284,6 +291,12 @@ public class Wolf extends Animal implements Carnivorous {
     @Override
     public void eatCarcass(Carcass carcass, Animal me) {
         ArrayList<Wolf> nearbyPackMembers = new ArrayList<>(); // Includes the wolf itself
+
+        if (pack == null) {
+            Carnivorous.super.eatCarcass(carcass, me);
+            return;
+        }
+
         for (Wolf wolf : pack) {
             if (wolf.isInsideNest) continue;
             if (Functions.calculateDistance(world.getLocation(this), world.getLocation(wolf)) <= 2) {
