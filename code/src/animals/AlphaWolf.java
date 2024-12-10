@@ -105,8 +105,4 @@ public class AlphaWolf extends Wolf {
         }
         alpha.andrewTateMode();
     }
-
-    public ArrayList<Wolf> getPack() {
-        return pack;
-    }
 }

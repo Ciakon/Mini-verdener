@@ -93,7 +93,6 @@ public class TestWolf {
             }
         }
 
-        System.out.println(successfulHunts);
         assertTrue(successfulHunts >= simulationAmount*0.75);
     }
 
@@ -164,6 +163,33 @@ public class TestWolf {
         }
 
         assertTrue(successfulHunts >= simulationAmount*0.75);
+    }
+
+    /**
+     * This test puts to wolves that are not in the same pack against eachother. It tests if they fight, and that the winner is the one with most energy.
+     */
+    @Test
+    public void wolfFightTest() {
+        int simulationAmount = 20;
+
+        for (int simulationNumber = 1; simulationNumber <= simulationAmount; simulationNumber++) {
+            Program program = new Program(4, 100, 200);
+            World world = program.getWorld();
+
+            Wolf wolf1 = new Wolf(world, true, Functions.findRandomEmptyLocation(world));
+            Wolf wolf2 = new Wolf(world, true, Functions.findRandomEmptyLocation(world));
+
+            wolf2.removeEnergy(10);
+
+            // After 10 steps there should only be 1 wolf left.
+            for (int i = 0; i < 10; i++) {
+                program.simulate();
+            }
+
+            assertTrue(world.contains(wolf1));
+            assertFalse(world.contains(wolf2));
+        }
+        
     }
 
 }

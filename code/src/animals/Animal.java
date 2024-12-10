@@ -82,6 +82,8 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
         grow();
 
+        if (world.contains(this) == false) return;
+
         if (world.isOnTile(this)) {
             previousPosition = world.getLocation(this);
         }

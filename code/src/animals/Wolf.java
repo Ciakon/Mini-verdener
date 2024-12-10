@@ -58,6 +58,17 @@ public class Wolf extends Animal implements Carnivorous {
 
     @Override
     void generalAI() {
+        // engage in combat with other wolves.
+        if (isInsideNest == false) {
+            for (Location wolfLocation : Functions.findNearbyObjects(world, world.getLocation(this), Wolf.class, 1)) {
+                Wolf otherWolf = (Wolf) world.getTile(wolfLocation);
+    
+                if (otherWolf.getPack() != this.pack || this.pack == null) {
+                    engageInCombat(this, otherWolf);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -206,35 +217,6 @@ public class Wolf extends Animal implements Carnivorous {
         }
     }
 
-    /**
-     * Handles combat between this wolf and another animal.
-     *
-     * @param opponent The animal this wolf is fighting.
-     */
-    public void combat(Animal opponent) {
-        if (opponent instanceof Wolf) {
-            wolfCombat((Wolf) opponent);
-        }
-    }
-
-    /**
-     * Resolves a fight between two wolves based on their energy.
-     *
-     * @param otherWolf The wolf this wolf is fighting.
-     */
-    private void wolfCombat(Wolf otherWolf) {
-        if (this.energy > otherWolf.energy) {
-            this.energy -= otherWolf.energy;
-            otherWolf.die();
-        } else if (this.energy < otherWolf.energy) {
-            otherWolf.energy -= this.energy;
-            this.die();
-        } else {
-            this.die();
-            otherWolf.die();
-        }
-    }
-
     public void addToPack(ArrayList<Wolf> pack) {
         this.pack = pack;
         pack.add(this);
@@ -323,6 +305,10 @@ public class Wolf extends Animal implements Carnivorous {
         for (Wolf wolf : nearbyPackMembers) {
             wolf.addEnergy(individualEnergy);
         }
+    }
+
+    public ArrayList<Wolf> getPack() {
+        return pack;
     }
 
 }

@@ -116,8 +116,12 @@ public interface Carnivorous {
         if (opponent.energy > me.energy) {
             opponent.energy -= me.energy;
             me.die();
-        } else {
+        } else if (me.energy > opponent.energy){
             me.energy -= opponent.energy;
+            opponent.die();
+        }
+        else {
+            me.die();
             opponent.die();
         }
     }

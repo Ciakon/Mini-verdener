@@ -75,7 +75,7 @@ public class TestBear {
     }
 
     /**
-     * Tests if a bear can hunt rabbits or wolves.
+     * Tests if a bear can hunt rabbits and wolves.
      */
     
     @Test
@@ -121,7 +121,7 @@ public class TestBear {
             for (int i = 0; i < 20; i++) {
                 bear.act(world);
 
-                // Check if bear eats
+                // Check if bear kills
                 if (Functions.findNearbyObjects(world, new Location(0,0), Rabbit.class, 1000).size() < rabbitAmount) {
                     rabbitKilled = true;
                 }

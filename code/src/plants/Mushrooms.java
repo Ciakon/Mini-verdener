@@ -41,8 +41,6 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
 
     @Override
     public void act(World world) {
-        System.out.println(energy);
-        System.out.println(energy<=0);
         changeImageKey();
         findColonies();
         decay();
