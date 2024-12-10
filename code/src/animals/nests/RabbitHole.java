@@ -1,18 +1,13 @@
 package animals.nests;
-
-import itumulator.executable.DisplayInformation;
-import itumulator.executable.DynamicDisplayInformationProvider;
 import itumulator.simulator.Actor;
 import itumulator.world.Location;
-import itumulator.world.NonBlocking;
 import itumulator.world.World;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
 import animals.Rabbit;
 
-public class RabbitHole extends AnimalNest implements Actor, DynamicDisplayInformationProvider, NonBlocking {
+public class RabbitHole extends AnimalNest implements Actor {
 
     ArrayList<RabbitHole> connectedHoles; // includes itself.
     int collapseTimer = 0;

@@ -4,12 +4,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.RandomAccess;
 
 import org.junit.jupiter.api.Test;
 
-import animals.AlphaWolf;
 import animals.Rabbit;
 import animals.Wolf;
 import itumulator.executable.Program;

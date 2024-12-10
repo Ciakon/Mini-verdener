@@ -1,12 +1,7 @@
 package test;
 
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
-import animals.Bear;
-import org.junit.Assert;
 import org.junit.Test;
 
 import itumulator.executable.Program;

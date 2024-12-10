@@ -3,7 +3,6 @@ package test;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -139,6 +138,7 @@ public class TestFunctions {
                 verifySpawns(world, Rabbit.class, 1, 2);
                 verifySpawns(world, Wolf.class, 1);
 
+                // For t3-2ab we are also going check if 5-10 carcasses are infected with shrooms.
                 program = Functions.createSimulation("t3-2ab");
                 world = program.getWorld();
                 verifySpawns(world, Grass.class, 10);
@@ -147,7 +147,6 @@ public class TestFunctions {
                 verifySpawns(world, Wolf.class, 2);
                 verifySpawns(world, Bear.class, 2);
 
-                // For t3-2ab we are also going check if 5-10 carcasses are infected with shrooms.
                 ArrayList<Location> carcassLocations = Functions.findNearbyObjects(world, new Location(0, 0), Carcass.class, 1000);
                 ArrayList<Carcass> carcasses = new ArrayList<>();
 
