@@ -79,11 +79,6 @@ public class Functions {
                 }
 
             }
-
-            System.out.println("Spawned: " + amount + " " + type);
-            for (Location grassLocation : findNearbyObjects(world, new Location(0, 0), Grass.class, 1000)) {
-                System.out.println("grass: " + grassLocation);
-            }
         }
         scanner.close();
         return program;
@@ -262,7 +257,7 @@ public class Functions {
         Set<Location> surroundings = world.getSurroundingTiles(myLocation, range);
         if (!surroundings.isEmpty()) {
             for (Location location : surroundings) {
-                if (type.isInstance(world.getTile(location))) {
+                if (type.isInstance(world.getTile(location)) || type.isInstance(world.getNonBlocking(location))) {
                     nearbyObjects.add((Location) location);
                 }
             }
