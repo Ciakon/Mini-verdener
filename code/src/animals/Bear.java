@@ -111,7 +111,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
             sleeperTime(); 
             return;
         }
-
+        attemptBreeding();
         if (killList.isEmpty()) {
             if (isStarving()) {
                 findFood(world, this);
@@ -176,7 +176,6 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         if (!(partner instanceof Bear)) {
             throw new RuntimeException("ayo!");
         }
-
         Location childLocation = Functions.findRandomValidLocation(world);
         Bear child = new Bear(world, false, childLocation, this.territory, this.family);
 
@@ -184,8 +183,22 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         this.hasBred = true;
         partner.setHasBred(true);
         partner.removeEnergy(this.breedingEnergy);
-
+        System.out.println("lol1");
         this.family.add(child);
+    }
+
+    /**
+     * Checks if the animal checks off criteria to breed.
+     *
+     * @return Returns true if all criteria for breeding are met otherwise
+     * returns false.
+     */
+    public boolean isBreedable() {
+        if (this.age >= this.adultAge && !this.getHasBred() && this.getEnergy() > this.breedingEnergy) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -198,15 +211,16 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * If a suitable partner is found, the `breed` method is called.
      */
     void attemptBreeding() {
-        if (age < adultAge || hasBred || energy < breedingEnergy) {
+        if (isBreedable() == false) {
             return;
         }
 
-        Set<Location> surroundingTiles = world.getSurroundingTiles(world.getLocation(this), 1);
+        Set<Location> surroundingTiles = world.getSurroundingTiles(world.getLocation(this), 2);
 
         for (Location location : surroundingTiles) {
             if (world.getTile(location) instanceof Bear partner) {
                 if (partner.isBreedable()) {
+                    System.out.println("lol");
                     breed(partner);
                     return;
                 }
@@ -231,7 +245,10 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
                 if (killList.contains(animal)) {
                     continue;
                 }
-                killList.add(animal);
+                if (animal instanceof Bear == false) {
+                    killList.add(animal);
+                }
+
             }
         }
     }

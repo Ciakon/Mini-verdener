@@ -236,8 +236,10 @@ public class Wolf extends Animal implements Carnivorous {
     @Override
     void die() {
         super.die();
-        pack.remove(this);
 
+        if (pack != null) {
+            pack.remove(this);
+        }
     }
 
     public void setAlpha(AlphaWolf alpha) {

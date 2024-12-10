@@ -30,7 +30,7 @@ package test;
 
 
          try {
-             program = Functions.createSimulation("bearBreedingTest");
+             program = Functions.createSimulation("test/bearBreedingTest");
          } catch (FileNotFoundException e) {
              e.printStackTrace();
          }
