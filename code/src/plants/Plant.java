@@ -56,8 +56,17 @@ public class Plant {
             if (!emptyTiles.isEmpty()) {
                 for (Location newLocation : emptyTiles) {
                     if (!world.containsNonBlocking(newLocation)) {
-                        new Grass(world, newLocation);  // You can replace "Grass" with your specific plant subclass
-                        break;
+                        String name = this.getClass().getSimpleName();
+                        switch (name) {
+                            case "Grass":
+                                new Grass(world, newLocation);
+                                return;
+                            case "BerryBush":
+                                new BerryBush(world, newLocation);
+                                return;
+                            default:
+                                return;
+                        }
                     }
                 }
             }
