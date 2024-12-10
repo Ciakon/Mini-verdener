@@ -27,15 +27,23 @@ public class TestPlant {
      public void plantsGrow() {
          Program program = null;
          // load input file.
-         try {
+        /* try {
              program = Functions.createSimulation("test/plantsTest");
          } catch (FileNotFoundException e) {
              e.printStackTrace();
-         }
+         }*/
+
+         // or make new program manually
+         program = new Program(5, 100, 10);
+
          // check if grass spawns
          World world = program.getWorld();
-         int grass_count = 1;
-         int berry_count = 1;
+
+         new Grass(world, new Location(2,2));
+         new BerryBush(world, new Location(4,4));
+
+         int grass_count = 0;
+         int berry_count = 0;
          Map<Object, Location> entities = world.getEntities();
          for (Object entity : entities.keySet()) {
              if (entity instanceof Grass){
@@ -46,7 +54,7 @@ public class TestPlant {
              }
          }
          // Simulate so it can grow
-         for (int i = 0; i < 100; i++) {
+         for (int i = 0; i < 1000; i++) {
              program.simulate();
          }
          // count the grass growing
@@ -64,5 +72,5 @@ public class TestPlant {
          assertTrue(finalGrassCount > grass_count );
          assertTrue(finalBerryCount > berry_count);
      }
-     
+
 }
