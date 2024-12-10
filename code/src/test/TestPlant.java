@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPlant {
 
      /**
-      * Tests if grass can spread.
-      * This test ensures that after simulation steps, the number of grass entities increases as grass spreads.
+      * Tests if BerryBushes and Grass can spread.
+      * This test ensures that after simulation steps, the number of grass and BerryBush entities increases as grass spreads.
       */
      @Test
      public void plantsGrow() {
@@ -72,5 +72,35 @@ public class TestPlant {
          assertTrue(finalGrassCount > grass_count );
          assertTrue(finalBerryCount > berry_count);
      }
+    @Test
+    public void testBerryBushReplenishment() {
+        Program program = null;
 
+        // make new program manually
+        program = new Program(5, 100, 10);
+
+
+        World world = program.getWorld();
+
+
+        // Create a BerryBush in the world
+        Location testLocation = Functions.findRandomValidLocation(world);
+        BerryBush berryBush = new BerryBush(world, testLocation);
+
+        // Assert the bush is not depleted at the start
+        assertFalse(berryBush.isDepleted());
+
+        //then consume berry
+        berryBush.consume();
+        assertTrue( berryBush.isDepleted());
+
+        for (int i = 0; i < 50; i++) {
+            program.simulate();
+        }
+
+        // Assert the bush has replenished
+        assertFalse(berryBush.isDepleted());
+    }
+
+    
 }
