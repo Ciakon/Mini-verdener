@@ -12,6 +12,7 @@ import utils.Functions;
 public class Mushrooms extends Plant implements Actor, DynamicDisplayInformationProvider {
 
     protected String imageKey;
+    protected int maxEnergy=100;
 
     protected int energy;
     protected int energyLoss;
@@ -25,8 +26,8 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
     Mushrooms(World world, Location location, int energy) {
         super(world, location);
 
-        this.energy = energy;
-        this.energyLoss = 3;
+        this.energy = energy+20;
+        this.energyLoss = 1;
         this.reachRange = 5;
 
         this.world = world;
@@ -40,6 +41,8 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
 
     @Override
     public void act(World world) {
+        System.out.println(energy);
+        System.out.println(energy<=0);
         changeImageKey();
         findColonies();
         decay();
@@ -54,7 +57,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
      * changes imagekey depending on how much energy the mushrooms have.
      */
     public void changeImageKey() {
-        if (energy > 100) {
+        if (this.energy > 50) {
             this.imageKey = "fungi";
         } else {
             this.imageKey = "fungi-small";
@@ -62,13 +65,16 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
     }
 
     /**
-     * Makes mushrooms lose energy.
+     * Makes mushrooms lose energy. also caps mushroom energy to maxEnergy.
      */
     public void decay() {
+        if(this.energy >this.maxEnergy) {
+            this.energy = this.maxEnergy;
+        }
+        this.energy -= this.energyLoss;
         if(energy<=0){
             world.delete(this);
         }
-        this.energy -= this.energyLoss;
     }
 
     /**
@@ -88,7 +94,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
      *
      * @param amount The amount of energy gained by the mushrooms.
      */
-    void gainEnergy(int amount) {
+    public void gainEnergy(int amount) {
         this.energy += amount;
     }
 
