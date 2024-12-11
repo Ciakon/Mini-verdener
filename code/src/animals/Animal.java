@@ -89,7 +89,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
 
         this.energy -= energyLoss;
-        if (energy <= 0 && isInsideNest == false) {
+        if (energy <= 0) {
             die();
         }
         if (energy >= maxEnergy) {
@@ -124,7 +124,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      */
     void die() {
         Location location = world.getLocation(this);
-        if (world.contains(this)) {
+        if (world.isOnTile(this)) {
             world.delete(this);
             new Carcass(this.world, location, this.isAdult, this.nutritionalValue);
         } else {
