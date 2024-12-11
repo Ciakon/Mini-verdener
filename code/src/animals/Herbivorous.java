@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Interface for herbivorous behavior.
+ * Interface defining the behavior of herbivorous animals in the simulation.
+ *
+ * This interface provides default methods to handle essential behaviors
+ * of herbivorous animals
  */
 public interface Herbivorous {
     /**
