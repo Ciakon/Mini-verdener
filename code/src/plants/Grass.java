@@ -20,8 +20,6 @@ import java.awt.Color;
  */
 
 public class Grass extends Plant implements Actor, DynamicDisplayInformationProvider, NonBlocking {
-
-
     /**
      * Constructs a new `Grass` instance at the specified location in the simulation world.
      *

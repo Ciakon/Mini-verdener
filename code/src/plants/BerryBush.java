@@ -19,9 +19,6 @@ import java.awt.Color;
  * as an actor and provides visual information for display.
  */
 public class BerryBush extends Plant implements Actor, DynamicDisplayInformationProvider, NonBlocking {
-
-
-
     private int defaultNutritionalValue;
     private boolean depleted;
     private int stepsSinceDepletion;

@@ -101,7 +101,7 @@ public class TestWolf {
      * Tests if a wolfpack can hunt rabbits. The test specifically checks if all the wolf gain energy when the alpha wolf (or another nearby wolf in the pack) hunts a rabbit.
      */
     @Test
-    void packHuntTest() {
+    public void packHuntTest() {
 
         int successfulHunts = 0;
         int simulationAmount = 20;

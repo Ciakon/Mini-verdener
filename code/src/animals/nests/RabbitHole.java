@@ -19,9 +19,9 @@ import animals.Rabbit;
 public class RabbitHole extends AnimalNest implements Actor {
 
     ArrayList<RabbitHole> connectedHoles; // includes itself.
-    int collapseTimer = 0;
-    int collapseTime = 120;
-    ArrayList<Rabbit> rabbits;
+    private int collapseTimer = 0;
+    private int collapseTime = 120;
+    private ArrayList<Rabbit> rabbits;
 
     /**
      * Constructs a new rabbit hole at a specified location in the world.
@@ -96,10 +96,6 @@ public class RabbitHole extends AnimalNest implements Actor {
         return this.rabbits;
     }
 
-    /**
-     * Gets all connected holes
-     * @return connected holes.
-     */
 
     /**
      * Retrieves all rabbit holes connected to this hole, including itself.
@@ -118,6 +114,7 @@ public class RabbitHole extends AnimalNest implements Actor {
      *
      * @param world The simulation world.
      */
+    @Override
     public void act(World world) {
         collapseTimer++;
         if (collapseTimer >= collapseTime) {
@@ -134,7 +131,7 @@ public class RabbitHole extends AnimalNest implements Actor {
      *
      * @param world The simulation world.
      */
-    void collapse(World world) {
+    private void collapse(World world) {
         
 
         if (getAllConnectedHoles().size() > 1) {
@@ -153,13 +150,5 @@ public class RabbitHole extends AnimalNest implements Actor {
 
         }
         
-    }
-
-
-    /**
-     * Resets the collapse timer for this rabbit hole.
-     */
-    public void resetCollapseTimer() {
-        collapseTimer = 0;
     }
 }

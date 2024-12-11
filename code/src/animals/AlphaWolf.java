@@ -18,9 +18,6 @@ import utils.Functions;
  * </p>
  */
 public class AlphaWolf extends Wolf {
-
-    ArrayList<Wolf> Pack;
-
     /**
      * Initializes the alpha wolf's specific attributes, such as unique appearance and adding itself to the pack.
      */
@@ -70,7 +67,7 @@ public class AlphaWolf extends Wolf {
      *
      */
     @Override
-    void generalAI() {
+    protected void generalAI() {
     }
     /**
      * Defines the daytime behavior for the AlphaWolf.
@@ -78,7 +75,7 @@ public class AlphaWolf extends Wolf {
      * (e.g., swapping positions with stuck pack members).
      */
     @Override
-    void dayTimeAI() {
+    protected void dayTimeAI() {
         isSleeping = false;
 
         if (isInsideNest && world.getCurrentTime() < 7) {
@@ -107,7 +104,7 @@ public class AlphaWolf extends Wolf {
      * The AlphaWolf attempts to breed and find or dig a hole to rest in.
      */
     @Override
-    void nightTimeAI() {
+    protected void nightTimeAI() {
         if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
             this.findBreedingPartner();
         }
@@ -121,7 +118,7 @@ public class AlphaWolf extends Wolf {
      * from the existing pack based on the highest energy level.
      */
     @Override
-    void die() {
+    protected void die() {
         super.die();
         createNewAlpha();
     }

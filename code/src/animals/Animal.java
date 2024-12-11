@@ -25,36 +25,36 @@ import utils.Functions;
  */
 public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
-    int age;
-    int adultAge = 120;
+    protected int age;
+    protected int adultAge = 120;
 
-    int visionRange = 3;
-    int maxEnergy = 40;
+    protected int visionRange = 3;
+    protected int maxEnergy = 40;
     protected int energy = 20;
-    int energyLoss = 1;
+    protected int energyLoss = 1;
 
-    int nutritionalValue;
-    int nutritionalValueAdult = 30;
-    int nutritionalValueBaby = 10;
-    int breedingEnergy = 15;
+    protected int nutritionalValue;
+    protected int nutritionalValueAdult = 30;
+    protected int nutritionalValueBaby = 10;
+    protected int breedingEnergy = 15;
 
-    boolean isSleeping = false;
-    boolean hasBred = false;
-    boolean isAdult;
-    boolean willDie;
-    boolean isInsideNest;
+    protected boolean isSleeping = false;
+    protected boolean hasBred = false;
+    protected boolean isAdult;
+    protected boolean willDie;
+    protected boolean isInsideNest;
 
-    String imageKeyBaby;
-    String imageKeyAdult;
-    String imageKeySleepingBaby;
-    String imageKeySleepingAdult;
-    Color color = Color.red;
+    protected String imageKeyBaby;
+    protected String imageKeyAdult;
+    protected String imageKeySleepingBaby;
+    protected String imageKeySleepingAdult;
+    protected Color color = Color.red;
 
-    Location previousPosition;
-    Location wanderGoal; // Animals will wander towards this tile, updated daily.
-    World world;
-    AnimalNest animalNest;
-    ArrayList<String> preferedPrey = new ArrayList<>();
+    protected Location previousPosition;
+    protected Location wanderGoal; // Animals will wander towards this tile, updated daily.
+    protected World world;
+    protected AnimalNest animalNest;
+    protected ArrayList<String> preferedPrey = new ArrayList<>();
 
     /**
      * Constructs an animal
@@ -140,7 +140,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Deletes Animal and replaces it with {@link Carcass}
      */
-    void die() {
+    protected void die() {
         if (world.isOnTile(this)) {
             Location location = world.getLocation(this);
             world.delete(this);
@@ -153,7 +153,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Moves randomly in a random direction
      */
-    void wander() {
+    protected void wander() {
         moveTowards(wanderGoal);
 
         // Update wander goal.
@@ -183,23 +183,23 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Abstract method to define general AI behavior. to be implemented by subclasses.
      */
-    abstract void generalAI();
+    abstract protected void generalAI();
 
     /**
      * Abstract method to define daytime AI behavior. to be implemented by subclasses.
      */
-    abstract void dayTimeAI();
+    abstract protected void dayTimeAI();
 
     /**
      * Abstract method to define nighttimeAI behavior. to be implemented by subclasses.
      */
-    abstract void nightTimeAI();
+    abstract protected void nightTimeAI();
 
     /**
      * Animal grows once a day. When it reaches a certain age, it becomes an
      * adult.
      */
-    void grow() {
+    protected void grow() {
         age++;
         if (age == adultAge) {
             isAdult = true;
@@ -212,7 +212,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @param partner The {@code Animal} partner involved in breeding.
      */
-    abstract void breed(Animal partner);
+    abstract protected void breed(Animal partner);
     // here is an example of breeding
 
     // Animal breed(Animal partner) {
@@ -226,7 +226,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Searches for a suitable breeding partner within the same nest and attempts to breed.
      */
-    public void findBreedingPartner() {
+    protected void findBreedingPartner() {
         ArrayList<Animal> animalList = this.animalNest.getAllAnimals();
         for (Animal animal : animalList) {
             if (animal.isInsideNest == false) continue;
@@ -244,7 +244,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * returns false.
      */
     public boolean isBreedable() {
-        if (this.age >= this.adultAge && !this.getHasBred() && this.getIsInsideNest() && this.getEnergy() > this.breedingEnergy) {
+        if (this.age >= this.adultAge && !this.hasBred && this.getIsInsideNest() && this.getEnergy() > this.breedingEnergy) {
             return true;
         } else {
             return false;
@@ -303,20 +303,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     }
 
     /**
-     * Checks if this animal has breed.
-     *
-     * @return returns boolean of whether this animal have bred.
-     */
-    boolean getHasBred() {
-        return this.hasBred;
-    }
-
-    /**
      * Sets hasbred variable
      *
      * @param hasBred Boolean to change variable.
      */
-    void setHasBred(boolean hasBred) {
+    public void setHasBred(boolean hasBred) {
         this.hasBred = hasBred;
     }
 
@@ -325,7 +316,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @return Returns a boolean of whether it's true.
      */
-    boolean getIsInsideNest() {
+    public boolean getIsInsideNest() {
         return this.isInsideNest;
     }
 
@@ -353,7 +344,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @return the nearest nest object, or null if none are found
      */
-    public AnimalNest findNearestNest() {
+    protected AnimalNest findNearestNest() {
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         AnimalNest closestHole = null;
         int closestDistance = Integer.MAX_VALUE;
@@ -376,7 +367,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @param world the world in which the animal is located
      */
-    public void moveToOrDigHole() {
+    protected void moveToOrDigHole() {
         if (this.animalNest != null) {
             moveTowards(world.getLocation(animalNest));
 
@@ -403,7 +394,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * Digs a new animal nest at the animals location in the world. This method
      * sets the animals's `animalNest` attribute to the new hole.
      */
-    public void digHole() {
+    protected void digHole() {
         if (this.animalNest != null) {
             throw new RuntimeException("animals should only dig a hole when they don't have one");
         }
@@ -424,7 +415,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      * Makes Animal go inside hole if they are on their hole tile, otherwise
      * throws RunTimeException.
      */
-    public void enterHole() {
+    protected void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(this.animalNest)) == false) {
             throw new RuntimeException("animals should only enter their own hole when standing on it");
         }
@@ -437,7 +428,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Makes animal exit hole if the hole tile is empty.
      */
-    public void exitHole() {
+    protected void exitHole() {
         Location holeLocation = world.getLocation(this.animalNest);
         if (world.isTileEmpty(holeLocation)) {
             isInsideNest = false;
@@ -450,7 +441,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @return Returns boolean if true otherwise false.
      */
-    boolean isHungry() {
+    protected boolean isHungry() {
         if (energy < maxEnergy * 0.7) {
             return true;
         }
@@ -462,7 +453,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      *
      * @return Returns boolean if true otherwise false.
      */
-    boolean isStarving() {
+    protected boolean isStarving() {
         if (energy < maxEnergy * 0.2) {
             return true;
         }

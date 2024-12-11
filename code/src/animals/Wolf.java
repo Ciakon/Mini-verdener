@@ -25,14 +25,14 @@ import utils.Functions;
 
 
 public class Wolf extends Animal implements Carnivorous {
-    ArrayList<Wolf> pack;
-    AlphaWolf alpha;
+    protected ArrayList<Wolf> pack;
+    protected AlphaWolf alpha;
 
     /**
      * Initializes wolf-specific attributes such as vision range, energy levels,
      * nutritional values, and preferred prey.
      */
-    void wolfInit() {
+    protected void wolfInit() {
         imageKeyBaby = "wolf-small";
         imageKeyAdult = "dog";
         imageKeySleepingBaby = "wolf-small-sleeping";
@@ -75,7 +75,7 @@ public class Wolf extends Animal implements Carnivorous {
      * Executes general AI behavior for the wolf, such as engaging in combat
      */
     @Override
-    void generalAI() {
+    protected void generalAI() {
         // engage in combat with other wolves.
         if (isInsideNest == false) {
             for (Location wolfLocation : Functions.findNearbyObjects(world, world.getLocation(this), Wolf.class, 1)) {
@@ -94,7 +94,7 @@ public class Wolf extends Animal implements Carnivorous {
      * or following the alpha wolf.
      */
     @Override
-    void dayTimeAI() {
+    protected void dayTimeAI() {
         isSleeping = false;
         hasBred = false;
 
@@ -117,7 +117,7 @@ public class Wolf extends Animal implements Carnivorous {
      * Executes nighttime behavior, attempt to breed or returning to the nest.
      */
     @Override
-    void nightTimeAI() {
+    protected void nightTimeAI() {
         if (!this.hasBred && energy > breedingEnergy && this.isInsideNest && isAdult) {
             this.findBreedingPartner();
         }
@@ -134,7 +134,7 @@ public class Wolf extends Animal implements Carnivorous {
      * @param partner The wolf to breed with.
      */
     @Override
-    void breed(Animal partner) {
+    protected void breed(Animal partner) {
         new Wolf(world, false, this.animalNest, pack);
 
         this.energy -= this.breedingEnergy;
@@ -149,7 +149,8 @@ public class Wolf extends Animal implements Carnivorous {
      *
      * @return the nearest nest object, or null if none are found
      */
-    public WolfNest findNearestNest() {
+    @Override
+    protected WolfNest findNearestNest() {
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         WolfNest closestHole = null;
         int closestDistance = Integer.MAX_VALUE;
@@ -172,7 +173,8 @@ public class Wolf extends Animal implements Carnivorous {
      *
      * @param world the world in which the animal is located
      */
-    public void moveToOrDigHole() {
+    @Override
+    protected void moveToOrDigHole() {
         if (this.animalNest != null) {
             moveTowards(world.getLocation(animalNest));
 
@@ -201,7 +203,8 @@ public class Wolf extends Animal implements Carnivorous {
      * Digs a new {@link AnimalNest} at the wolves location in the world. This method
      * sets the wolf's {@link WolfNest} attribute to the new hole.
      */
-    public void digHole() {
+    @Override
+    protected void digHole() {
         if (this.animalNest != null) {
             throw new RuntimeException("animals should only dig a hole when they don't have one");
         }
@@ -233,7 +236,8 @@ public class Wolf extends Animal implements Carnivorous {
      *
      * @throws RuntimeException If the wolf is not standing on its own nest when attempting to enter.
      */
-    public void enterHole() {
+    @Override
+    protected void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(this.animalNest)) == false) {
             throw new RuntimeException("animals should only enter their own hole when standing on it");
         }
@@ -246,7 +250,8 @@ public class Wolf extends Animal implements Carnivorous {
     /**
      * Exits the wolf's nest, placing it back in the world at the nest's location.
      */
-    public void exitHole() {
+    @Override
+    protected void exitHole() {
         Location holeLocation = world.getLocation(this.animalNest);
         if (world.isTileEmpty(holeLocation)) {
             isInsideNest = false;
@@ -268,7 +273,7 @@ public class Wolf extends Animal implements Carnivorous {
      * Handles the wolf's death. Removes the wolf from the world and if it has one its pack .
      */
     @Override
-    void die() {
+    protected void die() {
         super.die();
 
         if (pack != null) {
@@ -303,7 +308,7 @@ public class Wolf extends Animal implements Carnivorous {
     /**
      * wolf will follow the alpha wolf. If no alpha wolf is found, the wolf will wander randomly.
      */
-    void followAlpha() {
+    protected void followAlpha() {
         if (alpha == null) {
             wander();
             return;

@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import plants.*;
@@ -55,7 +54,7 @@ public class TestCarcassAndMushrooms {
             World world = program.getWorld();
 
             Carcass carcass = new Carcass(world, Functions.findRandomEmptyLocation(world), true, 50);
-            Mushrooms mushrooms = new Mushrooms(world, Functions.findRandomEmptyLocation(world), 50);
+            new Mushrooms(world, Functions.findRandomEmptyLocation(world), 50);
             program.simulate();
             if (carcass.getIsColony()) {
                 successCounter++;

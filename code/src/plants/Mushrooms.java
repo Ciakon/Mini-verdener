@@ -19,17 +19,17 @@ import utils.Functions;
 
 public class Mushrooms extends Plant implements Actor, DynamicDisplayInformationProvider {
 
-    protected String imageKey;
-    protected int maxEnergy = 150;
+    private String imageKey;
+    private int maxEnergy = 150;
 
-    protected int energy;
-    protected int energyLoss;
-    protected int reachRange;
+    private int energy;
+    private int energyLoss;
+    private int reachRange;
 
-    protected Location location;
-    protected World world;
+    private Location location;
+    private World world;
 
-    protected ArrayList<Carcass> colonies;
+    private ArrayList<Carcass> colonies;
 
     /**
      * Constructs a new `Mushrooms` instance at the specified location with a given initial energy.
@@ -88,7 +88,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
      * - Otherwise, the texture is set to "fungi-small".
      */
 
-    public void changeImageKey() {
+    private void changeImageKey() {
         if (this.energy > 50) {
             this.imageKey = "fungi";
         } else {
@@ -99,7 +99,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
     /**
      * Makes mushrooms lose energy. also caps mushroom energy to maxEnergy.
      */
-    public void decay() {
+    private void decay() {
         if (this.energy > this.maxEnergy) {
             this.energy = this.maxEnergy;
         }
@@ -112,7 +112,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
     /**
      * Searches for nearby carcasses within the mushrooms' reach range and creates colonies on them.
      */
-    public void findColonies() {
+    private void findColonies() {
         ArrayList<Location> pontentialColonies = Functions.findNearbyObjects(this.world, world.getLocation(this), Carcass.class, this.reachRange);
         for (Location location : pontentialColonies) {
             if (!((Carcass) world.getTile(location)).getIsColony()) {
@@ -135,7 +135,7 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
      *
      * @param carcass Carcass to feed off of.
      */
-    public void createColony(Carcass carcass) {
+    private void createColony(Carcass carcass) {
         carcass.getColonized(this);
         this.colonies.add(carcass);
     }
