@@ -23,10 +23,10 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
 
     protected ArrayList<Carcass> colonies;
 
-    Mushrooms(World world, Location location, int energy) {
+    public Mushrooms(World world, Location location, int energy) {
         super(world, location);
 
-        this.energy = energy+20;
+        this.energy = energy + 20;
         this.energyLoss = 1;
         this.reachRange = 5;
 
@@ -66,11 +66,11 @@ public class Mushrooms extends Plant implements Actor, DynamicDisplayInformation
      * Makes mushrooms lose energy. also caps mushroom energy to maxEnergy.
      */
     public void decay() {
-        if(this.energy >this.maxEnergy) {
+        if (this.energy > this.maxEnergy) {
             this.energy = this.maxEnergy;
         }
         this.energy -= this.energyLoss;
-        if(energy<=0){
+        if (energy <= 0) {
             world.delete(this);
         }
     }

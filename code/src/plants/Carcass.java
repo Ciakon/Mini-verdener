@@ -132,7 +132,7 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     }
 
     public boolean getShroomStatus() {
-        if (hasShrooms) {
+        if (this.hasShrooms) {
             return true;
         }
         return false;
