@@ -107,6 +107,9 @@ public class Wolf extends Animal implements Carnivorous {
                 if (isHungry()) {
                     findFood();
                 }
+                else {
+                    wander();
+                }
             }
             else if (isStarving()) {
                 findFood();
@@ -296,12 +299,16 @@ public class Wolf extends Animal implements Carnivorous {
     }
 
     public AlphaWolf andrewTateMode() {
+        Location l = null;
+        if (world.isOnTile(this)) {
+            l = world.getLocation(this);
+        }
+
         world.delete(this);
         pack.remove(this);
 
         AlphaWolf alpha;
-        if (isInsideNest == false) {
-            Location l = world.getLocation(this);
+        if (l != null) {
             alpha = new AlphaWolf(world, isAdult, l, animalNest, energy, age);
             alpha.addToPack(this.pack);
         }
