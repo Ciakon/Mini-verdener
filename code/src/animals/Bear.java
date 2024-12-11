@@ -26,7 +26,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
     void bearInit() {
         visionRange = 3;
         maxEnergy = 150;
-        energy = 120;
+        energy = 130;
         breedingEnergy = 100;
         energyLoss = 1;
 
@@ -297,7 +297,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
     public ArrayList<Plant> findNearbyPlants() {
         Animal me = (Animal) this;
         World world = me.world;
-        
+
         ArrayList<Plant> nearbyPlants = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
 
