@@ -8,12 +8,15 @@ import plants.Carcass;
 import utils.Functions;
 
 /**
- * Interface for carnivorous behavior.
+ * Interface defining the behavior of carnivorous animals in the simulation.
+ *
+ * This interface provides default implementations for common carnivorous
+ * behaviors
  */
 public interface Carnivorous {
 
     /**
-     *
+     * Kills the prey, removing it from the simulation world.
      * @param prey The prey to kill
      * @return The prey's nutrional value.
      */
@@ -35,6 +38,12 @@ public interface Carnivorous {
         }
         return false;
     }
+
+    /**
+     * Identifies nearby prey within the carnivore's vision range.
+     *
+     * @return A list of locations where prey is found.
+     */
 
     default ArrayList<Location> findPrey() {
         Animal me = (Animal) this;
@@ -73,6 +82,9 @@ public interface Carnivorous {
         }
     }
 
+    /**
+     * Searches for carcasses or hunts for prey if no carcasses are available.
+     */
     default void findFood() {
         Animal me = (Animal) this;
         World world = me.world;

@@ -9,17 +9,34 @@ import itumulator.world.World;
 import java.awt.Color;
 import java.util.ArrayList;
 
+/**
+ * Abstract base class for animal nests in the simulation.
+ *
+ * This class represents a general nest or shelter used by animals. It handles
+ * the storage of animals associated with the nest and provides utility methods
+ * for interacting with them.
+ */
 public abstract class AnimalNest implements DynamicDisplayInformationProvider, NonBlocking {
 
     protected ArrayList<Animal> animals;
 
+    /**
+     * Constructs a new `AnimalNest` at a specified location in the simulation world.
+     *
+     * @param world The simulation world where the nest exists.
+     * @param location The location of the nest in the world.
+     */
     public AnimalNest(World world, Location location) {
         world.add(this);
         world.setTile(location, this);
 
         this.animals = new ArrayList<>();
     }
-
+    /**
+     * Provides the display information for the nest, including its color and image key.
+     *
+     * @return A `DisplayInformation` object containing the visual attributes of the nest.
+     */
     @Override
     public DisplayInformation getInformation() {
         return new DisplayInformation(Color.black, "hole");
@@ -35,7 +52,7 @@ public abstract class AnimalNest implements DynamicDisplayInformationProvider, N
     }
 
     /**
-     * Removes a animal from the rabbithole.
+     * Removes an animal from the rabbithole.
      *
      * @param animal The animal object.
      */
