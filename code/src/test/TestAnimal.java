@@ -2,17 +2,21 @@ package test;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 import animals.Rabbit;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.Grass;
 import utils.Functions;
 
 public class TestAnimal {
+
     /**
-     * Test if animals can properly pathfind using "movetowards()". 
+     * Test if animals can properly pathfind using "movetowards()".
      */
     @Test
     public void pathFindingTest() {
@@ -37,6 +41,37 @@ public class TestAnimal {
             }
 
             if (world.getLocation(rabbit).equals(targetLocation)) {
+                successCounter++;
+            }
+        }
+
+        // The path finding is not good enough to work every time. In the real simulation there are not multiple unmoving obstacles next to eachother.
+        assertTrue(successCounter >= simulationAmount * 0.75);
+    }
+
+    /**
+     * Checks if animal will find food.
+     */
+    @Test
+    public void forageTest() {
+        int successCounter = 0;
+        int simulationAmount = 100;
+
+        for (int simulationNumber = 0; simulationNumber < simulationAmount; simulationNumber++) {
+            Program program = new Program(9, 900, 200);
+            World world = program.getWorld();
+
+            Rabbit rabbit = new Rabbit(world, true, Functions.findRandomEmptyLocation(world));
+
+            new Grass(world, Functions.findRandomEmptyLocation(world));
+
+            int initialEnergy = rabbit.getEnergy();
+            for (int step = 0; step <= 40; step++) {
+                rabbit.forage();
+            }
+
+            int currentEnergy = rabbit.getEnergy();
+            if (initialEnergy < currentEnergy) {
                 successCounter++;
             }
         }
