@@ -59,7 +59,7 @@ public class Plant {
      * Plants grow at surrounding tiles based on a percentage chance.
      *
      * @param world The world in which the plant is located.
-     * @param percent The percentage chance for the plant to grow in surrounding
+     * @param growthChance The chance for the plant to grow in surrounding
      * tiles.
      */
     public void grow(World world, double growthChance) {
