@@ -2,6 +2,8 @@ package test;
 
 import java.util.Map;
 
+import animals.AlphaWolf;
+import animals.Wolf;
 import org.junit.Test;
 
 import itumulator.executable.Program;
@@ -9,9 +11,15 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import plants.BerryBush;
 import plants.Grass;
+import plants.Plant;
 import utils.Functions;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+
+/**
+ * Testing class for {@link Plant} and the subclasses {@link BerryBush} and {@link Grass}.
+ */
 public class TestPlant {
 
      /**

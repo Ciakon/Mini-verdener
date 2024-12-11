@@ -5,13 +5,22 @@ import itumulator.world.World;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * Represents a generic plant in the simulation world.
+ *
+ * Plants provide nutritional value to herbivores and have the ability to grow
+ * in surrounding tiles based on a probability.
+ */
 public class Plant {
 
     protected int nutritionalValue;
     protected boolean isDepleted;
 
     /**
-     * Constructor for Plant
+     * Constructs a new `Plant` instance at the specified location in the simulation world.
+     *
+     * @param world    The simulation world.
+     * @param location The location of the plant in the world.
      */
     public Plant(World world, Location location) {
         this.isDepleted = false;
@@ -19,14 +28,18 @@ public class Plant {
     }
 
     /**
-     * Returns the nutritional value of the plant.
+     * Retrieves the nutritional value of the plant.
+     *
+     * @return The current nutritional value of the plant.
      */
     public int getNutritionalValue() {
         return nutritionalValue;
     }
 
     /**
-     * Returns the nutritional value of the plant.
+     * Sets the nutritional value of the plant.
+     *
+     * @param newNutritionalValue The new nutritional value to assign to the plant.
      */
     public void setNutritionalValue(int newNutritionalValue) {
         this.nutritionalValue = newNutritionalValue;

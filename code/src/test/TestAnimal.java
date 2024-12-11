@@ -2,14 +2,21 @@ package test;
 
 import static org.junit.Assert.assertTrue;
 
+import animals.Animal;
 import org.junit.jupiter.api.Test;
 
 import animals.Rabbit;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.BerryBush;
+import plants.Grass;
+import plants.Plant;
 import utils.Functions;
 
+/**
+ * Testing class for {@link Animal} .
+ */
 public class TestAnimal {
     /**
      * Test if animals can properly pathfind using "movetowards()". 

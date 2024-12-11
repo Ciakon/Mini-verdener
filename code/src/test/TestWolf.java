@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import animals.Animal;
 import org.junit.jupiter.api.Test;
 
 import animals.AlphaWolf;
@@ -18,7 +19,7 @@ import plants.Grass;
 import utils.Functions;
 
 /**
- * Testing class for the Wolf animal.
+ * Testing class for the {@link Wolf} {@link Animal}. and {@link AlphaWolf}.
  */
 public class TestWolf {
     /**

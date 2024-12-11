@@ -5,12 +5,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.Test;
 
-import plants.Carcass;
+import plants.*;
 import itumulator.executable.Program;
 import itumulator.world.World;
-import plants.Mushrooms;
 import utils.Functions;
 
+/**
+ * Testing class for {@link Carcass} and {@link Mushrooms}.
+ */
 public class TestCarcassAndMushrooms {
 
     /**
