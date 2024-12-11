@@ -17,7 +17,6 @@ import java.util.ArrayList;
  * for interacting with them.
  */
 public abstract class AnimalNest implements DynamicDisplayInformationProvider, NonBlocking {
-
     protected ArrayList<Animal> animals;
 
     /**

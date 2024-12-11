@@ -23,15 +23,15 @@ import utils.Functions;
  */
 public class Rabbit extends Animal implements Herbivorous {
 
-    double digNewExitChance = 0.2;
-    RabbitHole rabbitHole;
-    int breedingEnergy = 5;
+    private double digNewExitChance = 0.2;
+    private RabbitHole rabbitHole;
+    private int breedingEnergy = 5;
 
     /**
      * Initializes the rabbit's attributes, such as vision range, energy levels,
      * preferred plants, and appearance.
      */
-    void rabbitInit() {
+    private void rabbitInit() {
         imageKeyBaby = "rabbit-small";
         imageKeyAdult = "rabbit-large";
         imageKeySleepingBaby = "rabbit-small-sleeping";
@@ -93,7 +93,7 @@ public class Rabbit extends Animal implements Herbivorous {
      * to migrate to if it is the sole inhabitant of its current hole.
      */
     @Override
-    void generalAI() {
+    protected void generalAI() {
         if (isInsideNest == false) {
             if (rabbitHole != null && rabbitHole.getAllRabbits().size() == 1) {
 
@@ -113,7 +113,7 @@ public class Rabbit extends Animal implements Herbivorous {
      * to its hole in the evening.
      */
     @Override
-    void dayTimeAI() {
+    protected void dayTimeAI() {
 
         hasBred = false;
         isSleeping = false;
@@ -136,7 +136,7 @@ public class Rabbit extends Animal implements Herbivorous {
      * if it is outside.
      */
     @Override
-    void nightTimeAI() {
+    protected void nightTimeAI() {
         if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
             this.findBreedingPartner();
         }
@@ -151,7 +151,7 @@ public class Rabbit extends Animal implements Herbivorous {
      *
      */
     @Override
-    public void grow() {
+    protected void grow() {
         super.grow();
         if (age == adultAge) {
             this.maxEnergy *= .75;
@@ -164,7 +164,7 @@ public class Rabbit extends Animal implements Herbivorous {
      * @param partner Rabbit to breed with
      */
     @Override
-    void breed(Animal partner) {
+    protected void breed(Animal partner) {
         Random random = new Random();
 
         if (partner instanceof Rabbit == false) {
@@ -187,7 +187,7 @@ public class Rabbit extends Animal implements Herbivorous {
      *
      */
     @Override
-    public void findBreedingPartner() {
+    protected void findBreedingPartner() {
         ArrayList<Rabbit> rabbitList = this.rabbitHole.getAllRabbits();
         for (Rabbit rabbit : rabbitList) {
             if (this.isAdult && rabbit != this && !rabbit.hasBred && rabbit.isInsideNest && rabbit.energy > breedingEnergy) {
@@ -228,7 +228,7 @@ public class Rabbit extends Animal implements Herbivorous {
      * @param world the world in which the rabbit is located
      * @return the nearest RabbitHole object, or null if none are found
      */
-    public RabbitHole findNearestRabbitHole(World world) {
+    private RabbitHole findNearestRabbitHole(World world) {
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(this), this.visionRange);
         RabbitHole closestHole = null;
         int closestDistance = Integer.MAX_VALUE;
@@ -252,7 +252,8 @@ public class Rabbit extends Animal implements Herbivorous {
      *
      * @param world the world in which the rabbit is located
      */
-    public void moveToOrDigHole() {
+    @Override
+    protected void moveToOrDigHole() {
         if (rabbitHole != null) {
             moveTowards(world.getLocation(rabbitHole));
             
@@ -282,7 +283,8 @@ public class Rabbit extends Animal implements Herbivorous {
      *
      * @param world the world in which the rabbit digs a hole
      */
-    public void digHole() {
+    @Override
+    protected void digHole() {
         if (rabbitHole != null) {
             throw new RuntimeException("Rabbits should only dig a hole when they don't have one");
         }
@@ -302,7 +304,8 @@ public class Rabbit extends Animal implements Herbivorous {
     /**
      * Makes the rabbit enter its current rabbit hole.
      */
-    public void enterHole() {
+    @Override
+    protected void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(rabbitHole)) == false) {
             throw new RuntimeException("Rabbits should only enter their own hole when standing on it");
         }
@@ -314,7 +317,8 @@ public class Rabbit extends Animal implements Herbivorous {
     /**
      * Makes the rabbit exit its current rabbit hole, possibly creating a new exit.
      */
-    public void exitHole() {
+    @Override
+    protected void exitHole() {
         Random random = new Random();
         ArrayList<RabbitHole> exits = rabbitHole.getAllConnectedHoles();
 
@@ -346,7 +350,7 @@ public class Rabbit extends Animal implements Herbivorous {
      * to be considered.
      * @return Returns the new hole. Returns null if no such hole is found.
      */
-    RabbitHole checkForNewHole(int minRabbits) {
+    private RabbitHole checkForNewHole(int minRabbits) {
         RabbitHole rh = null;
         ArrayList<RabbitHole> validHoles = new ArrayList<>();
 

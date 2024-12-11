@@ -16,15 +16,15 @@ import java.awt.Color;
  */
 public class Carcass implements Actor, DynamicDisplayInformationProvider {
 
-    protected int nutritionalValue;
-    protected String imageKey;
-    protected int nutritionLoss;
-    protected World world;
-    protected Double chanceForShrooms;
-    protected boolean hasShrooms;
-    protected int shroomValue;
-    protected Mushrooms colonizer;
-    protected boolean isColony;
+    private int nutritionalValue;
+    private String imageKey;
+    private int nutritionLoss;
+    private World world;
+    private Double chanceForShrooms;
+    private boolean hasShrooms;
+    private int shroomValue;
+    private Mushrooms colonizer;
+    private boolean isColony;
 
     /**
      * Constructs a new Carcass instance at the given location in the simulation world.
@@ -100,7 +100,7 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
      * Makes Carcass loss nutritional Value. if nutritional value is too low,
      * deletes carcass.
      */
-    public void rot() {
+    private void rot() {
         this.nutritionalValue -= this.nutritionLoss;
         if (isColony) {
             this.nutritionalValue -= this.nutritionLoss;
@@ -112,7 +112,7 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
      * If carcass nutritional value is too low delete it. If it has been growing
      * mushrooms, mushrooms will spawn on it's location.
      */
-    public void purgeLowEnergyCarcass() {
+    private void purgeLowEnergyCarcass() {
         if (this.nutritionalValue < 20) {
             if (isColony) {
                 colonizer.removeColony(this);
@@ -131,7 +131,7 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
     /**
      * Certain chance to make mushrooms grow on the carcass.
      */
-    public void shrooms() {
+    private void shrooms() {
         if (!this.hasShrooms && Math.random() <= this.chanceForShrooms) {
             this.hasShrooms = true;
             this.shroomValue = 0;

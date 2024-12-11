@@ -22,17 +22,16 @@ import utils.Functions;
 
 public class Bear extends Animal implements Carnivorous, Herbivorous {
 
-    Location territory;
-    int territorySize = 2;
-    ArrayList<Bear> family;
-
-    ArrayList<Animal> killList;
+    private Location territory;
+    private int territorySize = 2;
+    private ArrayList<Bear> family;
+    private ArrayList<Animal> killList;
 
     /**
      * Initializes the bear's attributes and preferences, such as vision range,
      * energy levels, preferred prey, and appearance.
      */
-    void bearInit() {
+    protected void bearInit() {
         visionRange = 3;
         maxEnergy = 150;
         energy = 130;
@@ -112,7 +111,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * intrusions in its territory.
      */
     @Override
-    void generalAI() {
+    protected void generalAI() {
         checkForIllegalActivity();
     }
 
@@ -122,7 +121,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * and attempt breeding.
      */
     @Override
-    void dayTimeAI() {
+    protected void dayTimeAI() {
         isSleeping = false;
 
         if (world.getCurrentTime() >= 7) {
@@ -148,14 +147,14 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * territory to sleep.
      */
     @Override
-    void nightTimeAI() {
+    protected void nightTimeAI() {
         sleeperTime();
     }
 
     /**
      * finds animals in bears kill list and kills them.
      */
-    public void hitman() {
+    private void hitman() {
         if (!killList.isEmpty()) {
             killList.removeIf(animal -> !world.contains(animal));
 
@@ -193,7 +192,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * @throws RuntimeException If the partner is not a bear.
      */
     @Override
-    void breed(Animal partner) {
+    protected void breed(Animal partner) {
         if (!(partner instanceof Bear)) {
             throw new RuntimeException("ayo!");
         }
@@ -216,7 +215,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * returns false.
      */
     public boolean isBreedable() {
-        if (this.age >= this.adultAge && !this.getHasBred() && this.getEnergy() > this.breedingEnergy) {
+        if (this.age >= this.adultAge && !this.hasBred && this.getEnergy() > this.breedingEnergy) {
             return true;
         } else {
             return false;
@@ -232,7 +231,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      *
      * If a suitable partner is found, the `breed` method is called.
      */
-    void attemptBreeding() {
+    private void attemptBreeding() {
         if (isBreedable() == false) {
             return;
         }
@@ -253,7 +252,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * Checks if an animal enters the bears territory and sets it as a target.
      * Does not target family members.
      */
-    void checkForIllegalActivity() {
+    private void checkForIllegalActivity() {
         Set<Location> territoryTiles = world.getSurroundingTiles(territory, territorySize);
 
         for (Location location : territoryTiles) {
@@ -277,7 +276,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
     /**
      * Goes back to its territory and sleeps.
      */
-    void sleeperTime() {
+    private void sleeperTime() {
         if (isInsideTerritory()) {
             isSleeping = true;
         }
@@ -295,7 +294,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      *
      * @return whether the bear is in the terrotory.
      */
-    boolean isInsideTerritory() {
+    private boolean isInsideTerritory() {
         for (Location l : world.getSurroundingTiles(territory, territorySize)) {
             if (l.equals(world.getLocation(this))) {
                 return true;
@@ -340,7 +339,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      *
      * @param family The new family group.
      */
-    void setFamiliy(ArrayList<Bear> family) {
+    public void setFamiliy(ArrayList<Bear> family) {
         this.family = family;
     }
 
