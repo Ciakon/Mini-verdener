@@ -324,7 +324,6 @@ public class Wolf extends Animal implements Carnivorous {
      * Distributes the carcass's nutritional value evenly among nearby pack members.
      *
      * @param carcass The carcass to eat.
-     * @param me      The wolf consuming the carcass.
      */
     @Override
     public void eatCarcass(Carcass carcass) {
@@ -362,6 +361,7 @@ public class Wolf extends Animal implements Carnivorous {
             wolf.addEnergy(individualEnergy);
         }
     }
+
     /**
      * returns the pack to which the wolf belongs.
      *

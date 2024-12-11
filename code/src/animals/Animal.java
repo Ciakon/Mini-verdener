@@ -15,7 +15,13 @@ import plants.Carcass;
 import utils.Functions;
 
 /**
- *
+ * The {@code Animal} class represents the base class for all animal entities in the simulation.
+ * It provides shared properties and behaviors, such as movement, growth, breeding, energy management,
+ * and interactions with nests and other entities.
+ * <p>
+ * Subclasses of {@code Animal} are expected to implement behaviors by overriding
+ * abstract methods such as {@code dayTimeAI()}, {@code nightTimeAI()}, and {@code generalAI()}.
+ * </p>
  */
 public abstract class Animal implements Actor, DynamicDisplayInformationProvider {
 
@@ -51,6 +57,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     ArrayList<String> preferedPrey = new ArrayList<>();
 
     /**
+     * Constructs an animal
      *
      * @param world The simulation world.
      * @param isAdult Whether to spawn the animal as an adult or baby.
@@ -71,6 +78,12 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+    /**
+     * Defines the general behavior of animal during the simulation step.
+     * Handles AI logic based on the time of day and other conditions.
+     *
+     * @param world The simulation world.
+     */
     @Override
     public void act(World world) {
         if (world.isDay()) {
@@ -97,7 +110,12 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
         
     }
-
+    /**
+     * Provides display information for the animal, including its image and color,
+     * based on its current state (e.g., sleeping or awake, baby or adult).
+     *
+     * @return A {@link DisplayInformation} object containing display data.
+     */
     @Override
     public DisplayInformation getInformation() {
         String imageKey;
@@ -120,7 +138,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     }
 
     /**
-     * Deletes Animal and replaces it with Carcass.
+     * Deletes Animal and replaces it with {@link Carcass}
      */
     void die() {
         Location location = world.getLocation(this);
@@ -147,8 +165,9 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Finds empty surrounding location to move to
      *
-     * @return Returns random empty surrounding location if there exists at
+     * @return Returns random empty surrounding {@link Location} if there exists at
      * least 1
+     * else {@code null}
      */
     public Location randomFreeLocation() {
         Set<Location> freeLocations = world.getEmptySurroundingTiles(world.getLocation(this));
@@ -161,10 +180,19 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         return LocationlList.get(randomIndex);
     }
 
+    /**
+     * Abstract method to define general AI behavior. to be implemented by subclasses.
+     */
     abstract void generalAI();
 
+    /**
+     * Abstract method to define daytime AI behavior. to be implemented by subclasses.
+     */
     abstract void dayTimeAI();
 
+    /**
+     * Abstract method to define nighttimeAI behavior. to be implemented by subclasses.
+     */
     abstract void nightTimeAI();
 
     /**
@@ -179,6 +207,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
         }
     }
 
+    /**
+     * Abstract method to handle the breeding process. to be implemented by subclasses.
+     *
+     * @param partner The {@code Animal} partner involved in breeding.
+     */
     abstract void breed(Animal partner);
     // here is an example of breeding
 
@@ -188,6 +221,11 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     //     hasBred = true; 
     //     return child;
     // }
+
+
+    /**
+     * Searches for a suitable breeding partner within the same nest and attempts to breed.
+     */
     public void findBreedingPartner() {
         ArrayList<Animal> animalList = this.animalNest.getAllAnimals();
         for (Animal animal : animalList) {
@@ -216,7 +254,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
     /**
      * Moves 1 tile towards a given location
      *
-     * @param desiredlocation location to move towards
+     * @param desiredLocation {@link Location} to move towards
      */
     public void moveTowards(Location desiredLocation) {
         int movementInX = world.getLocation(this).getX();
