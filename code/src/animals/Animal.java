@@ -142,8 +142,8 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
      */
     void die() {
         if (world.isOnTile(this)) {
-            world.delete(this);
             Location location = world.getLocation(this);
+            world.delete(this);
             new Carcass(this.world, location, this.isAdult, this.nutritionalValue);
         } else {
             world.delete(this);
