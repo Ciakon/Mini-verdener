@@ -19,7 +19,7 @@ class Main {
         try {
             Program program = Functions.createSimulation("gaming");
             program.show();
-            program.run();
+            // program.run();
         } catch (FileNotFoundException e) {
             System.out.println(e.getMessage());
         }

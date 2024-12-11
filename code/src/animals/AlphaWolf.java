@@ -62,6 +62,26 @@ public class AlphaWolf extends Wolf {
         this.energy = energy;
         this.age = age;
     }
+
+    /**
+     * Constructs an {@code AlphaWolf} for when {@link Wolf} to {@code AlphaWolf} conversion inside a nest.
+     *
+     * @param world    The simulation world.
+     * @param isAdult  Whether the AlphaWolf spawns as an adult.
+     * @param location The initial location of the AlphaWolf.
+     * @param wolfNest The {@link AnimalNest} associated with the AlphaWolf.
+     * @param energy   The initial energy level of the AlphaWolf.
+     * @param age      The initial age of the AlphaWolf.
+     */
+    public AlphaWolf(World world, boolean isAdult, AnimalNest wolfNest, ArrayList<Wolf> pack, int energy, int age) {
+        super(world, isAdult, wolfNest, pack);
+        alphaWolfInit();
+
+        this.animalNest = wolfNest;
+        this.energy = energy;
+        this.age = age;
+    }
+
     /**
      * Defines the general behavior of the AlphaWolf.
      *
