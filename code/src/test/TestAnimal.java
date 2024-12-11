@@ -13,6 +13,9 @@ import itumulator.world.World;
 import plants.Grass;
 import utils.Functions;
 
+/**
+ * Testing class for {@link Animal} .
+ */
 public class TestAnimal {
 
     /**

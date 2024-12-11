@@ -4,6 +4,10 @@ import java.io.FileNotFoundException;
 import itumulator.executable.Program;
 import utils.Functions;
 
+/**
+ * Runs the program.
+ */
+
 class Main {
 
     /**

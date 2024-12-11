@@ -7,6 +7,13 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
 
+
+/**
+ * Represents a carcass in the simulation, which acts as a decaying resource for other entities.
+ *
+ * The carcass can rot over time, lose nutritional value, and potentially spawn mushrooms
+ * that either grow on it or colonize it for energy.
+ */
 public class Carcass implements Actor, DynamicDisplayInformationProvider {
 
     protected int nutritionalValue;
@@ -19,6 +26,14 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
     protected Mushrooms colonizer;
     protected boolean isColony;
 
+    /**
+     * Constructs a new Carcass instance at the given location in the simulation world.
+     *
+     * @param world          The simulation world.
+     * @param location       The location of the carcass.
+     * @param IsAdult        Indicates if the carcass is from an adult animal.
+     * @param nutritionValue The initial nutritional value of the carcass.
+     */
     public Carcass(World world, Location location, boolean IsAdult, int nutritionValue) {
         this.nutritionalValue = nutritionValue;
         this.chanceForShrooms = 0.10;
@@ -34,6 +49,15 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
         }
     }
 
+    /**
+     * Constructs a new Carcass instance with mushroom status.
+     *
+     * @param world          The simulation world.
+     * @param location       The location of the carcass.
+     * @param IsAdult        Indicates if the carcass is from an adult animal.
+     * @param nutritionValue The initial nutritional value of the carcass.
+     * @param hasShrooms     Indicates if the carcass has mushrooms growing on it.
+     */
     public Carcass(World world, Location location, boolean IsAdult, int nutritionValue, boolean hasShrooms) {
         this.nutritionalValue = nutritionValue;
         this.chanceForShrooms = 0.05;
@@ -48,6 +72,14 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
         this.hasShrooms = hasShrooms;
     }
 
+    /**
+     * Defines the behavior of the carcass during each simulation step:
+     * - Manages mushroom growth.
+     * - Handles nutritional decay through rotting.
+     * - Removes carcass if its nutritional value falls below a threshold.
+     *
+     * @param world The simulation world.
+     */
     @Override
     public void act(World world) {
         this.shrooms();
@@ -55,6 +87,10 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
         this.purgeLowEnergyCarcass();
     }
 
+    /**
+     * Decays the carcass, reducing its nutritional value. If the carcass is colonized by mushrooms,
+     * they gain energy as the carcass decays faster.
+     */
     @Override
     public DisplayInformation getInformation() {
         return new DisplayInformation(Color.green, this.imageKey);
@@ -130,6 +166,11 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
         return false;
     }
 
+    /**
+     * Checks if the carcass has mushrooms growing on it.
+     *
+     * @return `true` if the carcass has mushrooms, `false` otherwise.
+     */
     public boolean getShroomStatus() {
         if (this.hasShrooms) {
             return true;
@@ -137,10 +178,20 @@ public class Carcass implements Actor, DynamicDisplayInformationProvider {
         return false;
     }
 
+    /**
+     * Retrieves the current nutritional value of the carcass.
+     *
+     * @return The nutritional value of the carcass.
+     */
     public int getNutritionalValue() {
         return this.nutritionalValue;
     }
 
+    /**
+     * Updates the nutritional value of the carcass.
+     *
+     * @param newNutritionalValue The new nutritional value to set.
+     */
     public void setNutritionalValue(int newNutritionalValue) {
         this.nutritionalValue = newNutritionalValue;
     }

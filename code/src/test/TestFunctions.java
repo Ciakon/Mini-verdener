@@ -20,7 +20,7 @@ import plants.Grass;
 import utils.Functions;
 
 /**
- * This class tests functions, that aren't connected to a specific class.
+ * This class tests {@link Functions}, that aren't connected to a specific class.
  */
 public class TestFunctions {
     

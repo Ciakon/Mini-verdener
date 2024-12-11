@@ -14,8 +14,8 @@ import utils.Functions;
 /**
  * The {@code Wolf} class represents a wolf in the simulation. Wolves can form packs, hunt prey,
  * share food, breed, and dig or inhabit nests. This class extends the {@link Animal} class
- * and implements the {@link Carnivorous} interface to provide specific behaviors such as hunting
- * and interacting with carcasses.
+ * and implements the {@link Carnivorous} interface to provide behaviors such as hunting
+ * and interacting with {@link Carcass}.
  * <p>
  * Wolves can either belong to a pack or roam individually. They have an alpha wolf in a pack,
  * which they follow. Wolves share food within their pack and engage in combat with wolves
@@ -29,7 +29,8 @@ public class Wolf extends Animal implements Carnivorous {
     AlphaWolf alpha;
 
     /**
-     * Another br'ish method jumpscare
+     * Initializes wolf-specific attributes such as vision range, energy levels,
+     * nutritional values, and preferred prey.
      */
     void wolfInit() {
         imageKeyBaby = "wolf-small";
@@ -39,7 +40,7 @@ public class Wolf extends Animal implements Carnivorous {
         color = Color.gray;
 
         breedingEnergy = 15;
-        visionRange = 4;
+        visionRange = 2;
         maxEnergy = 100;
         energy = 80;
         energyLoss = 1;
@@ -70,6 +71,9 @@ public class Wolf extends Animal implements Carnivorous {
         wolfInit();
     }
 
+    /**
+     * Executes general AI behavior for the wolf, such as engaging in combat
+     */
     @Override
     void generalAI() {
         // engage in combat with other wolves.
@@ -85,6 +89,10 @@ public class Wolf extends Animal implements Carnivorous {
         }
     }
 
+    /**
+     * Executes daytime behavior, wake up, search for food,
+     * or following the alpha wolf.
+     */
     @Override
     void dayTimeAI() {
         isSleeping = false;
@@ -95,7 +103,7 @@ public class Wolf extends Animal implements Carnivorous {
         }
 
         if (isInsideNest == false) {
-            if (isHungry()) {
+            if (isStarving()) {
                 findFood();
             }
             else {
@@ -105,6 +113,9 @@ public class Wolf extends Animal implements Carnivorous {
 
     }
 
+    /**
+     * Executes nighttime behavior, attempt to breed or returning to the nest.
+     */
     @Override
     void nightTimeAI() {
         if (!this.hasBred && energy > breedingEnergy && this.isInsideNest && isAdult) {
@@ -116,7 +127,12 @@ public class Wolf extends Animal implements Carnivorous {
         
         
     }
-
+    /**
+     * Handles the wolf breeding. Creates a new wolf as an offspring
+     * and adds it to the pack.
+     *
+     * @param partner The wolf to breed with.
+     */
     @Override
     void breed(Animal partner) {
         new Wolf(world, false, this.animalNest, pack);
@@ -182,8 +198,8 @@ public class Wolf extends Animal implements Carnivorous {
     }
 
     /**
-     * Digs a new AnimalNest at the wolfs location in the world. This method
-     * sets the wolf's `WolfNest` attribute to the new hole.
+     * Digs a new {@link AnimalNest} at the wolves location in the world. This method
+     * sets the wolf's {@link WolfNest} attribute to the new hole.
      */
     public void digHole() {
         if (this.animalNest != null) {
@@ -212,7 +228,11 @@ public class Wolf extends Animal implements Carnivorous {
         
         enterHole();
     }
-
+    /**
+     * Allows the wolf to enter its nest. The wolf must be standing on its nest to enter.
+     *
+     * @throws RuntimeException If the wolf is not standing on its own nest when attempting to enter.
+     */
     public void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(this.animalNest)) == false) {
             throw new RuntimeException("animals should only enter their own hole when standing on it");
@@ -223,6 +243,9 @@ public class Wolf extends Animal implements Carnivorous {
         world.remove(this); // gaming time
     }
 
+    /**
+     * Exits the wolf's nest, placing it back in the world at the nest's location.
+     */
     public void exitHole() {
         Location holeLocation = world.getLocation(this.animalNest);
         if (world.isTileEmpty(holeLocation)) {
@@ -231,11 +254,19 @@ public class Wolf extends Animal implements Carnivorous {
         }
     }
 
+    /**
+     * Adds the wolf to a specified pack.
+     *
+     * @param pack  An arraylist (The pack) to which the wolf will be added.
+     */
     public void addToPack(ArrayList<Wolf> pack) {
         this.pack = pack;
         pack.add(this);
     }
 
+    /**
+     * Handles the wolf's death. Removes the wolf from the world and if it has one its pack .
+     */
     @Override
     void die() {
         super.die();
@@ -245,6 +276,11 @@ public class Wolf extends Animal implements Carnivorous {
         }
     }
 
+    /**
+     * Converts the wolf into an {@link AlphaWolf}, creating a new alpha leader for the pack.
+     *
+     * @return The newly created {@link{@code AlphaWolf}}.
+     */
     public void setAlpha(AlphaWolf alpha) {
         this.alpha = alpha;
     }
@@ -264,7 +300,9 @@ public class Wolf extends Animal implements Carnivorous {
 
         return alpha;
     }
-
+    /**
+     * wolf will follow the alpha wolf. If no alpha wolf is found, the wolf will wander randomly.
+     */
     void followAlpha() {
         if (alpha == null) {
             wander();
@@ -282,7 +320,10 @@ public class Wolf extends Animal implements Carnivorous {
     }
 
     /**
-     * When wolves eat a carcass, they share it with nearby pack members.
+     * sharing of a carcass among pack members.
+     * Distributes the carcass's nutritional value evenly among nearby pack members.
+     *
+     * @param carcass The carcass to eat.
      */
     @Override
     public void eatCarcass(Carcass carcass) {
@@ -321,6 +362,11 @@ public class Wolf extends Animal implements Carnivorous {
         }
     }
 
+    /**
+     * returns the pack to which the wolf belongs.
+     *
+     * @return The pack of wolves.
+     */
     public ArrayList<Wolf> getPack() {
         return pack;
     }

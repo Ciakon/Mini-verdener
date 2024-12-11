@@ -7,9 +7,23 @@ import itumulator.world.World;
 import java.util.ArrayList;
 import utils.Functions;
 
+
+/**
+ * The {@code AlphaWolf} class represents the leader of a wolf pack.
+ * Alpha wolves have specialized behaviors and responsibilities, including managing the pack,
+ * finding food, and selecting a successor upon death.
+ * <p>
+ * This class extends the {@link Wolf} class and overrides specific methods to define alpha-specific
+ * behaviors, such as pack leadership and enhanced decision-making during the simulation.
+ * </p>
+ */
 public class AlphaWolf extends Wolf {
 
     ArrayList<Wolf> Pack;
+
+    /**
+     * Initializes the alpha wolf's specific attributes, such as unique appearance and adding itself to the pack.
+     */
 
     void alphaWolfInit() {
         imageKeyBaby = "Alpha";
@@ -21,16 +35,28 @@ public class AlphaWolf extends Wolf {
         pack.add(this);
     }
 
+    /**
+     * Constructs an {@code AlphaWolf}
+     *
+     * @param world    The simulation world.
+     * @param isAdult  Whether the AlphaWolf spawns as an adult.
+     * @param location The initial location of the AlphaWolf in the simulation world.
+     */
     public AlphaWolf(World world, boolean isAdult, Location location) {
         super(world, isAdult, location);
         alphaWolfInit();
     }
 
-    public AlphaWolf(World world, boolean isAdult, AnimalNest wolfNest, ArrayList<Wolf> pack) {
-        super(world, isAdult, wolfNest, pack);
-        alphaWolfInit();
-    }
-
+    /**
+     * Constructs an {@code AlphaWolf} for when {@link Wolf} to {@code AlphaWolf} conversion
+     *
+     * @param world    The simulation world.
+     * @param isAdult  Whether the AlphaWolf spawns as an adult.
+     * @param location The initial location of the AlphaWolf.
+     * @param wolfNest The {@link AnimalNest} associated with the AlphaWolf.
+     * @param energy   The initial energy level of the AlphaWolf.
+     * @param age      The initial age of the AlphaWolf.
+     */
     public AlphaWolf(World world, boolean isAdult, Location location, AnimalNest wolfNest, int energy, int age) {
         super(world, isAdult, location);
         alphaWolfInit();
@@ -39,11 +65,18 @@ public class AlphaWolf extends Wolf {
         this.energy = energy;
         this.age = age;
     }
-
+    /**
+     * Defines the general behavior of the AlphaWolf.
+     *
+     */
     @Override
     void generalAI() {
     }
-
+    /**
+     * Defines the daytime behavior for the AlphaWolf.
+     * The AlphaWolf attempts to exit its nest, find food, or manage its surroundings
+     * (e.g., swapping positions with stuck pack members).
+     */
     @Override
     void dayTimeAI() {
         isSleeping = false;
@@ -69,7 +102,10 @@ public class AlphaWolf extends Wolf {
 
         
     }
-
+    /**
+     * Defines the nighttime behavior for the AlphaWolf.
+     * The AlphaWolf attempts to breed and find or dig a hole to rest in.
+     */
     @Override
     void nightTimeAI() {
         if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
@@ -80,12 +116,20 @@ public class AlphaWolf extends Wolf {
         }
     }
 
+    /**
+     * Handles the death of the AlphaWolf. Upon death, a new AlphaWolf is selected
+     * from the existing pack based on the highest energy level.
+     */
     @Override
     void die() {
         super.die();
         createNewAlpha();
     }
-
+    /**
+     * Selects a new AlphaWolf for the pack.
+     * The new AlphaWolf is chosen from the pack based on the highest energy level.
+     * If no suitable candidate is found, no new AlphaWolf is created.
+     */
     void createNewAlpha() {
         if (pack.isEmpty()) return;
 

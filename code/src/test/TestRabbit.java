@@ -13,6 +13,11 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import utils.Functions;
 
+
+
+/**
+ * Testing class for the {@link Rabbit} animal.
+ */
 public class TestRabbit {
 
     /**

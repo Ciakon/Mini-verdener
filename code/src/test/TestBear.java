@@ -15,10 +15,14 @@ import org.junit.Test;
 import itumulator.executable.Program;
 import itumulator.world.Location;
 import itumulator.world.World;
+import plants.BerryBush;
 import plants.Grass;
+import plants.Plant;
 import utils.Functions;
 
-
+/**
+ * Testing class for {@link Bear}.
+ */
 public class TestBear {
 
     /**

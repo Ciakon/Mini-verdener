@@ -10,8 +10,16 @@ import plants.Plant;
 import utils.Functions;
 
 /**
- * "bear is kil" "no"
+ * The {@code Bear} class represents an animal capable of both carnivorous
+ * and herbivorous behaviors. Bears have defined territories, can form family groups,
+ * and engage in activities such as hunting, foraging, breeding, and defending their territory.
+ * <p>
+ * This class implements both {@link Carnivorous} and {@link Herbivorous} interfaces, allowing
+ * the bear to eat prey and consume plants (specifically berries). It also extends the
+ * {@link Animal} base class to inherit common animal behaviors.
+ * </p>
  */
+
 public class Bear extends Animal implements Carnivorous, Herbivorous {
 
     Location territory;
@@ -21,7 +29,8 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
     ArrayList<Animal> killList;
 
     /**
-     * Another br'ish method jumpscare
+     * Initializes the bear's attributes and preferences, such as vision range,
+     * energy levels, preferred prey, and appearance.
      */
     void bearInit() {
         visionRange = 3;
@@ -98,11 +107,20 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         bearInit();
     }
 
+    /**
+     * Executes general AI behavior for the bear, checking for
+     * intrusions in its territory.
+     */
     @Override
     void generalAI() {
         checkForIllegalActivity();
     }
 
+
+    /**
+     * Defines daytime behavior for the bear, such as hunting, foraging,
+     * and attempt breeding.
+     */
     @Override
     void dayTimeAI() {
         isSleeping = false;
@@ -125,7 +143,10 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         }
 
     }
-
+    /**
+     * Defines nighttime behavior for the bear, returning to its
+     * territory to sleep.
+     */
     @Override
     void nightTimeAI() {
         sleeperTime();
@@ -314,6 +335,11 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         return nearbyPlants;
     }
 
+    /**
+     * Updates the bear's family group.
+     *
+     * @param family The new family group.
+     */
     void setFamiliy(ArrayList<Bear> family) {
         this.family = family;
     }
