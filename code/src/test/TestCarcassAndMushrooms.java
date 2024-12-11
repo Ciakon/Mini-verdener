@@ -2,7 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import plants.Carcass;
@@ -40,7 +40,8 @@ public class TestCarcassAndMushrooms {
     }
 
     /**
-     * Tests if mushrooms Colonize carcass.
+     * Tests if mushrooms Colonize carcass. The world size is set to 5 so that
+     * the carcass will always be reachable for the Mushrooms.
      */
     @Test
     public void testColonization() {

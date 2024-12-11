@@ -56,20 +56,19 @@ public class Plant {
             if (!emptyTiles.isEmpty()) {
                 for (Location newLocation : emptyTiles) {
                     if (!world.containsNonBlocking(newLocation)) {
-                        String name = this.getClass().getSimpleName();
-                        switch (name) {
-                            case "Grass":
-                                new Grass(world, newLocation);
-                                return;
-                            case "BerryBush":
-                                new BerryBush(world, newLocation);
-                                return;
-                            default:
-                                return;
+                        try {
+                            this.getClass()
+                                    .getConstructor(World.class, Location.class)
+                                    .newInstance(world, newLocation);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return;
+
                         }
                     }
                 }
             }
         }
     }
-}
+

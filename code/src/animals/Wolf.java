@@ -10,6 +10,20 @@ import java.util.Set;
 import plants.Carcass;
 import utils.Functions;
 
+
+/**
+ * The {@code Wolf} class represents a wolf in the simulation. Wolves can form packs, hunt prey,
+ * share food, breed, and dig or inhabit nests. This class extends the {@link Animal} class
+ * and implements the {@link Carnivorous} interface to provide specific behaviors such as hunting
+ * and interacting with carcasses.
+ * <p>
+ * Wolves can either belong to a pack or roam individually. They have an alpha wolf in a pack,
+ * which they follow. Wolves share food within their pack and engage in combat with wolves
+ * outside their pack to establish dominance.
+ * </p>
+ */
+
+
 public class Wolf extends Animal implements Carnivorous {
     ArrayList<Wolf> pack;
     AlphaWolf alpha;
