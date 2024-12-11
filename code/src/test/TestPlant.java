@@ -2,8 +2,6 @@ package test;
 
 import java.util.Map;
 
-import animals.AlphaWolf;
-import animals.Wolf;
 import org.junit.Test;
 
 import itumulator.executable.Program;

@@ -2,8 +2,6 @@ package test;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 import animals.Rabbit;
