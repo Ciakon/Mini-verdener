@@ -11,6 +11,16 @@ import plants.Grass;
 import plants.Plant;
 import utils.Functions;
 
+/**
+ * The {@code Rabbit} class is a herbivorous animal in the simulation that engages in
+ * activities such as foraging for plants, breeding, and digging/inhabiting rabbit holes.
+ * Rabbits can grow, age, and interact with their environment dynamically, including the ability
+ * to migrate to new holes or create their own.
+ * <p>
+ * This class implements the {@link Herbivorous} interface to define its plant-eating behavior
+ * and extends the {@link Animal} base class to inherit common animal behaviors.
+ * </p>
+ */
 public class Rabbit extends Animal implements Herbivorous {
 
     double digNewExitChance = 0.2;
@@ -18,7 +28,8 @@ public class Rabbit extends Animal implements Herbivorous {
     int breedingEnergy = 15;
 
     /**
-     * British method jumpscare
+     * Initializes the rabbit's attributes, such as vision range, energy levels,
+     * preferred plants, and appearance.
      */
     void rabbitInit() {
         imageKeyBaby = "rabbit-small";
@@ -77,6 +88,10 @@ public class Rabbit extends Animal implements Herbivorous {
         rabbitInit();
     }
 
+    /**
+     * Executes general AI behavior for the rabbit, checking for a new hole
+     * to migrate to if it is the sole inhabitant of its current hole.
+     */
     @Override
     void generalAI() {
         if (isInsideNest == false) {
@@ -93,6 +108,10 @@ public class Rabbit extends Animal implements Herbivorous {
 
     }
 
+    /**
+     * Defines the rabbit's daytime behavior, exiting its hole, foraging, and returning
+     * to its hole in the evening.
+     */
     @Override
     void dayTimeAI() {
 
@@ -112,6 +131,10 @@ public class Rabbit extends Animal implements Herbivorous {
         }
     }
 
+    /**
+     * Defines the rabbit's nighttime behavior, attempting to breed and finding a hole
+     * if it is outside.
+     */
     @Override
     void nightTimeAI() {
         if (!this.hasBred && energy > breedingEnergy && this.isInsideNest) {
@@ -270,6 +293,9 @@ public class Rabbit extends Animal implements Herbivorous {
         enterHole();
     }
 
+    /**
+     * Makes the rabbit enter its current rabbit hole.
+     */
     public void enterHole() {
         if (world.getLocation(this).equals(world.getLocation(rabbitHole)) == false) {
             throw new RuntimeException("Rabbits should only enter their own hole when standing on it");
@@ -279,6 +305,9 @@ public class Rabbit extends Animal implements Herbivorous {
         world.remove(this); // gaming time
     }
 
+    /**
+     * Makes the rabbit exit its current rabbit hole, possibly creating a new exit.
+     */
     public void exitHole() {
         Random random = new Random();
         ArrayList<RabbitHole> exits = rabbitHole.getAllConnectedHoles();
@@ -349,10 +378,20 @@ public class Rabbit extends Animal implements Herbivorous {
         return rh;
     }
 
+    /**
+     * Retrieves the rabbit's current rabbit hole.
+     *
+     * @return The rabbit's associated {@link RabbitHole}, or {@code null} if the rabbit does not have one.
+     */
     public RabbitHole getRabbitHole() {
         return rabbitHole;
     }
 
+    /**
+     * Sets the rabbit's current rabbit hole.
+     *
+     * @param rh The new {@link RabbitHole} to associate with the rabbit.
+     */
     public void setRabbitHole(RabbitHole rh) {
         rabbitHole = rh;
     }
