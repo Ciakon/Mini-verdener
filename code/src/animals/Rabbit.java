@@ -103,7 +103,7 @@ public class Rabbit extends Animal implements Herbivorous {
             if (world.getCurrentTime() >= 7) { // go back in the evening
                 moveToOrDigHole();
             } else {
-                forage(world, this);
+                forage();
             }
         }
     }
@@ -170,7 +170,9 @@ public class Rabbit extends Animal implements Herbivorous {
      * @return An ArrayList of nearby grass locations.
      */
     @Override
-    public ArrayList<Plant> findNearbyPlants(World world, Animal me) {
+    public ArrayList<Plant> findNearbyPlants() {
+        Animal me = (Animal) this;
+        World world = me.world;
         ArrayList<Plant> nearbyPlants = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
 

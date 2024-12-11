@@ -1,13 +1,12 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import animals.Rabbit;
 import plants.Carcass;
 import itumulator.executable.Program;
-import itumulator.world.Location;
 import itumulator.world.World;
 import plants.Mushrooms;
 import utils.Functions;

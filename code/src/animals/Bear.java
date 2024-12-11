@@ -27,6 +27,7 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         visionRange = 3;
         maxEnergy = 150;
         energy = 120;
+        breedingEnergy = 100;
         energyLoss = 1;
 
         adultAge = 40;
@@ -113,9 +114,9 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
         attemptBreeding();
         if (killList.isEmpty()) {
             if (isStarving()) {
-                findFood(world, this);
+                findFood();
             } else if (isHungry()) {
-                forage(world, this);
+                forage();
             } else {
                 moveTowards(territory);
             }
@@ -293,7 +294,10 @@ public class Bear extends Animal implements Carnivorous, Herbivorous {
      * @return An ArrayList of nearby berryBush locations.
      */
     @Override
-    public ArrayList<Plant> findNearbyPlants(World world, Animal me) {
+    public ArrayList<Plant> findNearbyPlants() {
+        Animal me = (Animal) this;
+        World world = me.world;
+        
         ArrayList<Plant> nearbyPlants = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
 

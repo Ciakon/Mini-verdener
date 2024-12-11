@@ -64,7 +64,7 @@ public class Wolf extends Animal implements Carnivorous {
                 Wolf otherWolf = (Wolf) world.getTile(wolfLocation);
     
                 if (otherWolf.getPack() != this.pack || this.pack == null) {
-                    engageInCombat(this, otherWolf);
+                    engageInCombat(otherWolf);
                     break;
                 }
             }
@@ -82,7 +82,7 @@ public class Wolf extends Animal implements Carnivorous {
 
         if (isInsideNest == false) {
             if (isHungry()) {
-                findFood(world, this);
+                findFood();
             }
             else {
                 followAlpha();
@@ -271,11 +271,11 @@ public class Wolf extends Animal implements Carnivorous {
      * When wolves eat a carcass, they share it with nearby pack members.
      */
     @Override
-    public void eatCarcass(Carcass carcass, Animal me) {
+    public void eatCarcass(Carcass carcass) {
         ArrayList<Wolf> nearbyPackMembers = new ArrayList<>(); // Includes the wolf itself
 
         if (pack == null) {
-            Carnivorous.super.eatCarcass(carcass, me);
+            Carnivorous.super.eatCarcass(carcass);
             return;
         }
 

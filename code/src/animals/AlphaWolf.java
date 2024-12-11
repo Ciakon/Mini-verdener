@@ -53,7 +53,7 @@ public class AlphaWolf extends Wolf {
         }
 
         if (isInsideNest == false) {
-            findFood(world, this);
+            findFood();
 
             // If Alpha is stuck, swap with one of the betas.
             if (world.getEmptySurroundingTiles(world.getLocation(this)).isEmpty()) {

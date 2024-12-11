@@ -17,7 +17,9 @@ public interface Herbivorous {
      *
      * @return An ArrayList of nearby plant locations.
      */
-    default ArrayList<Plant> findNearbyPlants(World world, Animal me) {
+    default ArrayList<Plant> findNearbyPlants() {
+        Animal me = (Animal) this;
+        World world = me.world;
         ArrayList<Plant> nearbyPlants = new ArrayList<>();
         Set<Location> surroundings = world.getSurroundingTiles(world.getLocation(me), me.visionRange);
 
@@ -37,8 +39,10 @@ public interface Herbivorous {
     /**
      * Herbivore-specific AI for locating and eating plants.
      */
-    default void forage(World world, Animal me) {
-        ArrayList<Plant> plants = findNearbyPlants(world, me);
+    default void forage() {
+        Animal me = (Animal) this;
+        World world = me.world;
+        ArrayList<Plant> plants = findNearbyPlants();
         if (!plants.isEmpty()) {
             Plant nearestPlant = plants.get(0);
 

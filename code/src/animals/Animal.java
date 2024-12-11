@@ -24,7 +24,7 @@ public abstract class Animal implements Actor, DynamicDisplayInformationProvider
 
     int visionRange = 3;
     int maxEnergy = 40;
-    int energy = 20;
+    protected int energy = 20;
     int energyLoss = 1;
 
     int nutritionalValue;
