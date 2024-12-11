@@ -45,7 +45,7 @@ public class Grass extends Plant implements Actor, DynamicDisplayInformationProv
      */
     @Override
     public void act(World world) {
-        super.grow(world,3);
+        super.grow(world,0.02);
 
         if (isDepleted) {
             world.delete(this); 

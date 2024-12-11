@@ -40,7 +40,7 @@ public class Wolf extends Animal implements Carnivorous {
         color = Color.gray;
 
         breedingEnergy = 15;
-        visionRange = 4;
+        visionRange = 2;
         maxEnergy = 100;
         energy = 80;
         energyLoss = 1;

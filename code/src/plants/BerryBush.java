@@ -60,7 +60,7 @@ public class BerryBush extends Plant implements Actor, DynamicDisplayInformation
                 replenish();
             }
         } else {
-            super.grow(world, 1);
+            super.grow(world, 0.005);
 
         }
     }

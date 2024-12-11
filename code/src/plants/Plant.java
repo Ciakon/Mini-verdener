@@ -62,9 +62,9 @@ public class Plant {
      * @param percent The percentage chance for the plant to grow in surrounding
      * tiles.
      */
-    public void grow(World world, int percent) {
+    public void grow(World world, double growthChance) {
         Random random = new Random();
-        if (random.nextInt(100) < percent) {
+        if (random.nextDouble() <= growthChance) {
             Set<Location> emptyTiles = world.getEmptySurroundingTiles(world.getLocation(this));
             if (!emptyTiles.isEmpty()) {
                 for (Location newLocation : emptyTiles) {

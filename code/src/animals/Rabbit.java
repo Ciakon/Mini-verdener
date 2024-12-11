@@ -25,7 +25,7 @@ public class Rabbit extends Animal implements Herbivorous {
 
     double digNewExitChance = 0.2;
     RabbitHole rabbitHole;
-    int breedingEnergy = 15;
+    int breedingEnergy = 5;
 
     /**
      * Initializes the rabbit's attributes, such as vision range, energy levels,
@@ -40,7 +40,7 @@ public class Rabbit extends Animal implements Herbivorous {
 
         visionRange = 4;
         maxEnergy = 40;
-        energy = 15;
+        energy = 30;
         energyLoss = 1;
 
         adultAge = 40;
@@ -159,17 +159,23 @@ public class Rabbit extends Animal implements Herbivorous {
     }
 
     /**
-     * breeds with other rabbit
+     * breeds with other rabbit. When rabbits breed, they spawn 1-3 babies.
      *
      * @param partner Rabbit to breed with
      */
     @Override
     void breed(Animal partner) {
+        Random random = new Random();
 
         if (partner instanceof Rabbit == false) {
             throw new RuntimeException("bro?");
         }
-        new Rabbit(world, false, this.rabbitHole);
+
+        int babyAmount = random.nextInt(1, 4);
+        for (int i = 0; i < babyAmount; i++) {
+            new Rabbit(world, false, this.rabbitHole);
+        }
+
         this.energy -= breedingEnergy;
         this.hasBred = true;
         partner.setHasBred(true);
