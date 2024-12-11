@@ -36,6 +36,10 @@ public class Rabbit extends Animal implements Herbivorous {
 
         nutritionalValueAdult = 500;
         nutritionalValueBaby = 200;
+
+        if (isAdult) {
+            this.maxEnergy *= .75;
+        }
     }
 
     /**
