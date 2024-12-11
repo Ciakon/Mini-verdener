@@ -2,16 +2,16 @@ package animals;
 
 import itumulator.world.Location;
 import itumulator.world.World;
-import plants.Carcass;
-import utils.Functions;
-
 import java.util.ArrayList;
 import java.util.Set;
+import plants.Carcass;
+import utils.Functions;
 
 /**
  * Interface for carnivorous behavior.
  */
 public interface Carnivorous {
+
     /**
      *
      * @param prey The prey to kill
@@ -123,11 +123,10 @@ public interface Carnivorous {
         if (opponent.energy > me.energy) {
             opponent.energy -= me.energy;
             me.die();
-        } else if (me.energy > opponent.energy){
+        } else if (me.energy > opponent.energy) {
             me.energy -= opponent.energy;
             opponent.die();
-        }
-        else {
+        } else {
             me.die();
             opponent.die();
         }

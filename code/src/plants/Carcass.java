@@ -7,8 +7,9 @@ import itumulator.world.Location;
 import itumulator.world.World;
 import java.awt.Color;
 
-public class Carcass extends Plant implements Actor, DynamicDisplayInformationProvider {
+public class Carcass implements Actor, DynamicDisplayInformationProvider {
 
+    protected int nutritionalValue;
     protected String imageKey;
     protected int nutritionLoss;
     protected World world;
@@ -19,7 +20,6 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     protected boolean isColony;
 
     public Carcass(World world, Location location, boolean IsAdult, int nutritionValue) {
-        super(world, location);
         this.nutritionalValue = nutritionValue;
         this.chanceForShrooms = 0.10;
         this.nutritionLoss = 1;
@@ -35,7 +35,6 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
     }
 
     public Carcass(World world, Location location, boolean IsAdult, int nutritionValue, boolean hasShrooms) {
-        super(world, location);
         this.nutritionalValue = nutritionValue;
         this.chanceForShrooms = 0.05;
         this.nutritionLoss = 1;
@@ -136,5 +135,13 @@ public class Carcass extends Plant implements Actor, DynamicDisplayInformationPr
             return true;
         }
         return false;
+    }
+
+    public int getNutritionalValue() {
+        return this.nutritionalValue;
+    }
+
+    public void setNutritionalValue(int newNutritionalValue) {
+        this.nutritionalValue = newNutritionalValue;
     }
 }
